@@ -63,10 +63,13 @@ my_malloc_release(VALUE self) {
 }
 
 void
-Init_aws_crt_ruby(void) {
+Init_aws_crt(void) {
   VALUE cMyMalloc;
 
-  cMyMalloc = rb_const_get(rb_cObject, rb_intern("AwsCrtRuby"));
+  VALUE mAws = rb_define_module("Aws");
+  VALUE mCrt = rb_define_module_under(mAws, "Crt");
+
+  cMyMalloc = rb_const_get(mCrt, rb_intern("MyMalloc"));
 
   rb_define_alloc_func(cMyMalloc, my_malloc_alloc);
   rb_define_method(cMyMalloc, "initialize", my_malloc_init, 1);
