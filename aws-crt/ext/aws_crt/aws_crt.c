@@ -14,6 +14,13 @@ my_malloc_free(void *p) {
 }
 
 static VALUE
+my_rand() {
+  uint32_t output;
+  aws_device_random_u64(&output);
+  return INT2FIX(output);
+}
+
+static VALUE
 my_malloc_alloc(VALUE klass) {
   VALUE obj;
   struct my_malloc *ptr;
@@ -74,4 +81,5 @@ Init_aws_crt(void) {
   rb_define_alloc_func(cMyMalloc, my_malloc_alloc);
   rb_define_method(cMyMalloc, "initialize", my_malloc_init, 1);
   rb_define_method(cMyMalloc, "free", my_malloc_release, 0);
+  rb_define_module_function(mCrt, "my_rand", my_rand, 0);
 }
