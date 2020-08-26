@@ -19,8 +19,11 @@ spec = Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.files = ['VERSION']
   spec.files += Dir['lib/**/*.rb']
+  spec.files << 'bin/libaws-c-common'
+  puts "Files: #{spec.files}"
   spec.platform = Gem::Platform::RUBY
   spec.extensions = FileList['ext/**/extconf.rb']
+  spec.bindir = 'bin'
 end
 
 # default gem packing task
