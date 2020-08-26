@@ -1,40 +1,77 @@
-require 'rake/extensiontask'
 require 'rake/clean'
 
 CLEAN.include 'tmp'
 CLEAN.include 'pkg'
-CLEAN.include 'lib/**/*.bundle'
+CLEAN.include 'bin/'
 
-# Generate native gems that bundle the extensions
-# Allows us to run: `rake gem` to build pure ruby gem
-# and `rake native gem` to build native gem (builds multiple versions)
-# Also allows `rake java gem` to build jruby extensions
-spec = Gem::Specification.new do |spec|
-  spec.name = 'aws-crt'
-  spec.version = File.read(File.expand_path('../VERSION', __FILE__)).strip
-  spec.summary = 'AWS SDK for Ruby - Common Run Time'
-  spec.author = 'Amazon Web Services'
-  spec.homepage = 'https://github.com/awslabs/aws-crt-ruby'
-  spec.license = 'Apache-2.0'
-  spec.require_paths = ['lib']
-  spec.files = ['VERSION']
-  spec.files += Dir['lib/**/*.rb']
-  spec.files << 'bin/libaws-c-common'
-  puts "Files: #{spec.files}"
-  spec.platform = Gem::Platform::RUBY
-  spec.extensions = FileList['ext/**/extconf.rb']
-  spec.bindir = 'bin'
+desc "Compile CRT libraries"
+task :compile do
+  require "fileutils"
+  install_dir = File.expand_path('ext/aws_crt/aws-common-runtime/build', File.dirname(__FILE__))
+  Dir.chdir('ext/aws_crt/aws-common-runtime') do
+    `cmake -DBUILD_SHARED_LIBS=true -DBUILD_TESTING=OFF -DS2N_NO_PQ_ASM=ON -DCMAKE_PREFIX_PATH="#{install_dir}" -DCMAKE_INSTALL_PREFIX="#{install_dir}" -S aws-c-common -B aws-c-common/build`
+    `cmake --build aws-c-common/build --target install`
+  end
 end
 
-# default gem packing task
-Gem::PackageTask.new(spec) do |pkg|
-end
+desc "Build the aws-crt gem for supported platforms"
+task :build => :clean do
+  require "rubygems/package"
+  require "fileutils"
 
-# This gives `rake compile` as a task which can then hook into other tasks
-# such as tests
-Rake::ExtensionTask.new('aws_crt', spec) do |ext|
-  ext.lib_dir = 'lib/aws-crt'
-end
+  # Maps platform to crt binary name.
+  PLATFORMS = {
+    "universal-darwin" => %w[universal-darwin],
+    # "x86-linux"        => %w[x86-linux],
+    # "x86_64-linux"     => %w[x86_64-linux],
+    # "arm-linux"        => %w[armv6-linux armv6hf-linux],
+    # "x86-mingw32"      => %w[x86-windows.dll],
+  }.freeze
 
-# If we had java (w/ JNI) we would add this
-# Rake::JavaExtensionTask.new('aws-crt-ruby')
+  # Maps platform to the built binary
+  binaries =
+    {
+      "universal-darwin" => "ext/aws_crt/aws-common-runtime/build/lib/libaws-c-common.dylib",
+      # TODO: Other platform bins.... need download or other build option?
+    }
+
+  root = File.dirname(__FILE__)
+  bins = File.join(root, "bin/")
+  pkgs = File.join(root, "pkg/")
+  FileUtils.mkdir_p(pkgs, verbose: true)
+
+  platforms = PLATFORMS.dup
+  platforms[Gem::Platform::RUBY] = [] # fallback platform
+  platforms["universal-java"] = platforms.values.flatten.uniq
+
+  # Load our gem specification.
+  orig_spec = Gem::Specification.load("aws-crt.gemspec")
+  gempaths = platforms.each_pair.map do |platform, source_binaries|
+    spec = orig_spec.dup
+    puts "[#{platform}]"
+    spec.platform = platform
+
+    if source_binaries.empty?
+      puts "\tPure ruby build."
+      spec.post_install_message = <<-MSG.gsub(/ {2,}/, " ")
+        Binary aws-crt gem could not be installed. You will need to install aws-crt separately.
+        If you are on ARM (e.g. Raspberry PI), you might want to install the gem with explicit --platform:
+        $> gem install aws-crt --platform arm-linux
+      MSG
+    else
+      source_binaries.each do |binary|
+        src_name = binaries.fetch(binary)
+        dest_name = "bin/#{binary}/#{File.basename(src_name)}"
+        FileUtils.mkdir_p("bin/#{binary}")
+        FileUtils.cp(src_name, dest_name, verbose: true)
+        spec.files << dest_name
+      end
+    end
+
+    # Build and move the gem to the pkg/ directory.
+    gemname = Gem::Package.build(spec)
+    File.join(pkgs, File.basename(gemname)).tap do |gempath|
+      FileUtils.mv(gemname, gempath, verbose: true)
+    end
+  end
+end
