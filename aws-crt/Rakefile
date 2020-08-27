@@ -7,10 +7,16 @@ CLEAN.include 'bin/'
 desc "Compile CRT libraries"
 task :compile do
   require "fileutils"
-  install_dir = File.expand_path('ext/aws_crt/aws-common-runtime/build', File.dirname(__FILE__))
-  Dir.chdir('ext/aws_crt/aws-common-runtime') do
-    `cmake -DBUILD_SHARED_LIBS=true -DBUILD_TESTING=OFF -DS2N_NO_PQ_ASM=ON -DCMAKE_PREFIX_PATH="#{install_dir}" -DCMAKE_INSTALL_PREFIX="#{install_dir}" -S aws-c-common -B aws-c-common/build`
-    `cmake --build aws-c-common/build --target install`
+  native_dir = File.expand_path('native', File.dirname(__FILE__))
+  build_dir = File.expand_path('build', native_dir)
+  if !Dir.exist?(build_dir)
+    Dir.mkdir(build_dir)
+  end
+  Dir.chdir(build_dir) do
+    if !File.exist?('CMakeCache.txt')
+      sh "cmake #{native_dir}"
+    end
+    sh "cmake --build #{build_dir}"
   end
 end
 
@@ -31,7 +37,7 @@ task :build => :clean do
   # Maps platform to the built binary
   binaries =
     {
-      "universal-darwin" => "ext/aws_crt/aws-common-runtime/build/lib/libaws-c-common.dylib",
+      "universal-darwin" => "native/build/libaws-crt.dylib",
       # TODO: Other platform bins.... need download or other build option?
     }
 
