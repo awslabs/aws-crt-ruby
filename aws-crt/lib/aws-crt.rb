@@ -124,5 +124,3 @@ module Aws
     end
   end
 end
-
-puts "Loaded our lib!"
