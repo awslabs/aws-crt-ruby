@@ -26,6 +26,7 @@ AWS_EXTERN_C_BEGIN
 
 AWS_CRT_API struct aws_crt_event_loop_group *aws_crt_event_loop_group_new(int max_threads);
 AWS_CRT_API void aws_crt_event_loop_group_destroy(struct aws_crt_event_loop_group *crt_elg);
+AWS_CRT_API int aws_crt_test_error();
 
 AWS_EXTERN_C_END
 
