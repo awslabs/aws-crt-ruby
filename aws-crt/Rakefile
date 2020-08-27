@@ -1,4 +1,5 @@
 require 'rake/clean'
+require 'rspec/core/rake_task'
 
 CLEAN.include 'tmp'
 CLEAN.include 'pkg'
@@ -81,3 +82,5 @@ task :build => :clean do
     end
   end
 end
+
+RSpec::Core::RakeTask.new(:spec)
