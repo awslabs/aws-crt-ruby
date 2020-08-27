@@ -2,7 +2,7 @@ require 'ffi'
 
 # Maps platform to crt binary name.  Needs to match what is used in the Rakefile for builds
 PLATFORMS = {
-  "universal-darwin" => 'libaws-c-common.dylib'
+  "universal-darwin" => 'libaws-crt.dylib'
 }.freeze
 
 def host_string
@@ -41,15 +41,8 @@ COMMON_BIN_PATH = File.expand_path("../bin/#{platform}/#{PLATFORMS[platform]}", 
 module Aws
   module Crt
     extend FFI::Library
-    ffi_lib [COMMON_BIN_PATH, 'libaws-c-common']
-    attach_function :aws_high_res_clock_get_ticks, [ :pointer ], :int
-
-    def self.my_time
-      p = FFI::MemoryPointer.new(:uint64)
-      aws_high_res_clock_get_ticks(p)
-      # p.read(:uint64)  # read is not supported in jruby version?
-      p.get_uint64(0)
-    end
+    ffi_lib [COMMON_BIN_PATH, 'libaws-crt']
+    attach_function :aws_crt_event_loop_group_new, [ :int ], :pointer
+    attach_function :aws_crt_event_loop_group_destroy, [:pointer], :void
   end
 end
-
