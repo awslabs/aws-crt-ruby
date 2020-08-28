@@ -18,5 +18,5 @@ env:
 
 script: >
   (cd aws-crt) &&
-  (bundle exec rake spec) &&
+  (bundle exec rake spec)
 
