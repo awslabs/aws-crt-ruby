@@ -1,5 +1,5 @@
 require 'ffi'
-require 'aws-crt/platforms'
+require_relative 'aws-crt/platforms'
 
 CRT_BIN_PATH = crt_bin_path(local_platform)
 
