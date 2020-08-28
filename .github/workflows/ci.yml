@@ -32,7 +32,7 @@ jobs:
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u awslabs --password-stdin
         export DOCKER_IMAGE=docker.pkg.github.com/awslabs/aws-crt-builder/aws-crt-${{ matrix.image }}:${{ env.BUILDER_VERSION }}
         docker pull $DOCKER_IMAGE
-        docker run --env GITHUB_REF $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} downstream
+        docker run --env GITHUB_REF --mount type=bind,source=$(pwd),target=/root/${{ env.PACKAGE_NAME }} $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} downstream
 
   al2:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u awslabs --password-stdin
         export DOCKER_IMAGE=docker.pkg.github.com/awslabs/aws-crt-builder/aws-crt-al2-x64:${{ env.BUILDER_VERSION }}
         docker pull $DOCKER_IMAGE
-        docker run --env GITHUB_REF $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} downstream
+        docker run --env GITHUB_REF --mount type=bind,source=$(pwd),target=/root/${{ env.PACKAGE_NAME }} $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} downstream
 
   clang-compat:
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u awslabs --password-stdin
         export DOCKER_IMAGE=docker.pkg.github.com/awslabs/aws-crt-builder/aws-crt-${{ env.LINUX_BASE_IMAGE }}:${{ env.BUILDER_VERSION }}
         docker pull $DOCKER_IMAGE
-        docker run --env GITHUB_REF $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} --compiler=clang-${{ matrix.version }}
+        docker run --env GITHUB_REF --mount type=bind,source=$(pwd),target=/root/${{ env.PACKAGE_NAME }} $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} --compiler=clang-${{ matrix.version }}
 
   gcc-compat:
     runs-on: ubuntu-latest
@@ -71,7 +71,7 @@ jobs:
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u awslabs --password-stdin
         export DOCKER_IMAGE=docker.pkg.github.com/awslabs/aws-crt-builder/aws-crt-${{ env.LINUX_BASE_IMAGE }}:${{ env.BUILDER_VERSION }}
         docker pull $DOCKER_IMAGE
-        docker run --env GITHUB_REF $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} --compiler=gcc-${{ matrix.version }}
+        docker run --env GITHUB_REF --mount type=bind,source=$(pwd),target=/root/${{ env.PACKAGE_NAME }} $DOCKER_IMAGE build -p ${{ env.PACKAGE_NAME }} --compiler=gcc-${{ matrix.version }}
 
   linux-arm:
     name: ARM (${{ matrix.arch }})
@@ -80,6 +80,10 @@ jobs:
       matrix:
         arch: [armv6, armv7, arm64]
     steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: Build ${{ env.PACKAGE_NAME }}
       run: |
         python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
@@ -89,6 +93,10 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: Build ${{ env.PACKAGE_NAME }} + consumers
       run: |
         python -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
@@ -106,6 +114,10 @@ jobs:
         arch: ${{ matrix.arch }}
         uwp: false
         spectre: true
+    - name: Checkout Sources
+      uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: Build ${{ env.PACKAGE_NAME }} + consumers
       run: |
         python -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
@@ -114,6 +126,10 @@ jobs:
   osx:
     runs-on: macos-latest
     steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v2
+      with:
+        submodules: true
     - name: Build ${{ env.PACKAGE_NAME }} + consumers
       run: |
         python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
