@@ -21,13 +21,24 @@ task :compile do
   end
 end
 
+desc "Move the compiled lib into bin"
+task :bin => :compile do
+  require_relative 'lib/aws-crt/platforms'
+  platform = local_platform
+  binary_name = PLATFORM_BINARIES[platform]
+  src_name = "native/build/#{binary_name}"
+  dest_name = "bin/#{platform}/#{binary_name}"
+  FileUtils.mkdir_p("bin/#{platform}")
+  FileUtils.cp(src_name, dest_name, verbose: true)
+end
+
 desc "Build the aws-crt gem for supported platforms"
 task :build => :clean do
   require "rubygems/package"
   require "fileutils"
 
   # Maps platform to crt binary name.
-  PLATFORMS = {
+  PLATFORM_BINARIES = {
     "universal-darwin" => %w[universal-darwin],
     # "x86-linux"        => %w[x86-linux],
     # "x86_64-linux"     => %w[x86_64-linux],
@@ -47,7 +58,7 @@ task :build => :clean do
   pkgs = File.join(root, "pkg/")
   FileUtils.mkdir_p(pkgs, verbose: true)
 
-  platforms = PLATFORMS.dup
+  platforms = PLATFORM_BINARIES.dup
   platforms[Gem::Platform::RUBY] = [] # fallback platform
   platforms["universal-java"] = platforms.values.flatten.uniq
 
@@ -84,3 +95,4 @@ task :build => :clean do
 end
 
 RSpec::Core::RakeTask.new(:spec)
+task :spec => :bin
