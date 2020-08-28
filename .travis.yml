@@ -12,7 +12,9 @@ rvm:
 
 sudo: false
 
-script: >
-  (cd aws-crt) &&
-  (bundle exec rake spec)
+before_script:
+  - cd aws-crt
+
+script:
+  - bundle exec rake spec
 
