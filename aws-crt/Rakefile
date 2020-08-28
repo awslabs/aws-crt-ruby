@@ -3,11 +3,11 @@ require 'rspec/core/rake_task'
 
 CLEAN.include 'tmp'
 CLEAN.include 'pkg'
-CLEAN.include 'bin/'
+CLEAN.include 'native/build'
 
-desc "Compile CRT libraries"
+desc 'Compile CRT libraries'
 task :compile do
-  require "fileutils"
+  require 'fileutils'
   native_dir = File.expand_path('native', File.dirname(__FILE__))
   build_dir = File.expand_path('build', native_dir)
   if !Dir.exist?(build_dir)
@@ -21,7 +21,7 @@ task :compile do
   end
 end
 
-desc "Move the compiled lib into bin"
+desc 'Move the compiled lib into bin'
 task :bin => :compile do
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
@@ -32,65 +32,72 @@ task :bin => :compile do
   FileUtils.cp(src_name, dest_name, verbose: true)
 end
 
-desc "Build the aws-crt gem for supported platforms"
-task :build => :clean do
-  require "rubygems/package"
-  require "fileutils"
+task 'bin:all' do
+  # TODO: generate or copy/download ect binaries for all platforms
+end
 
-  # Maps platform to crt binary name.
-  PLATFORM_BINARIES = {
-    "universal-darwin" => %w[universal-darwin],
-    # "x86-linux"        => %w[x86-linux],
-    # "x86_64-linux"     => %w[x86_64-linux],
-    # "arm-linux"        => %w[armv6-linux armv6hf-linux],
-    # "x86-mingw32"      => %w[x86-windows.dll],
-  }.freeze
-
-  # Maps platform to the built binary
-  binaries =
-    {
-      "universal-darwin" => "native/build/libaws-crt.dylib",
-      # TODO: Other platform bins.... need download or other build option?
-    }
+desc 'Build the aws-crt gem for the local platform'
+task 'gem:local' => [:clean, :bin] do
+  require 'rubygems/package'
+  require 'fileutils'
+  require_relative 'lib/aws-crt/platforms'
+  platform = local_platform
+  binary_name = PLATFORM_BINARIES[platform]
 
   root = File.dirname(__FILE__)
-  bins = File.join(root, "bin/")
-  pkgs = File.join(root, "pkg/")
+  pkgs = File.join(root, 'pkg/')
   FileUtils.mkdir_p(pkgs, verbose: true)
 
-  platforms = PLATFORM_BINARIES.dup
-  platforms[Gem::Platform::RUBY] = [] # fallback platform
-  platforms["universal-java"] = platforms.values.flatten.uniq
+  # Load our gem specification.
+  orig_spec = Gem::Specification.load('aws-crt.gemspec')
+  spec = orig_spec.dup
+  spec.platform = platform
+  spec.files << "bin/#{platform}/#{binary_name}"
+
+  # Build and move the gem to the pkg/ directory.
+  gemname = Gem::Package.build(spec)
+  File.join(pkgs, File.basename(gemname)).tap do |gempath|
+    FileUtils.mv(gemname, gempath, verbose: true)
+  end
+end
+
+desc 'Build the aws-crt gem for pure-ruby'
+task 'gem:pure-ruby' => :clean do
+  require 'rubygems/package'
+  require 'fileutils'
+
+  # TODO: add extconf.rb w/ hooks for local compile
+  # Add native to files
+end
+
+desc 'Build the aws-crt gem for jruby, bundling all currently built platforms'
+task 'gem:jruby' => 'bin:all' do
+  require 'rubygems/package'
+  require 'fileutils'
+
+  platform = 'universal-java'
+  
+  root = File.dirname(__FILE__)
+  pkgs = File.join(root, 'pkg')
+  bins = File.join(root, 'bin')
+  FileUtils.mkdir_p(pkgs, verbose: true)
+
+  bin_platforms = Dir.chdir(bins) do
+    Dir.glob('*').select { |f| File.directory? f }
+  end
+
+  puts "Generating JRuby package with bin support for: #{bin_platforms}"
 
   # Load our gem specification.
-  orig_spec = Gem::Specification.load("aws-crt.gemspec")
-  gempaths = platforms.each_pair.map do |platform, source_binaries|
-    spec = orig_spec.dup
-    puts "[#{platform}]"
-    spec.platform = platform
+  orig_spec = Gem::Specification.load('aws-crt.gemspec')
+  spec = orig_spec.dup
+  spec.platform = platform
+  spec.files += Dir['bin/**/*'].reject { |f| File.directory? f }
 
-    if source_binaries.empty?
-      puts "\tPure ruby build."
-      spec.post_install_message = <<-MSG.gsub(/ {2,}/, " ")
-        Binary aws-crt gem could not be installed. You will need to install aws-crt separately.
-        If you are on ARM (e.g. Raspberry PI), you might want to install the gem with explicit --platform:
-        $> gem install aws-crt --platform arm-linux
-      MSG
-    else
-      source_binaries.each do |binary|
-        src_name = binaries.fetch(binary)
-        dest_name = "bin/#{binary}/#{File.basename(src_name)}"
-        FileUtils.mkdir_p("bin/#{binary}")
-        FileUtils.cp(src_name, dest_name, verbose: true)
-        spec.files << dest_name
-      end
-    end
-
-    # Build and move the gem to the pkg/ directory.
-    gemname = Gem::Package.build(spec)
-    File.join(pkgs, File.basename(gemname)).tap do |gempath|
-      FileUtils.mv(gemname, gempath, verbose: true)
-    end
+  # Build and move the gem to the pkg/ directory.
+  gemname = Gem::Package.build(spec)
+  File.join(pkgs, File.basename(gemname)).tap do |gempath|
+    FileUtils.mv(gemname, gempath, verbose: true)
   end
 end
 

@@ -3,8 +3,7 @@ language: ruby
 before_install:
   - gem install bundler -v '< 2'
 
-dist: xenial
-group: edge
+os: osx
 
 rvm:
   - 2.6
