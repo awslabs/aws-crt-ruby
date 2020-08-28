@@ -1,13 +1,11 @@
 require 'ffi'
 require_relative 'aws-crt/platforms'
 
-CRT_BIN_PATH = crt_bin_path(local_platform)
-
 module Aws
   module Crt
     extend FFI::Library
 
-    ffi_lib [COMMON_BIN_PATH, 'libaws-crt']
+    ffi_lib [crt_bin_path(local_platform), 'libaws-crt']
 
     # Core API
     attach_function :aws_crt_init, [], :void
