@@ -55,3 +55,4 @@ aws_use_package(aws-c-http)
 aws_use_package(aws-c-auth)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEP_AWS_LIBS})
+aws_set_common_properties(${PROJECT_NAME})
