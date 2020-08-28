@@ -3,10 +3,9 @@
     "packages": [
         "ruby"
     ],
-    "build_dir": "aws-crt",
     "build_steps": [
-        "gem install bundler",
-        "bundle install",
-        "bundle exec rake spec"
+        "cd aws-crt && gem install bundler",
+        "cd aws-crt && bundle install",
+        "cd aws-crt && bundle exec rake spec"
     ]
 }
