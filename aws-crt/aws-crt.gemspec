@@ -11,4 +11,5 @@ Gem::Specification.new do |spec|
   spec.files += Dir['lib/**/*.rb']
   spec.platform = Gem::Platform::RUBY
   spec.add_dependency 'ffi'
+  spec.add_development_dependency "rspec"
 end
