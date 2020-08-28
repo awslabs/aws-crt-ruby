@@ -64,8 +64,24 @@ task 'gem:pure-ruby' => :clean do
   require 'rubygems/package'
   require 'fileutils'
 
-  # TODO: add extconf.rb w/ hooks for local compile
-  # Add native to files
+  platform = Gem::Platform::RUBY
+
+  root = File.dirname(__FILE__)
+  pkgs = File.join(root, 'pkg')
+  FileUtils.mkdir_p(pkgs, verbose: true)
+
+  # Load our gem specification.
+  orig_spec = Gem::Specification.load('aws-crt.gemspec')
+  spec = orig_spec.dup
+  spec.platform = platform
+  spec.files += Dir['native/**/*']
+  spec.extensions = FileList['ext/extconf.rb']
+
+  # Build and move the gem to the pkg/ directory.
+  gemname = Gem::Package.build(spec)
+  File.join(pkgs, File.basename(gemname)).tap do |gempath|
+    FileUtils.mv(gemname, gempath, verbose: true)
+  end
 end
 
 desc 'Build the aws-crt gem for jruby, bundling all currently built platforms'
