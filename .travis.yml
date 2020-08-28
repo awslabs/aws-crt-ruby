@@ -12,10 +12,6 @@ rvm:
 
 sudo: false
 
-env:
-  - PURE_RUBY=1
-  - KITCHEN_SINK=1
-
 script: >
   (cd aws-crt) &&
   (bundle exec rake spec)
