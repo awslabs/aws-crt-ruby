@@ -6,11 +6,6 @@
  */
 
 #include <aws/common/common.h>
-#include <aws/io/io.h>
-#include <aws/compression/compression.h>
-#include <aws/http/http.h>
-#include <aws/cal/cal.h>
-#include <aws/auth/auth.h>
 
 /* AWS_CRT_API marks a function as public */
 #if defined(_WIN32)

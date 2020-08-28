@@ -10,9 +10,7 @@ task :compile do
   require 'fileutils'
   native_dir = File.expand_path('native', File.dirname(__FILE__))
   build_dir = File.expand_path('build', native_dir)
-  if !Dir.exist?(build_dir)
-    Dir.mkdir(build_dir)
-  end
+  FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
     if !File.exist?('CMakeCache.txt')
       sh "cmake #{native_dir}"

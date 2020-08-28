@@ -1,0 +1,12 @@
+{
+    "name": "aws-crt-ruby",
+    "packages": [
+        "ruby"
+    ],
+    "build_dir": "aws-crt",
+    "build_steps": [
+        "gem install bundler",
+        "bundle install",
+        "bundle exec rake spec"
+    ]
+}
