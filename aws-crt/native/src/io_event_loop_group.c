@@ -10,7 +10,7 @@ struct aws_crt_event_loop_group {
     struct aws_event_loop_group native;
 };
 
-struct aws_crt_event_loop_group *aws_crt_event_loop_group_new(int max_threads) {
+struct aws_crt_event_loop_group *aws_crt_event_loop_group_new(uint16_t max_threads) {
     struct aws_crt_event_loop_group *crt_elg =
         aws_mem_calloc(aws_crt_allocator(), 1, sizeof(struct aws_crt_event_loop_group));
     if (!crt_elg) {

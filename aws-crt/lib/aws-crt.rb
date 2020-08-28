@@ -6,21 +6,22 @@ CRT_BIN_PATH = crt_bin_path(local_platform)
 module Aws
   module Crt
     extend FFI::Library
-    ffi_lib [CRT_BIN_PATH, 'libaws-crt']
-    attach_function :aws_crt_event_loop_group_new, [:int], :pointer
-    attach_function :aws_crt_event_loop_group_destroy, [:pointer], :void
 
+    ffi_lib [COMMON_BIN_PATH, 'libaws-crt']
+
+    # Core API
     attach_function :aws_crt_init, [], :void
-
-    # TODO: test function for testing errors
-    attach_function :aws_crt_test_error, [], :int
-    attach_function :aws_crt_test_pointer_error, [], :pointer
-
     attach_function :aws_last_error, [], :int
     attach_function :aws_error_str, [:int], :string
     attach_function :aws_error_name, [:int], :string
     attach_function :aws_error_lib_name, [:int], :string
     attach_function :aws_error_debug_str, [:int], :string
+    # IO API
+    attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
+    attach_function :aws_crt_event_loop_group_destroy, [:pointer], :void
+    # Internal testing API
+    attach_function :aws_crt_test_error, [], :int
+    attach_function :aws_crt_test_pointer_error, [], :pointer
 
     # Ensure aws_crt_init is called on library load
     aws_crt_init
@@ -29,7 +30,7 @@ module Aws
       res = yield
       return unless res
       Errors.raise_last_error if res.is_a?(Integer) && res != 0
-      Errors.raise_last_error if res == FFI::Pointer.new(0)
+      Errors.raise_last_error if res == FFI::Pointer::NULL
       res
     end
 

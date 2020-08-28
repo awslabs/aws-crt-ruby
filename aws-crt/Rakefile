@@ -103,3 +103,4 @@ end
 
 RSpec::Core::RakeTask.new(:spec)
 task :spec => :bin
+
