@@ -64,18 +64,18 @@ module Aws
       res = yield
       return unless res
       Errors.raise_last_error if res.is_a?(Integer) && res != 0
-      Errors.raise_last_error if res == FFI::Pointer.new(-1)
+      Errors.raise_last_error if res == FFI::Pointer.new(0)
       res
+    end
+
+    # Base class for CRT Errors
+    class Error < StandardError
     end
 
     module Errors
 
       @const_set_mutex = Mutex.new
 
-      # Base class for CRT Internal Errors
-      class InternalError < StandardError
-      end
-    
       def self.raise_last_error
         error_code = Aws::Crt::aws_last_error
         error_name = Aws::Crt::aws_error_name(error_code)
@@ -110,7 +110,7 @@ module Aws
           if error_const_set?(constant)
             const_get(constant)
           else
-            error_class = Class.new(InternalError)
+            error_class = Class.new(Aws::Crt::Error)
             const_set(constant, error_class)
           end
         end
