@@ -1,0 +1,17 @@
+{
+    "name": "aws-crt-ruby",
+    "packages": [
+        "ruby"
+    ],
+    "build_steps": [
+        "gem install bundler",
+        "cd aws-crt && bundle install",
+        "cd aws-crt && bundle exec rake spec"
+    ],
+    "hosts": {
+        "macos": {
+            "_comment": "ruby already installed",
+            "!packages": []
+        }
+    }
+}

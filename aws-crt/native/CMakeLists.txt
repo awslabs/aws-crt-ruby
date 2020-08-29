@@ -26,7 +26,11 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/aws-common-runtime/aws-
 include(AwsFindPackage)
 
 set(IN_SOURCE_BUILD ON)
-set(BUILD_TESTING OFF)
+
+# Don't compile tests in subdirectories.
+# Turn off using `option` instead of `set`, or CTest will declare
+# it as an option later and override the existing variable.
+option(BUILD_TESTING OFF)
 
 add_subdirectory(aws-common-runtime/aws-c-common)
 
