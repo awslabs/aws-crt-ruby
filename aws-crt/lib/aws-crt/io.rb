@@ -9,6 +9,7 @@ module Aws::Crt
           raise ArgumentError, 'max_threads must be nil or positive Integer'
         end
 
+        # Ruby uses nil to request default values, native code uses 0
         max_threads = 0 if max_threads.nil?
 
         @native = Aws::Crt.call { Aws::Crt::Native.event_loop_group_new(max_threads) }
