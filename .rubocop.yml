@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 1.9
+  Exclude:
+    - 'aws-crt/native/aws-common-runtime/**/*.rb'
 
 Metrics/LineLength:
   Max: 80

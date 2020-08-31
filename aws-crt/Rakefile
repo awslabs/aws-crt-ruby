@@ -1,5 +1,6 @@
 require 'rake/clean'
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 
 CLEAN.include 'tmp'
 CLEAN.include 'pkg'
@@ -115,3 +116,8 @@ end
 
 RSpec::Core::RakeTask.new(:spec)
 task spec: :bin
+
+RuboCop::RakeTask.new(:rubocop) do |t|
+  config_file = File.join(File.dirname(__FILE__), '..', '.rubocop.yml')
+  t.options = ['-E', '-S', '-c', config_file]
+end
