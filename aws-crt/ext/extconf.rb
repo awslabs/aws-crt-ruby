@@ -11,9 +11,7 @@ require_relative '../lib/aws-crt/platforms'
 Dir.chdir('../') do
   native_dir = File.expand_path('./native')
   build_dir = File.expand_path('build', native_dir)
-  if !Dir.exist?(build_dir)
-    Dir.mkdir(build_dir)
-  end
+  Dir.mkdir(build_dir) unless Dir.exist?(build_dir)
   Dir.chdir(build_dir) do
     system "cmake #{native_dir}"
     system "cmake --build #{build_dir}"

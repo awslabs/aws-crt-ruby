@@ -12,15 +12,13 @@ task :compile do
   build_dir = File.expand_path('build', native_dir)
   FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
-    if !File.exist?('CMakeCache.txt')
-      sh "cmake #{native_dir}"
-    end
+    sh "cmake #{native_dir}" unless File.exist?('CMakeCache.txt')
     sh "cmake --build #{build_dir}"
   end
 end
 
 desc 'Move the compiled lib into bin'
-task :bin => :compile do
+task bin: :compile do
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
   binary_name = PLATFORM_BINARIES[platform]
@@ -90,7 +88,7 @@ task 'gem:jruby' => 'bin:all' do
   require 'fileutils'
 
   platform = 'universal-java'
-  
+
   root = File.dirname(__FILE__)
   pkgs = File.join(root, 'pkg')
   bins = File.join(root, 'bin')
@@ -116,5 +114,4 @@ task 'gem:jruby' => 'bin:all' do
 end
 
 RSpec::Core::RakeTask.new(:spec)
-task :spec => :bin
-
+task spec: :bin

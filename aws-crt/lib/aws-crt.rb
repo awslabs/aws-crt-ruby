@@ -37,13 +37,12 @@ module Aws
     end
 
     module Errors
-
       @const_set_mutex = Mutex.new
 
       def self.raise_last_error
-        error_code = Aws::Crt::aws_last_error
-        error_name = Aws::Crt::aws_error_name(error_code)
-        raise error_class(error_name), Aws::Crt::aws_error_debug_str(error_code)
+        error_code = Aws::Crt.aws_last_error
+        error_name = Aws::Crt.aws_error_name(error_code)
+        raise error_class(error_name), Aws::Crt.aws_error_debug_str(error_code)
       end
 
       # Get the error class for a given error_name
@@ -65,7 +64,7 @@ module Aws
       # This requires filtering non-safe characters from the constant
       # name and ensuring it begins with an uppercase letter.
       def self.error_class_constant(error_name)
-        constant = error_name.to_s.gsub(/AWS_ERROR_/, '').split('_').map{|e| e.capitalize}.join
+        constant = error_name.to_s.gsub(/AWS_ERROR_/, '').split('_').map(&:capitalize).join
       end
 
       def self.set_error_constant(constant)
