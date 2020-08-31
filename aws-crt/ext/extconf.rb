@@ -1,5 +1,7 @@
 require 'mkmf'
 
+abort 'Missing cmake' unless find_executable 'cmake'
+
 # create a dummy  makefile
 create_makefile ''
 

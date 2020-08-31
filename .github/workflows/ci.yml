@@ -15,7 +15,6 @@ env:
   RUN: ${{ github.run_id }}-${{ github.run_number }}
 
 jobs:
-
   osx:
     runs-on: macos-latest
     steps:
