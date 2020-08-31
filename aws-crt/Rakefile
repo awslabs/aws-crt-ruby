@@ -19,7 +19,7 @@ task :compile do
 end
 
 desc 'Move the compiled lib into bin'
-task bin: :compile do
+task :bin => :compile do
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
   binary_name = PLATFORM_BINARIES[platform]
@@ -115,7 +115,7 @@ task 'gem:jruby' => 'bin:all' do
 end
 
 RSpec::Core::RakeTask.new(:spec)
-task spec: :bin
+task :spec => :bin
 
 RuboCop::RakeTask.new(:rubocop) do |t|
   config_file = File.join(File.dirname(__FILE__), '..', '.rubocop.yml')
