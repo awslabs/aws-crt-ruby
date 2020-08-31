@@ -23,26 +23,26 @@ end
 
 # @return [String] host cpu, even on jruby
 def host_cpu
-  case RbConfig::CONFIG["host_cpu"]
+  case RbConfig::CONFIG['host_cpu']
   when /86_64/
-    "x86_64"
+    'x86_64'
   when /86/
-    "x86"
+    'x86'
   else
-    RbConfig::CONFIG["host_cpu"]
+    RbConfig::CONFIG['host_cpu']
   end
 end
 
 # @return [String] host os, even on jruby
 def host_os
-  case RbConfig::CONFIG["host_os"]
+  case RbConfig::CONFIG['host_os']
   when /darwin/
-    "darwin"
+    'darwin'
   when /linux/
-    "linux"
+    'linux'
   when /mingw|mswin/
-    "mingw32"
+    'mingw32'
   else
-    RbConfig::CONFIG["host_os"]
+    RbConfig::CONFIG['host_os']
   end
 end

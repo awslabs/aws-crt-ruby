@@ -1,5 +1,6 @@
 require 'rake/clean'
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 
 CLEAN.include 'tmp'
 CLEAN.include 'pkg'
@@ -12,9 +13,7 @@ task :compile do
   build_dir = File.expand_path('build', native_dir)
   FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
-    if !File.exist?('CMakeCache.txt')
-      sh "cmake #{native_dir}"
-    end
+    sh "cmake #{native_dir}" unless File.exist?('CMakeCache.txt')
     sh "cmake --build #{build_dir}"
   end
 end
@@ -90,7 +89,7 @@ task 'gem:jruby' => 'bin:all' do
   require 'fileutils'
 
   platform = 'universal-java'
-  
+
   root = File.dirname(__FILE__)
   pkgs = File.join(root, 'pkg')
   bins = File.join(root, 'bin')
@@ -118,3 +117,7 @@ end
 RSpec::Core::RakeTask.new(:spec)
 task :spec => :bin
 
+RuboCop::RakeTask.new(:rubocop) do |t|
+  config_file = File.join(File.dirname(__FILE__), '..', '.rubocop.yml')
+  t.options = ['-E', '-S', '-c', config_file]
+end
