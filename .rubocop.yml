@@ -1,0 +1,11 @@
+AllCops:
+  TargetRubyVersion: 1.9
+  Exclude:
+    - 'aws-crt/native/aws-common-runtime/**/*.rb'
+
+Style/HashSyntax:
+  Exclude:
+    - 'aws-crt/Rakefile'
+
+Metrics/LineLength:
+  Max: 80
