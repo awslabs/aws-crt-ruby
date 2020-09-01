@@ -6,7 +6,7 @@ Style/HashSyntax:
   Exclude:
     - 'aws-crt/Rakefile'
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 80
   Exclude:
     - 'aws-crt/lib/aws-crt/native.rb'
