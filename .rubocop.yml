@@ -9,3 +9,9 @@ Style/HashSyntax:
 
 Metrics/LineLength:
   Max: 80
+  Exclude:
+    - 'aws-crt/lib/aws-crt/native.rb'
+
+Naming/FileName:
+  Exclude:
+    - 'aws-crt/lib/aws-crt.rb'
