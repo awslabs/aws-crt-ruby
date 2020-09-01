@@ -1,7 +1,7 @@
 {
     "name": "aws-crt-ruby",
     "packages": [
-        "ruby"
+        "rvm"
     ],
     "targets": {
         "linux": {
@@ -17,6 +17,7 @@
         }
     },
     "build_steps": [
+        "rvm install 2.6.5",
         "gem install bundler",
         "cd aws-crt && bundle install",
         "cd aws-crt && bundle exec rake spec"
