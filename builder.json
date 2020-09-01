@@ -3,6 +3,19 @@
     "packages": [
         "ruby"
     ],
+    "targets": {
+        "linux": {
+            "variables": {
+                "openssl_include": "/opt/openssl/include",
+                "openssl_lib": "/opt/openssl/lib"
+            }
+        },
+        "manylinux": {
+            "!build_steps": [
+                "manylinux-ci"
+            ]
+        }
+    },
     "build_steps": [
         "gem install bundler",
         "cd aws-crt && bundle install",
