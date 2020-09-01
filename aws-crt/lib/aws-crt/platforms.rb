@@ -1,7 +1,8 @@
 # Maps platform to crt binary name.  Needs to match what is used in the Rakefile for builds
 PLATFORM_BINARIES = {
   'universal-darwin' => 'libaws-crt.dylib',
-  'x86_64-linux' => 'libaws-crt.so'
+  'x86_64-linux' => 'libaws-crt.so',
+  'universal-mingw32' => 'aws-crt.dll'
 }.freeze
 
 # @return [String] returns Gem::Platform style name for the current system

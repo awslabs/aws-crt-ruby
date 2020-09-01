@@ -22,6 +22,9 @@ desc 'Move the compiled lib into bin'
 task :bin => :compile do
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
+  puts "Local platform: #{platform}"
+  files = `ls native/build/`
+  puts "output files: #{files}"
   binary_name = PLATFORM_BINARIES[platform]
   src_name = "native/build/#{binary_name}"
   dest_name = "bin/#{platform}/#{binary_name}"
