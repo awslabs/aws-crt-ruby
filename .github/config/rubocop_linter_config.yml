@@ -1,7 +1,4 @@
 
-versions:
-  - rubocop: '0.50.0' # latest version that supports 1.9
-
 # Description: Rubocop configuration file path relative to the workspace.
 rubocop_config_path: '.rubocop.yml'
 
