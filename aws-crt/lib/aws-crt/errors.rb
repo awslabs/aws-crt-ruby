@@ -6,14 +6,32 @@ module Aws::Crt
   module Errors
     @const_set_mutex = Mutex.new
 
+    AWS_TO_RUBY_ERROR_MAP = {
+      'AWS_ERROR_INVALID_INDEX' => IndexError,
+      'AWS_ERROR_OOM' => NoMemoryError,
+      'AWS_ERROR_UNIMPLEMENTED' => NotImplementedError,
+      'AWS_ERROR_INVALID_ARGUMENT' => ArgumentError,
+      'AWS_ERROR_SYS_CALL_FAILURE' => SystemCallError,
+      'AWS_ERROR_DIVIDE_BY_ZERO' => ZeroDivisionError,
+      'AWS_ERROR_HASHTBL_ITEM_NOT_FOUND' => KeyError
+    }.freeze
+
     def self.raise_last_error
       error_code = Aws::Crt::Native.last_error
-      error_name = Aws::Crt::Native.error_name(error_code)
-      raise error_class(error_name), Aws::Crt::Native.error_debug_str(error_code)
+      unless error_code.zero?
+        error_name = Aws::Crt::Native.error_name(error_code)
+        msg = Aws::Crt::Native.error_debug_str(error_code)
+        Aws::Crt::Native.reset_error
+        raise error_class(error_name), msg
+      end
     end
 
     # Get the error class for a given error_name
     def self.error_class(error_name)
+      if AWS_TO_RUBY_ERROR_MAP.include? error_name
+        return AWS_TO_RUBY_ERROR_MAP[error_name]
+      end
+
       constant = error_class_constant(error_name)
       if error_const_set?(constant)
         # modeled error class exist
