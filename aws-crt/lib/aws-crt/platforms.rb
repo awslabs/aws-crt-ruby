@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Maps platform to crt binary name.  Needs to match what is used in the Rakefile for builds
+# Maps platform to crt binary name.  Needs to match what is used in the
+# Rakefile for builds
 PLATFORM_BINARIES = {
   'universal-darwin' => 'libaws-crt.dylib',
   'x86_64-linux' => 'libaws-crt.so'

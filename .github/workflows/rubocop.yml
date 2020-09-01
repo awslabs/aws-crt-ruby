@@ -19,5 +19,6 @@ jobs:
           gem install bundler
           bundle install
 
-      - run: bundle exec rubocop
+      - name: Rubocop
+        run: bundle exec rubocop
 
