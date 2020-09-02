@@ -17,7 +17,6 @@
         }
     },
     "build_steps": [
-        "curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash",
         "gem install bundler",
         "cd aws-crt && bundle install",
         "cd aws-crt && bundle exec rake spec"
