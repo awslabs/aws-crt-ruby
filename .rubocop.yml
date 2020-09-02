@@ -12,6 +12,12 @@ Metrics/LineLength:
   Exclude:
     - 'aws-crt/lib/aws-crt/native.rb'
 
+Metrics/BlockLength:
+  Exclude:
+    - 'aws-crt/Rakefile'
+    - '**/*.rake'
+    - 'aws-crt/spec/**/*.rb'
+
 Naming/FileName:
   Exclude:
     - 'aws-crt/lib/aws-crt.rb'
