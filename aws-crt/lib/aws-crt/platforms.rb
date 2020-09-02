@@ -1,4 +1,7 @@
-# Maps platform to crt binary name.  Needs to match what is used in the Rakefile for builds
+# frozen_string_literal: true
+
+# Maps platform to crt binary name.  Needs to match what is used in the
+# Rakefile for builds
 PLATFORM_BINARIES = {
   'universal-darwin' => 'libaws-crt.dylib',
   'x86_64-linux' => 'libaws-crt.so',
@@ -13,12 +16,20 @@ PLATFORM_BUILD_PATHS = {
 # similar to Gem::Platform.local but will return systems host os/cpu
 # for Jruby
 def local_platform
-  PLATFORM_BINARIES.keys.find { |p| Gem::Platform.new(p) === Gem::Platform.new(host_string) }
+  # === is required to compare platforms correctly
+  # rubocop:disable Style/CaseEquality
+  PLATFORM_BINARIES.keys.find do |p|
+    Gem::Platform.new(p) === Gem::Platform.new(host_string)
+  end
+  # rubocop:enable Style/CaseEquality
 end
 
 # @return [String] return the path to the CRT library for the platform
 def crt_bin_path(platform)
-  File.expand_path("../../bin/#{platform}/#{PLATFORM_BINARIES[platform]}", File.dirname(__FILE__))
+  File.expand_path(
+    "../../bin/#{platform}/#{PLATFORM_BINARIES[platform]}",
+    File.dirname(__FILE__)
+  )
 end
 
 # @return [String] generate a string that be used with Gem::Platform
