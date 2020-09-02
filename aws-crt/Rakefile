@@ -23,7 +23,7 @@ task :bin => :compile do
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
   puts "Local platform: #{platform}"
-  files = `ls native/build/x64`
+  files = `ls native/build/x64/Debug`
   puts "output files: #{files}"
   binary_name = crt_bin_name(platform)
   src_name = PLATFORM_BUILD_PATHS[platform] || "native/build/#{binary_name}"
