@@ -7,11 +7,11 @@ OS_BINARIES = {
   'mingw32' => 'aws-crt.dll'
 }.freeze
 
-DEFAULT_BINARY = 'libaws-crt.so'
+DEFAULT_BINARY = 'libaws-crt.so'.freeze
 
 PLATFORM_BUILD_PATHS = {
   'x86_64-mingw32' => 'native/build/x64/aws-crt.dll'
-}
+}.freeze
 
 # @return [String] returns Gem::Platform style name for the current system
 # similar to Gem::Platform.local but will return systems host os/cpu
