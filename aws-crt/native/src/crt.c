@@ -23,8 +23,8 @@ void aws_crt_init(void) {
     aws_auth_library_init(allocator);
 }
 
-int aws_crt_test_error(void) {
-    return aws_raise_error(AWS_ERROR_INVALID_STATE);
+int aws_crt_test_error(int err) {
+    return aws_raise_error(err);
 }
 
 struct aws_crt_test_struct *aws_crt_test_pointer_error(void) {
