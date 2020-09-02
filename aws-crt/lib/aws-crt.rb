@@ -5,9 +5,9 @@ require_relative 'aws-crt/native'
 require_relative 'aws-crt/errors'
 require_relative 'aws-crt/io'
 
-# Top level Aws namespace
+# Top level Amazon Web Services (AWS) namespace
 module Aws
-  # Top level namespace for all CRT functionality
+  # Top level namespace for all common runtime (CRT) functionality
   module Crt
     # Ensure native init() is called when gem loads
     Aws::Crt::Native.init
