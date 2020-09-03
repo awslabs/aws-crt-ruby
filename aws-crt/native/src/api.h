@@ -27,7 +27,7 @@ AWS_EXTERN_C_BEGIN
 
 /* CRT */
 AWS_CRT_API void aws_crt_init(void);
-AWS_CRT_API int aws_crt_test_error(void);
+AWS_CRT_API int aws_crt_test_error(int);
 AWS_CRT_API struct aws_crt_test_struct *aws_crt_test_pointer_error(void);
 
 /* IO */
