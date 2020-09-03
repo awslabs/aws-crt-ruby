@@ -1,3 +1,7 @@
+# extconf.rb is used as an install hook for pure ruby gems ONLY
+# Create a blank makefile (Required)
+# and then use cmake to build the CRT library and copy it to the
+# expected location in the gem's bin directory
 require 'mkmf'
 
 abort 'Missing cmake' unless find_executable 'cmake'
