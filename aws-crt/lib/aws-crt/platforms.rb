@@ -25,6 +25,12 @@ def crt_bin_name(platform)
   OS_BINARIES[platform.os] || DEFAULT_BINARY
 end
 
+# @return [String] return the path to the output binary from building
+def crt_build_out_path(platform)
+  PLATFORM_BUILD_PATHS[platform.to_s] ||
+    "native/build/#{crt_bin_name(platform)}"
+end
+
 # @return [String] return the path to the CRT library for the platform
 def crt_bin_path(platform)
   File.expand_path(

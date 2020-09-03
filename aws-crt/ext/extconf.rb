@@ -19,7 +19,7 @@ Dir.chdir('../') do
 
   platform = local_platform
   binary_name = crt_bin_name(platform)
-  src_name = PLATFORM_BUILD_PATHS[platform] || "native/build/#{binary_name}"
+  src_name = crt_build_out_path(platform)
   dest_name = "bin/#{platform.cpu}/#{binary_name}"
   FileUtils.mkdir_p("bin/#{platform.cpu}")
   FileUtils.cp(src_name, dest_name, verbose: true)
