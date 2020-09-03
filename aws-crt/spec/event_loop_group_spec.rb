@@ -10,7 +10,7 @@ describe Aws::Crt::IO::EventLoopGroup do
     expect(weakref.weakref_alive?).to be_truthy
 
     # destroy
-    elg = nil
+    elg = nil # rubocop:disable Lint/UselessAssignment
     ObjectSpace.garbage_collect
     expect(weakref.weakref_alive?).to be_falsey
 
