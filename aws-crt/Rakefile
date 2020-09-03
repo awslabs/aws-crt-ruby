@@ -22,10 +22,12 @@ desc 'Move the compiled lib into bin'
 task :bin => :compile do
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
-  binary_name = PLATFORM_BINARIES[platform]
-  src_name = "native/build/#{binary_name}"
-  dest_name = "bin/#{platform}/#{binary_name}"
-  FileUtils.mkdir_p("bin/#{platform}")
+  puts "Local platform: #{platform}"
+
+  binary_name = crt_bin_name(platform)
+  src_name = crt_build_out_path(platform)
+  dest_name = "bin/#{platform.cpu}/#{binary_name}"
+  FileUtils.mkdir_p("bin/#{platform.cpu}")
   FileUtils.cp(src_name, dest_name, verbose: true)
 end
 
@@ -34,12 +36,12 @@ task 'bin:all' do
 end
 
 desc 'Build the aws-crt gem for the local platform'
-task 'gem:local' => [:clean, :bin] do
+task 'gem:local' => [:bin] do
   require 'rubygems/package'
   require 'fileutils'
   require_relative 'lib/aws-crt/platforms'
   platform = local_platform
-  binary_name = PLATFORM_BINARIES[platform]
+  binary_name = crt_bin_name(platform)
 
   root = File.dirname(__FILE__)
   pkgs = File.join(root, 'pkg/')
@@ -49,7 +51,7 @@ task 'gem:local' => [:clean, :bin] do
   orig_spec = Gem::Specification.load('aws-crt.gemspec')
   spec = orig_spec.dup
   spec.platform = platform
-  spec.files << "bin/#{platform}/#{binary_name}"
+  spec.files << "bin/#{platform.cpu}/#{binary_name}"
 
   # Build and move the gem to the pkg/ directory.
   gemname = Gem::Package.build(spec)
@@ -96,7 +98,7 @@ task 'gem:jruby' => 'bin:all' do
   FileUtils.mkdir_p(pkgs, verbose: true)
 
   bin_platforms = Dir.chdir(bins) do
-    Dir.glob('*').select { |f| File.directory? f }
+    Dir.glob('*/*').reject { |f| File.directory? f }
   end
 
   puts "Generating JRuby package with bin support for: #{bin_platforms}"

@@ -1,3 +1,7 @@
+# extconf.rb is used as an install hook for pure ruby gems ONLY
+# Create a blank makefile (Required)
+# and then use cmake to build the CRT library and copy it to the
+# expected location in the gem's bin directory
 require 'mkmf'
 
 abort 'Missing cmake' unless find_executable 'cmake'
@@ -18,9 +22,9 @@ Dir.chdir('../') do
   end
 
   platform = local_platform
-  binary_name = PLATFORM_BINARIES[platform]
-  src_name = "native/build/#{binary_name}"
-  dest_name = "bin/#{platform}/#{binary_name}"
-  FileUtils.mkdir_p("bin/#{platform}")
+  binary_name = crt_bin_name(platform)
+  src_name = crt_build_out_path(platform)
+  dest_name = "bin/#{platform.cpu}/#{binary_name}"
+  FileUtils.mkdir_p("bin/#{platform.cpu}")
   FileUtils.cp(src_name, dest_name, verbose: true)
 end
