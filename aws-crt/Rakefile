@@ -13,7 +13,7 @@ task :compile do
   build_dir = File.expand_path('build', native_dir)
   FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
-    sh "cmake #{native_dir}" unless File.exist?('CMakeCache.txt')
+    sh "cmake #{native_dir}"
     sh "cmake --build #{build_dir}"
   end
 end

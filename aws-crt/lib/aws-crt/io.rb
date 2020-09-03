@@ -21,11 +21,17 @@ module Aws
           @native = Aws::Crt.call do
             Aws::Crt::Native.event_loop_group_new(max_threads)
           end
+
+          ObjectSpace.define_finalizer(self, self.class.finalize(@native))
         end
 
-        # this function is going away in the near future, just ignore it
-        def destroy
-          Aws::Crt::Native.event_loop_group_destroy(@native)
+        # Release native object.
+        # Note that the native object has its own refcount, and will remain
+        # alive until all other native resources are done using it.
+        def self.finalize(native)
+          proc do
+            Aws::Crt::Native.event_loop_group_release(native)
+          end
         end
       end
     end

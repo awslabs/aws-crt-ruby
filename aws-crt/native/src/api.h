@@ -32,7 +32,7 @@ AWS_CRT_API struct aws_crt_test_struct *aws_crt_test_pointer_error(void);
 
 /* IO */
 AWS_CRT_API struct aws_crt_event_loop_group *aws_crt_event_loop_group_new(uint16_t max_threads);
-AWS_CRT_API void aws_crt_event_loop_group_destroy(struct aws_crt_event_loop_group *crt_elg);
+AWS_CRT_API void aws_crt_event_loop_group_release(struct aws_crt_event_loop_group *elg);
 
 AWS_EXTERN_C_END
 
