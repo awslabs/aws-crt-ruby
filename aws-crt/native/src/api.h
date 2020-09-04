@@ -38,6 +38,13 @@ AWS_CRT_API const char *aws_crt_error_name(int);
 AWS_CRT_API const char *aws_crt_error_debug_str(int);
 AWS_CRT_API void aws_crt_reset_error(void);
 
+/* Errors */
+AWS_CRT_API int aws_crt_last_error(void);
+AWS_CRT_API const char *aws_crt_error_str(int);
+AWS_CRT_API const char *aws_crt_error_name(int);
+AWS_CRT_API const char *aws_crt_error_debug_str(int);
+AWS_CRT_API void aws_crt_reset_error(void);
+
 /* IO */
 AWS_CRT_API struct aws_event_loop_group *aws_crt_event_loop_group_new(uint16_t max_threads);
 AWS_CRT_API void aws_crt_event_loop_group_release(struct aws_event_loop_group *elg);
