@@ -19,7 +19,7 @@
 #endif
 
 /* Forward declarations */
-struct aws_crt_event_loop_group;
+struct aws_event_loop_group;
 struct aws_crt_test_struct;
 
 /* Public function definitions */
@@ -31,8 +31,8 @@ AWS_CRT_API int aws_crt_test_error(int);
 AWS_CRT_API struct aws_crt_test_struct *aws_crt_test_pointer_error(void);
 
 /* IO */
-AWS_CRT_API struct aws_crt_event_loop_group *aws_crt_event_loop_group_new(uint16_t max_threads);
-AWS_CRT_API void aws_crt_event_loop_group_release(struct aws_crt_event_loop_group *elg);
+AWS_CRT_API struct aws_event_loop_group *aws_crt_event_loop_group_new(uint16_t max_threads);
+AWS_CRT_API void aws_crt_event_loop_group_release(struct aws_event_loop_group *elg);
 
 AWS_EXTERN_C_END
 
