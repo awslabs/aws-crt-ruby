@@ -7,7 +7,7 @@ describe Aws::Crt::IO::EventLoopGroup do
     elg = Aws::Crt::IO::EventLoopGroup.new
     expect(elg).to_not be_nil
     weakref = WeakRef.new(elg)
-    expect(weakref.weakref_alive?).to be_truthy
+    expect(weakref.weakref_alive?).to be true
 
     # destroy
     elg = nil # rubocop:disable Lint/UselessAssignment
