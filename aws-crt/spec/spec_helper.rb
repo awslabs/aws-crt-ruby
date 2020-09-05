@@ -1,6 +1,12 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'aws-crt'
 
+# Return whether ObjectSpace.garbage_collect
+# can be relied on to immediately clean up everything possible
+def garbage_collect_is_immediate?
+  RUBY_ENGINE == 'ruby'
+end
+
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 

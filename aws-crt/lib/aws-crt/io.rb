@@ -18,20 +18,25 @@ module Aws
           # Ruby uses nil to request default values, native code uses 0
           max_threads = 0 if max_threads.nil?
 
-          @native = Aws::Crt.call do
+          native = Aws::Crt.call do
             Aws::Crt::Native.event_loop_group_new(max_threads)
           end
 
-          ObjectSpace.define_finalizer(self, self.class.finalize(@native))
+          @native = FFI::AutoPointer.new(native, self.class.method(:on_release))
         end
 
-        # Release native object.
-        # Note that the native object has its own refcount, and will remain
-        # alive until all other native resources are done using it.
-        def self.finalize(native)
-          proc do
-            Aws::Crt::Native.event_loop_group_release(native)
-          end
+        # Immediately release this instance's attachment to the underlying
+        # resources, without waiting for the garbage collector.
+        # Note that underlying resources will remain alive until nothing
+        # else is using them.
+        def release
+          return unless @native
+          @native.free
+          @native = nil
+        end
+
+        def self.on_release(native)
+          Aws::Crt::Native.event_loop_group_release(native)
         end
       end
     end
