@@ -3,13 +3,10 @@ require 'weakref'
 
 describe Aws::Crt::IO::EventLoopGroup do
   it 'cleans up with release' do
-    # create
     elg = Aws::Crt::IO::EventLoopGroup.new
     expect(elg).to_not be_nil
 
-    # release
     elg.release
-
     check_for_clean_shutdown
   end
 
@@ -23,7 +20,6 @@ describe Aws::Crt::IO::EventLoopGroup do
       elg = nil # rubocop:disable Lint/UselessAssignment
       ObjectSpace.garbage_collect
       expect(weakref.weakref_alive?).to be_falsey
-
       check_for_clean_shutdown
     end
   end

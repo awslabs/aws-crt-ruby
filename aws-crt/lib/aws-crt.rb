@@ -22,7 +22,7 @@ module Aws
       Errors.raise_last_error if res.is_a?(Integer) && res != 0
 
       # for functions that return pointer, NULL indicates failure
-      Errors.raise_last_error if res == FFI::Pointer::NULL
+      Errors.raise_last_error if res.is_a?(FFI::Pointer) && res.null?
       res
     end
   end

@@ -7,10 +7,11 @@ def garbage_collect_is_immediate?
   RUBY_ENGINE == 'ruby'
 end
 
+# Wait for resources with worker threads (ex: EventLoopGroup, HostResolver)
+# to finish their async shutdowns. If this fails, there is a reference
+# somewhere keeping these resources alive.
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  # Wait for resources with worker threads (ex: EventLoopGroup and HostResolver)
-  # to finish their async shutdowns
   Aws::Crt.call { Aws::Crt::Native.global_thread_creator_shutdown_wait_for(10) }
 end
