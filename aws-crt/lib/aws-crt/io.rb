@@ -18,14 +18,25 @@ module Aws
           # Ruby uses nil to request default values, native code uses 0
           max_threads = 0 if max_threads.nil?
 
-          @native = Aws::Crt.call do
+          native = Aws::Crt.call do
             Aws::Crt::Native.event_loop_group_new(max_threads)
           end
+
+          @native = FFI::AutoPointer.new(native, self.class.method(:on_release))
         end
 
-        # this function is going away in the near future, just ignore it
-        def destroy
-          Aws::Crt::Native.event_loop_group_destroy(@native)
+        # Immediately release this instance's attachment to the underlying
+        # resources, without waiting for the garbage collector.
+        # Note that underlying resources will remain alive until nothing
+        # else is using them.
+        def release
+          return unless @native
+          @native.free
+          @native = nil
+        end
+
+        def self.on_release(native)
+          Aws::Crt::Native.event_loop_group_release(native)
         end
       end
     end

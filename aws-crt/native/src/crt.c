@@ -6,11 +6,16 @@
 
 #include <aws/auth/auth.h>
 #include <aws/cal/cal.h>
+#include <aws/common/ref_count.h>
 #include <aws/compression/compression.h>
 #include <aws/http/http.h>
 
 struct aws_allocator *aws_crt_allocator(void) {
     return aws_default_allocator();
+}
+
+int aws_crt_global_thread_creator_shutdown_wait_for(uint32_t wait_timeout_in_seconds) {
+    return aws_global_thread_creator_shutdown_wait_for(wait_timeout_in_seconds);
 }
 
 void aws_crt_init(void) {
