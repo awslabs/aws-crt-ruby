@@ -15,9 +15,18 @@ require_relative '../lib/aws-crt/platforms'
 Dir.chdir('../') do
   native_dir = File.expand_path('./native')
   build_dir = File.expand_path('build', native_dir)
-  Dir.mkdir(build_dir) unless Dir.exist?(build_dir)
+  FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
-    system "cmake #{native_dir}"
+    config_cmd = "cmake #{native_dir}"
+    libcrypto_lib = ENV['LibCrypto_LIBRARY']
+    if libcrypto_lib
+      config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_lib}\""
+    end
+    libcrypto_include = ENV['LibCrypto_INCLUDE_DIR']
+    if libcrypto_include
+      config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_include}\""
+    end
+    sh config_cmd
     system "cmake --build #{build_dir}"
   end
 

@@ -11,6 +11,12 @@
         "macos": {
             "_comment": "ruby already installed",
             "!packages": []
+        },
+        "linux": {
+            "build_env": {
+                "LibCrypto_LIBRARY": "/opt/openssl/lib",
+                "LibCrypto_INCLUDE_DIR": "/opt/openssl/include"
+            }
         }
     }
 }
