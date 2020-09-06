@@ -15,13 +15,9 @@ task :compile do
   Dir.chdir(build_dir) do
     config_cmd = "cmake #{native_dir}"
     libcrypto_lib = ENV['LibCrypto_LIBRARY']
-    if libcrypto_lib
-      config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_lib}\""
-    end
+    config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_lib}\"" if libcrypto_lib
     libcrypto_include = ENV['LibCrypto_INCLUDE_DIR']
-    if libcrypto_include
-      config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_include}\""
-    end
+    config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_include}\"" if libcrypto_include
     sh config_cmd
     sh "cmake --build #{build_dir}"
   end
