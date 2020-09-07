@@ -22,7 +22,7 @@ Dir.chdir('../') do
     config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_lib}\"" if libcrypto_lib
     libcrypto_include = ENV['LibCrypto_INCLUDE_DIR']
     if libcrypto_include
-      config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_include}\""
+      config_cmd += " -LibCrypto_INCLUDE_DIR=\"#{libcrypto_include}\""
     end
     sh config_cmd
     system "cmake --build #{build_dir}"
