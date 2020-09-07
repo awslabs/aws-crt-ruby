@@ -17,15 +17,8 @@ Dir.chdir('../') do
   build_dir = File.expand_path('build', native_dir)
   FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
-    config_cmd = "cmake #{native_dir}"
-    libcrypto_lib = ENV['LibCrypto_LIBRARY']
-    config_cmd += " -DLibCrypto_LIBRARY=\"#{libcrypto_lib}\"" if libcrypto_lib
-    libcrypto_include = ENV['LibCrypto_INCLUDE_DIR']
-    if libcrypto_include
-      config_cmd += " -DLibCrypto_INCLUDE_DIR=\"#{libcrypto_include}\""
-    end
-    sh config_cmd
-    system "cmake --build #{build_dir}"
+    sh "cmake #{native_dir}"
+    sh "cmake --build #{build_dir}"
   end
 
   platform = local_platform
