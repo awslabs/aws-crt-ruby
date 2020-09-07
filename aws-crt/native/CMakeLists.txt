@@ -35,6 +35,8 @@ option(BUILD_TESTING OFF)
 add_subdirectory(aws-common-runtime/aws-c-common)
 
 if (UNIX AND NOT APPLE)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/aws-common-runtime/s2n/cmake/modules")
+    find_package(LibCrypto REQUIRED)
     add_subdirectory(aws-common-runtime/s2n)
 endif()
 
