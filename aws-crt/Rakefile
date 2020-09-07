@@ -14,8 +14,8 @@ task :compile do
   FileUtils.mkdir_p(build_dir)
   Dir.chdir(build_dir) do
     sh "cmake #{native_dir}"
-    sh 'cmake -LA -N .'
     sh "cmake --build #{build_dir}"
+    sh 'cmake -LA -N .'
   end
 end
 
