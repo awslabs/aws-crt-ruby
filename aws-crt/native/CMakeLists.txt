@@ -43,4 +43,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${DEP_AWS_LIBS})
 
 # Install as FILES so that lib goes exactly to install path.
 # If installed as TARGETS, lib always goes under lib/ subfolder.
-install(FILES $<TARGET_FILE_NAME:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES $<TARGET_FILE:${PROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_PREFIX})
