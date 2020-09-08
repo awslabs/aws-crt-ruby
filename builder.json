@@ -15,7 +15,8 @@
         "linux": {
             "build_env": {
                 "_comment": "help s2n find libcrypto.a, compiled with -fPIC",
-                "CMAKE_PREFIX_PATH": "/opt/openssl"
+                "CMAKE_INCLUDE_PATH": "/opt/openssl/include",
+                "CMAKE_LIBRARY_PATH": "/opt/openssl/lib"
             },
             "packages": ["ruby-dev"]
         }
