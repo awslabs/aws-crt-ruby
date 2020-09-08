@@ -6,25 +6,9 @@ require 'mkmf'
 
 abort 'Missing cmake' unless find_executable 'cmake'
 
-# create a dummy  makefile
+# create a dummy makefile
 create_makefile ''
 
-# Build bin and copy to expected location
-require_relative '../lib/aws-crt/platforms'
-
-Dir.chdir('../') do
-  native_dir = File.expand_path('./native')
-  build_dir = File.expand_path('build', native_dir)
-  FileUtils.mkdir_p(build_dir)
-  Dir.chdir(build_dir) do
-    sh "cmake #{native_dir}"
-    sh "cmake --build #{build_dir}"
-  end
-
-  platform = local_platform
-  binary_name = crt_bin_name(platform)
-  src_name = crt_build_out_path(platform)
-  dest_name = "bin/#{platform.cpu}/#{binary_name}"
-  FileUtils.mkdir_p("bin/#{platform.cpu}")
-  FileUtils.cp(src_name, dest_name, verbose: true)
-end
+# Build bin to expected location
+require_relative 'compile'
+crt_compile_bin
