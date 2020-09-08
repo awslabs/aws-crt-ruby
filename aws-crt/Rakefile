@@ -7,6 +7,10 @@ CLEAN.include 'pkg'
 
 desc 'Compile CRT libraries and install to bin'
 task :bin do
+  # delete this
+  deleteme = ENV['CMAKE_PREFIX_PATH']
+  puts "ENV[CMAKE_PREFIX_PATH]: #{deleteme}"
+
   require_relative 'ext/compile'
   crt_compile_bin
 end
