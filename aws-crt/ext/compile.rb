@@ -23,6 +23,15 @@ def cmake_has_parallel_flag?
   (Const::CMAKE_VERSION <=> [3, 12]) >= 0
 end
 
+# combine path with environment variable, if necessary
+def cmake_prefix_path(path)
+  if ENV['CMAKE_PREFIX_PATH']
+    "#{path};#{ENV['CMAKE_PREFIX_PATH']}"
+  else
+    path
+  end
+end
+
 # configure and build with cmake
 def cmake_build(src_path, build_path, config_options)
   # Need to create build dir and run cmake from there.
@@ -62,7 +71,7 @@ def crt_compile_static_lib(name)
   src_path = File.expand_path("aws-common-runtime/#{name}", crt_native_path)
   build_path = File.expand_path(name, crt_tmp_path)
   config_options = [
-    "-DCMAKE_PREFIX_PATH=\"#{crt_static_lib_install_path}\"",
+    "-DCMAKE_PREFIX_PATH=\"#{cmake_prefix_path(crt_static_lib_install_path)}\"",
     "-DCMAKE_INSTALL_PREFIX=\"#{crt_static_lib_install_path}\"",
     '-DBUILD_SHARED_LIBS=OFF',
     '-DBUILD_TESTING=OFF'
@@ -91,7 +100,7 @@ def crt_compile_bin
   build_path = File.expand_path('aws-crt', crt_tmp_path)
   install_path = crt_bin_dir(local_platform)
   config_options = [
-    "-DCMAKE_PREFIX_PATH=\"#{crt_static_lib_install_path}\"",
+    "-DCMAKE_PREFIX_PATH=\"#{cmake_prefix_path(crt_static_lib_install_path)}\"",
     "-DCMAKE_INSTALL_PREFIX=\"#{install_path}\""
   ]
   cmake_build(src_path, build_path, config_options)
