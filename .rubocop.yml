@@ -1,5 +1,6 @@
 AllCops:
-  TargetRubyVersion: 1.9
+  TargetRubyVersion: 2.4
+  NewCops: enable
   Exclude:
     - 'gems/aws-crt/native/aws-common-runtime/**/*.rb'
 
@@ -7,10 +8,11 @@ Style/HashSyntax:
   Exclude:
     - 'gems/aws-crt/Rakefile'
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 80
   Exclude:
     - 'gems/aws-crt/lib/aws-crt/native.rb'
+    - '**/*.gemspec'
 
 Metrics/BlockLength:
   Exclude:
@@ -21,3 +23,4 @@ Metrics/BlockLength:
 Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'
+    - 'gems/aws-crt-auth/lib/aws-crt-auth.rb'

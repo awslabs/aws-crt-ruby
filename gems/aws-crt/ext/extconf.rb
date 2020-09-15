@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # extconf.rb is used as an install hook for pure ruby gems ONLY
 # Create a blank makefile (Required)
 # and then use cmake to build the CRT library and copy it to the

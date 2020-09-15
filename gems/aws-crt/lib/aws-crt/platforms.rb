@@ -7,7 +7,7 @@ OS_BINARIES = {
   'mingw32' => 'aws-crt.dll'
 }.freeze
 
-DEFAULT_BINARY = 'libaws-crt.so'.freeze
+DEFAULT_BINARY = 'libaws-crt.so'
 
 PLATFORM_BUILD_PATHS = {
   'x86_64-mingw32' => 'native/build/Debug/aws-crt.dll'
