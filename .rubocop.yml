@@ -10,7 +10,7 @@ Style/HashSyntax:
 Metrics/LineLength:
   Max: 80
   Exclude:
-    - 'gems/aws-crt/lib/gems/aws-crt/native.rb'
+    - 'gems/aws-crt/lib/aws-crt/native.rb'
 
 Metrics/BlockLength:
   Exclude:
