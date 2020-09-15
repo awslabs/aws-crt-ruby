@@ -4,8 +4,8 @@
     "build_steps": [
         "ruby -v",
         "gem install bundler",
-        "cd aws-crt && bundle install",
-        "cd aws-crt && bundle exec rake spec"
+        "bundle install",
+        "cd gems/aws-crt && bundle exec rake spec"
     ],
     "hosts": {
         "macos": {
