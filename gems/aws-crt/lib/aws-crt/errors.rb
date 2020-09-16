@@ -24,6 +24,7 @@ module Aws
       def self.raise_last_error
         error_code = Aws::Crt::Native.last_error
         return if error_code.zero?
+
         error_name = Aws::Crt::Native.error_name(error_code)
         msg = Aws::Crt::Native.error_debug_str(error_code)
         Aws::Crt::Native.reset_error
@@ -40,8 +41,8 @@ module Aws
         if error_const_set?(constant)
           # modeled error class exist
           # set code attribute
-          err_class = const_get(constant)
-          err_class
+          const_get(constant)
+
         else
           add_error_constant(constant)
         end

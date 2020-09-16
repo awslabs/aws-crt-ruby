@@ -1,4 +1,6 @@
-require 'spec_helper'
+# frozen_string_literal: true
+
+require_relative 'spec_helper'
 
 describe Aws::Crt::Errors do
   describe '.raise_last_error' do

@@ -31,6 +31,7 @@ module Aws
         # else is using them.
         def release
           return unless @native
+
           @native.free
           @native = nil
         end

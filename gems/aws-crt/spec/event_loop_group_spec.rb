@@ -1,4 +1,6 @@
-require 'spec_helper'
+# frozen_string_literal: true
+
+require_relative 'spec_helper'
 require 'weakref'
 
 describe Aws::Crt::IO::EventLoopGroup do
