@@ -1,12 +1,12 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   NewCops: enable
   Exclude:
     - 'gems/aws-crt/native/aws-common-runtime/**/*.rb'
 
 Style/HashSyntax:
   Exclude:
-    - 'gems/aws-crt/Rakefile'
+    - 'Rakefile'
 
 Layout/LineLength:
   Max: 80

@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.files = ['VERSION']
   spec.files += Dir['lib/**/*.rb']
   spec.platform = Gem::Platform::RUBY
-  spec.required_ruby_version = '>= 2.4'
+  spec.required_ruby_version = '>= 2.5'
   spec.add_dependency 'ffi'
   spec.add_development_dependency 'rspec'
 end
