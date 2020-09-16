@@ -29,4 +29,3 @@ end
 task 'bin:all' do
   # TODO: generate or copy/download ect binaries for all platforms
 end
-
