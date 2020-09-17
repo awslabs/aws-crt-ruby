@@ -37,5 +37,6 @@ jobs:
         with:
           name: pkg
           path: |
-            gems/aws-crt/pkg/
+            aws-crt-ruby/gems/aws-crt/bin/
+            /gems/aws-crt/bin/
             gems/aws-crt/bin/
