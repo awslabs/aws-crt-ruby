@@ -56,9 +56,9 @@ task 'package-all' do
   FileUtils.cp_r('gems/aws-crt/pkg/', './')
 
   # build all other gems
-  gems = Dir.glob('gems/*').select {|f| File.directory? f}.
-         map { |f| File.basename f }.
-         reject { |f| f == 'aws-crt'}
+  gems = Dir.glob('gems/*').select { |f| File.directory? f}.
+         map { |f| File.basename f }
+            .reject { |f| f == 'aws-crt' }
 
   gems.each do |gem|
     Rake::Task["gem:#{gem}"].invoke
