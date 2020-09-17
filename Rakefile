@@ -34,6 +34,11 @@ RuboCop::RakeTask.new(:rubocop) do |t|
 end
 
 task :release => %i[clean spec] do
-  puts "ENV check: #{ENV['GEM']}"
   Rake::Task['gem:aws-crt'].invoke if ENV['GEM']
+end
+
+task 'package-all' do
+  puts "PACKAGING ALL!"
+  put "First... What files do we have??"
+  puts `ls -R`
 end
