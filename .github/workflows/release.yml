@@ -74,6 +74,8 @@ jobs:
         with:
           ruby-version: 2.7
 
+      - uses: actions/checkout@v2
+
       - name: Download Windows
         uses: actions/download-artifact@v2
         with:
