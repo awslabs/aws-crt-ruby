@@ -30,16 +30,13 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Generate Gem artifacts
         run: |
-          gem install bundler
-          bundle install
-          bundle exec rake gem:aws-crt
-      - name: Upload gem artifact
+          python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
+          python builder.pyz build -p ${{ env.PACKAGE_NAME }}
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: pkg
-          path: gems/aws-crt/pkg/
-      - name: Upload bin artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: bin
-          path: gems/aws-crt/bin/
+          path: |
+            gems/aws-crt/pkg/
+            gems/aws-crt/bin/
