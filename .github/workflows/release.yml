@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [windows]
         ruby: [2.7]
-        arch: [x86, x64]
+        arch: [x64]
     runs-on: windows-latest
     steps:
       - uses: ruby/setup-ruby@v1
@@ -40,25 +40,49 @@ jobs:
           path: |
             aws-crt-ruby/gems/aws-crt/bin/
             aws-crt-ruby/gems/aws-crt/pkg/
+  osx:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos]
+        ruby: [2.7]
+        arch: [x64]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Generate Gem artifacts
+        run: |
+          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+          chmod a+x builder
+          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: out_${{ matrix.os }}_${{ matrix.arch }}
+          path: |
+            aws-crt-ruby/gems/aws-crt/bin/
+            aws-crt-ruby/gems/aws-crt/pkg/
 
   package:
-    needs: windows
+    needs: [windows, osx]
     runs-on: macos-latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
 
-      - name: Download Windows x86
-        uses: actions/download-artifact@v2
-        with:
-          name: out_windows_x86
-
-      - name: Download Windows x64
+      - name: Download Windows
         uses: actions/download-artifact@v2
         with:
           name: out_windows_x64
+
+      - name: Download OSX
+        uses: actions/download-artifact@v2
+        with:
+          name: out_osx_x64
 
       - name: Display structure of downloaded files
         run: ls -R
