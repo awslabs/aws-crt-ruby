@@ -33,7 +33,7 @@ RuboCop::RakeTask.new(:rubocop) do |t|
   t.options = ['-E', '-S', '-c', config_file]
 end
 
-task :release => [:clean, :spec] do
+task :release => %i[clean spec] do
   puts "ENV check: #{ENV['GEM']}"
   Rake::Task['gem:aws-crt'].invoke if ENV['GEM']
 end

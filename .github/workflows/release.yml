@@ -36,8 +36,29 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: pkg
+          name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
             aws-crt-ruby/gems/aws-crt/bin/
-            /gems/aws-crt/bin/
-            gems/aws-crt/bin/
+            aws-crt-ruby/gems/aws-crt/pkg/
+
+
+  package:
+    needs: windows
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Download Windows x86
+        uses: actions/download-artifact@v2
+        with:
+          name: out_windows_x86
+
+      - name: Download Windows x64
+        uses: actions/download-artifact@v2
+        with:
+          name: out_windows_x64
+
+      - name: Display structure of downloaded files
+        run: ls -R
