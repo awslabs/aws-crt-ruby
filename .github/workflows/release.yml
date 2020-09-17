@@ -13,6 +13,7 @@ env:
   PACKAGE_NAME: aws-crt-ruby
   LINUX_BASE_IMAGE: ubuntu-16-x64
   RUN: ${{ github.run_id }}-${{ github.run_number }}
+  GEM: true
 
 jobs:
   windows:
