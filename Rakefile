@@ -38,7 +38,7 @@ task :release => %i[clean spec] do
 end
 
 task 'package-all' do
-  puts "PACKAGING ALL!"
-  put "First... What files do we have??"
-  puts `ls -R`
+  Rake::Task['gem:aws-crt:pure-ruby'].invoke
+  Rake::Task['gem:aws-crt:jruby'].invoke
+  FileUtils.cp_r('gems/aws-crt/pkg/', './')
 end

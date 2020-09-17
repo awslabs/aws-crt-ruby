@@ -86,11 +86,14 @@ jobs:
         with:
           name: out_macos_x64
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: Package
         run: |
           bundle install
           bundle exec rake package-all
+
+      - name: Upload release
+        uses: actions/upload-artifact@v2
+        with:
+          name: release_gems
+          path: pkg/
 
