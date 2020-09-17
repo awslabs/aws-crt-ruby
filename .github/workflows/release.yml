@@ -24,6 +24,7 @@ jobs:
         arch: [x86, x64]
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
@@ -37,3 +38,8 @@ jobs:
         with:
           name: pkg
           path: gems/aws-crt/pkg/
+      - name: Upload bin artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bin
+          path: gems/aws-crt/bin/
