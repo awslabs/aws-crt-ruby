@@ -9,10 +9,6 @@ OS_BINARIES = {
 
 DEFAULT_BINARY = 'libaws-crt.so'
 
-PLATFORM_BUILD_PATHS = {
-  'x86_64-mingw32' => 'native/build/Debug/aws-crt.dll'
-}.freeze
-
 # @return [String] returns Gem::Platform style name for the current system
 # similar to Gem::Platform.local but will return systems host os/cpu
 # for Jruby
