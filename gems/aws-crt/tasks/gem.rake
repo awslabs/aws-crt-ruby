@@ -43,6 +43,32 @@ task 'gem:aws-crt:pure-ruby' => :clean do
     spec = orig_spec.dup
     spec.platform = platform
     spec.files += Dir['native/**/*']
+
+    # leave out large files we don't need for compiling
+    reject_patterns = [
+      '/\.', # anything starting with '.'
+      '/docs/',
+      '/codebuild/',
+      '/docker-images/',
+      '/AWSCRTAndroidTestRunner/',
+      '/aws-c-common/verification/',
+      '/aws-c-auth/tests/aws-sig-v4-test-suite/',
+      '/aws-c-auth/tests/fuzz/corpus/',
+      '/s2n/tests/fuzz/corpus',
+      '/s2n/tests/ctverif',
+      '/s2n/tests/pems',
+      '/s2n/tests/saw',
+      '/s2n/tests/sidetrail',
+      '/s2n/tests/integration/trust-store',
+      '/s2n/tests/integration/data',
+      '/s2n/tests/unit/kats',
+    ]
+
+    reject_patterns.each do |pattern|
+      spec.files.reject! { |x| x.match(pattern) }
+    end
+
+    spec.files += ['ext/compile.rb']
     spec.extensions = FileList['ext/extconf.rb']
 
     # Build and move the gem to the pkg/ directory.

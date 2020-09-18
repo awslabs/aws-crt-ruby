@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(aws-crt C)
+message(STATUS "CMake ${CMAKE_VERSION}")
+
+option(BIN_DIR "Location for built library" "")
+if (BIN_DIR STREQUAL "")
+    message(FATAL_ERROR "BIN_DIR must be set")
+endif ()
 
 if (DEFINED CMAKE_PREFIX_PATH)
     file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
@@ -60,3 +66,13 @@ aws_use_package(aws-c-auth)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEP_AWS_LIBS})
 aws_set_common_properties(${PROJECT_NAME})
+
+# Build shared lib directly to BIN_DIR.
+# for non-msvc, LIBRARY_OUTPUT_DIRECTORY controls the shared lib output
+# for msvc, RUNTIME_OUTPUT_DIRECTORY controls where dlls are output
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${BIN_DIR})

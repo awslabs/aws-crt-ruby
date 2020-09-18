@@ -6,11 +6,5 @@
         "gem install bundler",
         "bundle install",
         "bundle exec rake release"
-    ],
-    "hosts": {
-        "macos": {
-            "_comment": "ruby already installed",
-            "!packages": []
-        }
-    }
+    ]
 }

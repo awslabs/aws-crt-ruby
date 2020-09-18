@@ -9,10 +9,6 @@ OS_BINARIES = {
 
 DEFAULT_BINARY = 'libaws-crt.so'
 
-PLATFORM_BUILD_PATHS = {
-  'x86_64-mingw32' => 'native/build/Debug/aws-crt.dll'
-}.freeze
-
 # @return [String] returns Gem::Platform style name for the current system
 # similar to Gem::Platform.local but will return systems host os/cpu
 # for Jruby
@@ -25,18 +21,14 @@ def crt_bin_name(platform)
   OS_BINARIES[platform.os] || DEFAULT_BINARY
 end
 
-# @return [String] return the path to the output binary from building
-def crt_build_out_path(platform)
-  PLATFORM_BUILD_PATHS[platform.to_s] ||
-    "native/build/#{crt_bin_name(platform)}"
+# @return [String] return the directory of the CRT library for the platform
+def crt_bin_dir(platform)
+  File.expand_path("../../bin/#{platform.cpu}", File.dirname(__FILE__))
 end
 
 # @return [String] return the path to the CRT library for the platform
 def crt_bin_path(platform)
-  File.expand_path(
-    "../../bin/#{platform.cpu}/#{crt_bin_name(platform)}",
-    File.dirname(__FILE__)
-  )
+  File.expand_path(crt_bin_name(platform), crt_bin_dir(platform))
 end
 
 # @return [String] generate a string that be used with Gem::Platform
