@@ -21,7 +21,14 @@ Metrics/BlockLength:
     - '**/*.rake'
     - 'gems/aws-crt/spec/**/*.rb'
 
+Metrics/MethodLength:
+  Exclude:
+    - 'gems/aws-crt/ext/compile.rb'
+
 Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'
     - 'gems/aws-crt-auth/lib/aws-crt-auth.rb'
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false

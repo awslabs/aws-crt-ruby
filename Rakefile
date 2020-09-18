@@ -10,7 +10,6 @@ end
 
 CLEAN.include 'gems/**/tmp'
 CLEAN.include 'gems/**/pkg'
-CLEAN.include 'gems/aws-crt/native/build'
 CLEAN.include 'gems/aws-crt/bin'
 
 desc 'Executes specs for a single gem, e.g. spec:aws-crt'
