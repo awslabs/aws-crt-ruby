@@ -5,7 +5,7 @@
         "ruby -v",
         "gem install bundler",
         "bundle install",
-        "cd gems/aws-crt && bundle exec rake spec"
+        "bundle exec rake release"
     ],
     "hosts": {
         "macos": {
