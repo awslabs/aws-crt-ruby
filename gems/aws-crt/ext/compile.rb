@@ -9,7 +9,8 @@ CMAKE = find_executable('cmake3') || find_executable('cmake')
 abort 'Missing cmake' unless CMAKE
 
 def cmake_version
-  version_str = `#{CMAKE} --version`
+  version_cmd = Shellwords.join([CMAKE, '--version'])
+  version_str = `#{version_cmd}`
   match = /(\d+)\.(\d+)\.(\d+)/.match(version_str)
   [match[1].to_i, match[2].to_i, match[3].to_i]
 end
@@ -27,6 +28,11 @@ def run_cmd(args)
   system(cmd) || raise("Error running: #{cmd}")
 end
 
+def libcrypto_path
+  path = ENV['LIBCRYPTO_PATH']
+  File.absolute_path(path) if path
+end
+
 # Compile bin to expected location
 def compile_bin
   platform = local_platform
@@ -35,16 +41,7 @@ def compile_bin
   bin_dir = crt_bin_dir(platform)
 
   config_cmd = [CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}"]
-
-  # if LIBCRYPTO_PATH set in ENV, pass it to cmake via CMAKE_PREFIX_PATH
-  libcrypto_path = ENV['LIBCRYPTO_PATH']
-  if libcrypto_path
-    # if libcrypto_path is relative, make it absolute, since we run
-    # cmake from a different directory
-    libcrypto_path = File.absolute_path(libcrypto_path)
-
-    config_cmd.append("-DCMAKE_PREFIX_PATH=#{libcrypto_path}")
-  end
+  config_cmd.append("-DCMAKE_PREFIX_PATH=#{libcrypto_path}") if libcrypto_path
 
   build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt']
   build_cmd.append('--parallel') if cmake_has_parallel_flag?
