@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.1)
 project(aws-crt C)
 message(STATUS "CMake ${CMAKE_VERSION}")
 
+if (POLICY CMP0069)
+    cmake_policy(SET CMP0069 NEW) # Enable LTO/IPO if available in the compiler
+endif()
+
 option(BIN_DIR "Location for built library" "")
 if (BIN_DIR STREQUAL "")
     message(FATAL_ERROR "BIN_DIR must be set")
