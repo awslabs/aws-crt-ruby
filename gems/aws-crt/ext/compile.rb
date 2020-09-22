@@ -5,12 +5,12 @@ require 'fileutils'
 require 'shellwords'
 require_relative '../lib/aws-crt/platforms'
 
-CMAKE = find_executable('cmake3') || find_executable('cmake')
-abort 'Missing cmake' unless CMAKE
+CMAKE_PATH = find_executable('cmake3') || find_executable('cmake')
+abort 'Missing cmake' unless CMAKE_PATH
+CMAKE = File.basename(CMAKE_PATH)
 
 def cmake_version
-  version_cmd = Shellwords.join([CMAKE, '--version'])
-  version_str = `#{version_cmd}`
+  version_str = `#{CMAKE} --version`
   match = /(\d+)\.(\d+)\.(\d+)/.match(version_str)
   [match[1].to_i, match[2].to_i, match[3].to_i]
 end
@@ -23,9 +23,11 @@ def cmake_has_parallel_flag?
 end
 
 def run_cmd(args)
-  cmd = Shellwords.join(args)
-  puts cmd
-  system(cmd) || raise("Error running: #{cmd}")
+  # use shellwords.join() for printing, don't pass that string to system().
+  # system() does better cross-platform when the args array is passed in.
+  cmd_str = Shellwords.join(args)
+  puts cmd_str
+  system(*args) || raise("Error running: #{cmd_str}")
 end
 
 def libcrypto_path
