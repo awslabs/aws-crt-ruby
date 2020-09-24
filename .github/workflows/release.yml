@@ -128,3 +128,65 @@ jobs:
           name: release_gems
           path: pkg/
 
+  verify-mac-native:
+    needs: [package]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Package
+        run: |
+          gem install aws-crt-*-x86_64-darwin.gem
+          gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
+          ruby -r 'aws-crt-auth' -e 'Aws::Crt'
+
+  verify-mac-jruby:
+    needs: [package]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: jruby
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Package
+        run: |
+          gem install aws-crt-*-universal-java.gem
+          gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
+          ruby -r 'aws-crt-auth' -e 'Aws::Crt'
+
+  verify-mac-pure-ruby:
+    needs: [package]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Package
+        run: |
+          gem install aws-crt-*.gem
+          gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
+          ruby -r 'aws-crt-auth' -e 'Aws::Crt'
