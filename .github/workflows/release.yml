@@ -189,3 +189,43 @@ jobs:
         run: |
           bundle install
           bundle exec rake verify-release:pure-ruby
+
+  verify-windows-native:
+    needs: [package]
+    runs-on: windows-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:native
+
+  verify-linux-native:
+    needs: [package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:native
