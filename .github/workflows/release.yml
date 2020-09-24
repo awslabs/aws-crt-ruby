@@ -101,6 +101,8 @@ jobs:
           ruby-version: 2.7
 
       - uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Download Windows
         uses: actions/download-artifact@v2
@@ -143,11 +145,11 @@ jobs:
         with:
           name: release_gems
 
-      - name: Package
+      - name: Install Gems and Require
         run: |
           gem install aws-crt-*-x86_64-darwin.gem
           gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
-          ruby -r 'aws-crt-auth' -e 'Aws::Crt'
+          ruby -r 'aws-crt-auth' -e 'puts Aws::Crt'
 
   verify-mac-jruby:
     needs: [package]
@@ -164,11 +166,11 @@ jobs:
         with:
           name: release_gems
 
-      - name: Package
+      - name: Install Gems and Require
         run: |
           gem install aws-crt-*-universal-java.gem
           gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
-          ruby -r 'aws-crt-auth' -e 'Aws::Crt'
+          ruby -r 'aws-crt-auth' -e 'puts Aws::Crt'
 
   verify-mac-pure-ruby:
     needs: [package]
@@ -185,8 +187,8 @@ jobs:
         with:
           name: release_gems
 
-      - name: Package
+      - name: Install Gems and Require
         run: |
           gem install aws-crt-*.gem
           gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
-          ruby -r 'aws-crt-auth' -e 'Aws::Crt'
+          ruby -r 'aws-crt-auth' -e 'puts Aws::Crt'
