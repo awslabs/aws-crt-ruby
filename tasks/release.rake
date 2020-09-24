@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 task 'gem:*'
 rule(/gem:aws-crt-.+$/) do |task|
@@ -19,8 +20,8 @@ task 'package-all' do
 
   # build all other gems
   gems = Dir.glob('gems/*').select { |f| File.directory? f }
-         .map { |f| File.basename f }
-         .reject { |f| f == 'aws-crt' }
+            .map { |f| File.basename f }
+            .reject { |f| f == 'aws-crt' }
 
   gems.each do |gem|
     Rake::Task["gem:#{gem}"].invoke
@@ -29,10 +30,10 @@ end
 
 desc 'Verify install/require for the higher level gems'
 task 'verify-release:hll-gems' do
-  puts "Verifying Higher level gems"
+  puts 'Verifying Higher level gems'
   gems = Dir.glob('gems/*').select { |f| File.directory? f }
-         .map { |f| File.basename f }
-         .reject { |f| f == 'aws-crt' }
+            .map { |f| File.basename f }
+            .reject { |f| f == 'aws-crt' }
 
   gems.each do |gem|
     version = File.read("gems/#{gem}/VERSION").strip
@@ -41,9 +42,7 @@ task 'verify-release:hll-gems' do
     res = Gem.install(gem_file, Gem::Requirement.default,
                       ignore_dependencies: true)
     $LOAD_PATH.unshift "#{res.first.full_gem_path}/lib"
-  end
 
-  gems.each do |gem|
     puts "Requiring #{gem}"
     require gem
   end
