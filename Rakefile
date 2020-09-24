@@ -36,30 +36,3 @@ task :release => %i[clean spec] do
   Rake::Task['gem:aws-crt'].invoke if ENV['GEM']
 end
 
-task 'gem:*'
-rule(/gem:aws-crt-.+$/) do |task|
-  require 'rubygems/package'
-  gem_name = task.name.split(':').last
-  puts "Building gem: #{gem_name}"
-  FileUtils.chdir("gems/#{gem_name}") do
-    spec = Gem::Specification.load("#{gem_name}.gemspec")
-    gem_file = Gem::Package.build(spec)
-    FileUtils.cp(gem_file, '../../pkg/')
-  end
-end
-
-task 'package-all' do
-  # aws-crt specific tasks
-  Rake::Task['gem:aws-crt:pure-ruby'].invoke
-  Rake::Task['gem:aws-crt:jruby'].invoke
-  FileUtils.cp_r('gems/aws-crt/pkg/', './')
-
-  # build all other gems
-  gems = Dir.glob('gems/*').select { |f| File.directory? f }
-            .map { |f| File.basename f }
-            .reject { |f| f == 'aws-crt' }
-
-  gems.each do |gem|
-    Rake::Task["gem:#{gem}"].invoke
-  end
-end

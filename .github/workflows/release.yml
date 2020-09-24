@@ -147,9 +147,8 @@ jobs:
 
       - name: Install Gems and Require
         run: |
-          gem install aws-crt-*-x86_64-darwin.gem
-          gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
-          ruby -r 'aws-crt-auth' -e 'puts Aws::Crt'
+          bundle install
+          bundle exec rake verify-release:native
 
   verify-mac-jruby:
     needs: [package]
@@ -168,9 +167,8 @@ jobs:
 
       - name: Install Gems and Require
         run: |
-          gem install aws-crt-*-universal-java.gem
-          gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
-          ruby -r 'aws-crt-auth' -e 'puts Aws::Crt'
+          bundle install
+          bundle exec rake verify-release:jruby
 
   verify-mac-pure-ruby:
     needs: [package]
@@ -189,6 +187,5 @@ jobs:
 
       - name: Install Gems and Require
         run: |
-          gem install aws-crt-*.gem
-          gem install aws-crt-auth-*.gem -f # TODO: Remove -f after versions are no longer pre
-          ruby -r 'aws-crt-auth' -e 'puts Aws::Crt'
+          bundle install
+          bundle exec rake verify-release:pure-ruby
