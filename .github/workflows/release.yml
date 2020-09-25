@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - '*'  # TODO: Remove after testing...
+      - 'master'
+
+env:
+  BUILDER_VERSION: v0.6.9
+  BUILDER_SOURCE: releases
+  BUILDER_HOST: https://d19elf31gohf1l.cloudfront.net
+  PACKAGE_NAME: aws-crt-ruby
+  LINUX_BASE_IMAGE: ubuntu-16-x64
+  RUN: ${{ github.run_id }}-${{ github.run_number }}
+  GEM: true
+
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows]
+        ruby: [2.7]
+        arch: [x64]
+    runs-on: windows-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Generate Gem artifacts
+        run: |
+          python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
+          python builder.pyz build -p ${{ env.PACKAGE_NAME }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: out_${{ matrix.os }}_${{ matrix.arch }}
+          path: |
+            aws-crt-ruby/gems/aws-crt/bin/
+            aws-crt-ruby/gems/aws-crt/pkg/
+  osx:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos]
+        ruby: [2.7]
+        arch: [x64]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Generate Gem artifacts
+        run: |
+          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+          chmod a+x builder
+          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: out_${{ matrix.os }}_${{ matrix.arch }}
+          path: |
+            aws-crt-ruby/gems/aws-crt/bin/
+            aws-crt-ruby/gems/aws-crt/pkg/
+
+  package:
+    needs: [windows, osx]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Windows
+        uses: actions/download-artifact@v2
+        with:
+          name: out_windows_x64
+
+      - name: Download OSX
+        uses: actions/download-artifact@v2
+        with:
+          name: out_macos_x64
+
+      - name: Package
+        run: |
+          bundle install
+          bundle exec rake package-all
+
+      - name: Upload release
+        uses: actions/upload-artifact@v2
+        with:
+          name: release_gems
+          path: pkg/
+
