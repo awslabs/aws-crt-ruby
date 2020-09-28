@@ -48,10 +48,10 @@ module Aws
 
         # @return [Time,nil]
         def expiration
-          if @native
-            # TODO: Return nil if exp is UINT64_MAX?
-            Time.at(Aws::Crt::Native.credentials_get_expiration(@native))
-          end
+          return unless @native
+
+          # TODO: Return nil if exp is UINT64_MAX?
+          Time.at(Aws::Crt::Native.credentials_get_expiration(@native))
         end
 
         # @return [Credentials]
