@@ -94,7 +94,7 @@ module Aws
 
           if garbage_collect_is_immediate?
             it 'cleans up with GC' do
-              creds = Credentials.new('akid', 'secret')
+              creds = Credentials.new('akid', 'secret', 'session')
               weakref = WeakRef.new(creds)
               expect(weakref.weakref_alive?).to be true
 

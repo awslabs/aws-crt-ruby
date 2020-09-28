@@ -18,6 +18,16 @@ module Aws
             raise ArgumentError, 'secret_access_key  must be set'
           end
 
+          # access_key_id = FFI::MemoryPointer.from_string(access_key_id)
+          # access_key_id.autorelease = false
+          # secret_access_key = FFI::MemoryPointer.from_string(secret_access_key)
+          # secret_access_key.autorelease = false
+          # if session_token
+          #   session_token = FFI::MemoryPointer.from_string(session_token)
+          #   session_token.autorelease = false
+          # end
+
+
           native = Aws::Crt.call do
             # -1 will give UINT max
             Aws::Crt::Native.credentials_new(
@@ -87,7 +97,7 @@ module Aws
         end
 
         def self.on_release(native)
-          Aws::Crt::Native.event_loop_group_release(native)
+          Aws::Crt::Native.credentials_release(native)
         end
       end
     end
