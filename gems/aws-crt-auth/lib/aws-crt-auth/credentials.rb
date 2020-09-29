@@ -5,6 +5,8 @@ module Aws
     module Auth
       # Utility class for Credentials.
       class Credentials
+        UINT64_MAX = 18_446_744_073_709_551_615
+
         # @param [String] access_key_id
         # @param [String] secret_access_key
         # @param [String] session_token (nil)
@@ -60,8 +62,10 @@ module Aws
         def expiration
           return unless @native
 
-          # TODO: Return nil if exp is UINT64_MAX?
-          Time.at(Aws::Crt::Native.credentials_get_expiration(@native))
+          exp = Aws::Crt::Native.credentials_get_expiration(@native)
+          return if exp == UINT64_MAX
+
+          Time.at(exp)
         end
 
         # @return [Credentials]

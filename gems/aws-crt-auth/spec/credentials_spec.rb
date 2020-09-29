@@ -24,9 +24,9 @@ module Aws
             expect(Credentials.new('akid', 'secret').session_token).to be nil
           end
 
-          it 'defaults the expiration to UINT64_MAX' do
-            expect(Credentials.new('akid', 'secret').expiration.to_i)
-              .to eq UINT64_MAX
+          it 'defaults the expiration to nil' do
+            expect(Credentials.new('akid', 'secret').expiration)
+              .to be_nil
           end
 
           it 'accepts a Time for expiration' do
