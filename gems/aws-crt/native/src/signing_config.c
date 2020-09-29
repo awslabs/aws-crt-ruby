@@ -12,6 +12,8 @@ struct aws_crt_signing_config {
     struct aws_signing_config_aws native;
     struct aws_allocator *allocator;
     struct aws_atomic_var ref_count;
+    struct aws_string *region_str;
+    struct aws_string *service_str;
 };
 
 struct aws_crt_signing_config *aws_crt_signing_config_new(
@@ -31,11 +33,16 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     aws_atomic_init_int(&config->ref_count, 1);
 
     AWS_ZERO_STRUCT(*config);
+    //copy string data
+    config->region_str = aws_string_new_from_c_str(allocator, region);
+    config->service_str = aws_string_new_from_c_str(allocator, service);
+
+
     config->native.config_type = AWS_SIGNING_CONFIG_AWS;
     config->native.algorithm = algorithm;
     config->native.signature_type = signature_type;
-    config->native.region = aws_byte_cursor_from_c_str(region); //TODO: these are not getting copied.  Need to use string?
-    config->native.service = aws_byte_cursor_from_c_str(service);
+    config->native.region = aws_byte_cursor_from_string(config->region_str);
+    config->native.service = aws_byte_cursor_from_string(config->service_str);
     aws_date_time_init_epoch_millis(&config->native.date, date_epoch_ms); //TODO: should this be ms or sec?
     config->native.credentials = credentials;
 
@@ -58,6 +65,12 @@ void aws_crt_signing_config_release(struct aws_crt_signing_config *config) {
 
     size_t old_value = aws_atomic_fetch_sub(&config->ref_count, 1);
     if (old_value == 1) {
+        if (config->region_str != NULL) {
+            aws_string_destroy(config->region_str);
+        }
+        if (config->service_str != NULL) {
+            aws_string_destroy(config->service_str);
+        }
         aws_mem_release(config->allocator, config);
     }
 }

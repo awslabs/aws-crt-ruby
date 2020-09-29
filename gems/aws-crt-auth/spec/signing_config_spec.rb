@@ -15,6 +15,7 @@ module Aws
             creds = Credentials.new('akid', 'secret')
             expect do
               SigningConfig.new(
+                algorithm: :v4,
                 signature_type: :http_request_headers,
                 region: 'us-west-2',
                 service: 's3',

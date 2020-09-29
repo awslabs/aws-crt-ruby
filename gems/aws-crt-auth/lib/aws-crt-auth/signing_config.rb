@@ -28,6 +28,8 @@ module Aws
           )
           puts "TODO: imp #{sign_header_fn}" if sign_header_fn
 
+          # ensure we retain a reference to the credentials to avoid GC
+          @credentials = options[:credentials]
           native = Aws::Crt.call do
             Aws::Crt::Native.signing_config_new(
               options[:algorithm],
@@ -35,7 +37,7 @@ module Aws
               options[:region],
               options[:service],
               extract_date(options),
-              options[:credentials]&.native
+              @credentials&.native
             )
           end
 
@@ -64,9 +66,8 @@ module Aws
         end
 
         def extract_unsigned_header_fn(unsigned_headers)
-          if options[:unsigned_headers] &&
-             !options[:unsigned_headers].respond_to?(:call)
-            unsigned_headers = Set.new(options[:unsigned_headers])
+          if unsigned_headers && !unsigned_headers.respond_to?(:call)
+            unsigned_headers = Set.new(unsigned_headers)
             sign_header_fn = proc { |param| unsigned_headers.include? param }
           end
           sign_header_fn
