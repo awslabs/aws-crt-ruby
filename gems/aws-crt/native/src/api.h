@@ -54,6 +54,16 @@ AWS_CRT_API const char *aws_crt_credentials_get_secret_access_key(struct aws_cre
 AWS_CRT_API const char *aws_crt_credentials_get_session_token(struct aws_credentials *credentials);
 AWS_CRT_API uint64_t aws_crt_credentials_get_expiration_timepoint_seconds(struct aws_credentials *credentials);
 
+AWS_CRT_API struct aws_crt_signing_config *aws_crt_signing_config_new(
+    int algorithm,
+    int signature_type,
+    char *region,
+    char *service,
+    uint64_t date_epoch_ms,
+    struct aws_credentials *credentials
+);
+AWS_CRT_API void aws_crt_signing_config_release(struct aws_crt_signing_config *config);
+
 AWS_EXTERN_C_END
 
 #endif /* AWS_CRT_API_H */

@@ -4,12 +4,14 @@ module Aws
   module Crt
     module Auth
       # Utility class for Credentials.
+      # @api private
       class Credentials
         UINT64_MAX = 18_446_744_073_709_551_615
 
         # @param [String] access_key_id
         # @param [String] secret_access_key
         # @param [String] session_token (nil)
+        # @param [Time|int] expiration (nil)
         def initialize(access_key_id, secret_access_key,
                        session_token = nil, expiration = nil)
           if !access_key_id || access_key_id.empty?
@@ -20,28 +22,20 @@ module Aws
             raise ArgumentError, 'secret_access_key  must be set'
           end
 
-          # access_key_id = FFI::MemoryPointer.from_string(access_key_id)
-          # access_key_id.autorelease = false
-          # secret_access_key = FFI::MemoryPointer.from_string(secret_access_key)
-          # secret_access_key.autorelease = false
-          # if session_token
-          #   session_token = FFI::MemoryPointer.from_string(session_token)
-          #   session_token.autorelease = false
-          # end
-
-
           native = Aws::Crt.call do
-            # -1 will give UINT max
             Aws::Crt::Native.credentials_new(
               access_key_id,
               secret_access_key,
               session_token,
-              expiration&.to_i || -1
+              expiration&.to_i || UINT64_MAX
             )
           end
 
           @native = FFI::AutoPointer.new(native, self.class.method(:on_release))
         end
+
+        # @return [FFI:Pointer]
+        attr_reader :native
 
         # @return [String, nil]
         def access_key_id

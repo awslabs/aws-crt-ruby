@@ -7,7 +7,7 @@
 #include <aws/auth/credentials.h>
 #include <aws/common/string.h>
 
-AWS_CRT_API struct aws_credentials *aws_crt_credentials_new(
+struct aws_credentials *aws_crt_credentials_new(
     const char *access_key_id,
     const char *secret_access_key,
     const char *session_token,

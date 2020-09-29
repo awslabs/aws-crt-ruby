@@ -31,6 +31,12 @@ module Aws
       attach_function :credentials_get_session_token, :aws_crt_credentials_get_session_token, [:pointer], :string
       attach_function :credentials_get_expiration, :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
 
+      enum :signing_algorithm, [:v4]
+      enum :signature_type, %i[http_request_headers http_request_query_params
+                               http_request_chunk http_request_event]
+      attach_function :signing_config_new, :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string uint64 pointer], :pointer
+      attach_function :signing_config_release, :aws_crt_signing_config_release, [:pointer], :void
+
       # Internal testing API
       attach_function :test_error, :aws_crt_test_error, [:int], :int
       attach_function :test_pointer_error, :aws_crt_test_pointer_error, [], :pointer
