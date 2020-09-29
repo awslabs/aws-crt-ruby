@@ -60,8 +60,7 @@ AWS_CRT_API struct aws_crt_signing_config *aws_crt_signing_config_new(
     char *region,
     char *service,
     uint64_t date_epoch_ms,
-    struct aws_credentials *credentials
-);
+    struct aws_credentials *credentials);
 AWS_CRT_API void aws_crt_signing_config_release(struct aws_crt_signing_config *config);
 
 AWS_EXTERN_C_END
