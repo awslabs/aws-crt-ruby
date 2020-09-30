@@ -16,6 +16,32 @@ env:
   GEM: true
 
 jobs:
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux]
+        ruby: [2.7]
+        arch: [x64]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Generate Gem artifacts
+        run: |
+          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+          chmod a+x builder
+          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: out_${{ matrix.os }}_${{ matrix.arch }}
+          path: |
+            aws-crt-ruby/gems/aws-crt/bin/
+            aws-crt-ruby/gems/aws-crt/pkg/
+
   windows:
     strategy:
       fail-fast: false
@@ -67,7 +93,7 @@ jobs:
             aws-crt-ruby/gems/aws-crt/pkg/
 
   package:
-    needs: [windows, osx]
+    needs: [windows, osx, linux]
     runs-on: macos-latest
     steps:
       - uses: ruby/setup-ruby@v1
@@ -75,6 +101,8 @@ jobs:
           ruby-version: 2.7
 
       - uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Download Windows
         uses: actions/download-artifact@v2
@@ -85,6 +113,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: out_macos_x64
+
+      - name: Download Linux
+        uses: actions/download-artifact@v2
+        with:
+          name: out_linux_x64
 
       - name: Package
         run: |
@@ -97,3 +130,102 @@ jobs:
           name: release_gems
           path: pkg/
 
+  verify-mac-native:
+    needs: [package]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:native
+
+  verify-mac-jruby:
+    needs: [package]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: jruby
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:jruby
+
+  verify-mac-pure-ruby:
+    needs: [package]
+    runs-on: macos-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:pure-ruby
+
+  verify-windows-native:
+    needs: [package]
+    runs-on: windows-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:native
+
+  verify-linux-native:
+    needs: [package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - uses: actions/checkout@v2
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: release_gems
+
+      - name: Install Gems and Require
+        run: |
+          bundle install
+          bundle exec rake verify-release:native
