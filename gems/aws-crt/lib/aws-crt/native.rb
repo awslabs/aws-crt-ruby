@@ -37,6 +37,12 @@ module Aws
       attach_function :signing_config_new, :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string uint64 pointer], :pointer
       attach_function :signing_config_release, :aws_crt_signing_config_release, [:pointer], :void
 
+      attach_function :signable_new, :aws_crt_signable_new, [], :pointer
+      attach_function :signable_release, :aws_crt_signable_release, [:pointer], :void
+      attach_function :signable_set_property, :aws_crt_signable_set_property, [:pointer, :string, :string], :int
+      attach_function :signable_get_property, :aws_crt_signable_get_property, [:pointer, :string], :string
+
+
       # Internal testing API
       attach_function :test_error, :aws_crt_test_error, [:int], :int
       attach_function :test_pointer_error, :aws_crt_test_pointer_error, [], :pointer
