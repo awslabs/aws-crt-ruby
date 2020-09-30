@@ -3,6 +3,7 @@
 require_relative 'aws-crt/platforms'
 require_relative 'aws-crt/native'
 require_relative 'aws-crt/errors'
+require_relative 'aws-crt/managed_native'
 require_relative 'aws-crt/io'
 
 # Top level Amazon Web Services (AWS) namespace

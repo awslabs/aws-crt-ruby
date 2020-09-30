@@ -6,8 +6,6 @@ require 'weakref'
 module Aws
   module Crt
     module Auth #:nodoc:
-      UINT64_MAX = 18_446_744_073_709_551_615
-
       describe Credentials do
         describe '#initilize' do
           it 'raises an ArgumentError when missing access_key_id' do

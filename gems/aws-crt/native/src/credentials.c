@@ -20,27 +20,21 @@ struct aws_credentials *aws_crt_credentials_new(
         aws_byte_cursor_from_c_str(secret_access_key),
         aws_byte_cursor_from_c_str(session_token),
         expiration_timepoint_seconds);
-    //    return aws_credentials_new_from_string(
-    //        allocator,
-    //        aws_string_new_from_c_str(allocator, access_key_id),
-    //        aws_string_new_from_c_str(allocator, secret_access_key),
-    //        session_token == NULL ? NULL : aws_string_new_from_c_str(allocator, session_token),
-    //        expiration_timepoint_seconds);
 }
 
-const char *aws_crt_credentials_get_access_key_id(struct aws_credentials *credentials) {
+const char *aws_crt_credentials_get_access_key_id(const struct aws_credentials *credentials) {
     return (char *)aws_credentials_get_access_key_id(credentials).ptr;
 }
 
-const char *aws_crt_credentials_get_secret_access_key(struct aws_credentials *credentials) {
+const char *aws_crt_credentials_get_secret_access_key(const struct aws_credentials *credentials) {
     return (char *)aws_credentials_get_secret_access_key(credentials).ptr;
 }
 
-const char *aws_crt_credentials_get_session_token(struct aws_credentials *credentials) {
+const char *aws_crt_credentials_get_session_token(const struct aws_credentials *credentials) {
     return (char *)aws_credentials_get_session_token(credentials).ptr;
 }
 
-uint64_t aws_crt_credentials_get_expiration_timepoint_seconds(struct aws_credentials *credentials) {
+uint64_t aws_crt_credentials_get_expiration_timepoint_seconds(const struct aws_credentials *credentials) {
     return aws_credentials_get_expiration_timepoint_seconds(credentials);
 }
 
