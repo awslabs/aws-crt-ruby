@@ -17,7 +17,7 @@ module Aws
         def to_s
           return unless (self[:len]).positive? && !(self[:ptr]).null?
 
-          self[:ptr].read_string_length(self[:len])
+          self[:ptr].get_string(0, self[:len])
         end
       end
 
