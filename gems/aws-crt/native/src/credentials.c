@@ -22,16 +22,16 @@ struct aws_credentials *aws_crt_credentials_new(
         expiration_timepoint_seconds);
 }
 
-const char *aws_crt_credentials_get_access_key_id(const struct aws_credentials *credentials) {
-    return (char *)aws_credentials_get_access_key_id(credentials).ptr;
+struct aws_byte_cursor aws_crt_credentials_get_access_key_id(const struct aws_credentials *credentials) {
+    return aws_credentials_get_access_key_id(credentials);
 }
 
-const char *aws_crt_credentials_get_secret_access_key(const struct aws_credentials *credentials) {
-    return (char *)aws_credentials_get_secret_access_key(credentials).ptr;
+struct aws_byte_cursor aws_crt_credentials_get_secret_access_key(const struct aws_credentials *credentials) {
+    return aws_credentials_get_secret_access_key(credentials);
 }
 
-const char *aws_crt_credentials_get_session_token(const struct aws_credentials *credentials) {
-    return (char *)aws_credentials_get_session_token(credentials).ptr;
+struct aws_byte_cursor aws_crt_credentials_get_session_token(const struct aws_credentials *credentials) {
+    return aws_credentials_get_session_token(credentials);
 }
 
 uint64_t aws_crt_credentials_get_expiration_timepoint_seconds(const struct aws_credentials *credentials) {

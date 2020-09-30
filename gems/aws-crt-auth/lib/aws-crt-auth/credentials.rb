@@ -4,7 +4,6 @@ module Aws
   module Crt
     module Auth
       # Utility class for Credentials.
-      # @api private
       class Credentials
         include Aws::Crt::ManagedNative
         native_destroy Aws::Crt::Native.method(:credentials_release)
@@ -14,7 +13,7 @@ module Aws
         # @param [String] access_key_id
         # @param [String] secret_access_key
         # @param [String] session_token (nil)
-        # @param [Time|int] expiration (nil) - Either a Time or if an int
+        # @param [Time|int] expiration (nil) - Either a Time or an int
         #   seconds since unix epoch
         def initialize(access_key_id, secret_access_key,
                        session_token = nil, expiration = nil)
@@ -36,19 +35,19 @@ module Aws
           end
         end
 
-        # @return [String, nil]
+        # @return [String]
         def access_key_id
-          Aws::Crt::Native.credentials_get_access_key_id(native)
+          Aws::Crt::Native.credentials_get_access_key_id(native).to_s
         end
 
-        # @return [String, nil]
+        # @return [String]
         def secret_access_key
-          Aws::Crt::Native.credentials_get_secret_access_key(native)
+          Aws::Crt::Native.credentials_get_secret_access_key(native).to_s
         end
 
         # @return [String, nil]
         def session_token
-          Aws::Crt::Native.credentials_get_session_token(native)
+          Aws::Crt::Native.credentials_get_session_token(native).to_s
         end
 
         # @return [Time,nil]

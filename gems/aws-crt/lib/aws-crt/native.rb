@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'ffi'
-
 module Aws
   module Crt
     # FFI Bindings to native CRT functions
@@ -9,6 +8,18 @@ module Aws
       extend FFI::Library
 
       ffi_lib [crt_bin_path(local_platform), 'libaws-crt']
+
+      # aws_byte_cursor binding
+      class ByteCursor < FFI::Struct
+        layout :len, :size_t,
+               :ptr, :pointer
+
+        def to_s
+          return unless (self[:len]).positive? && !(self[:ptr]).null?
+
+          self[:ptr].read_string_length(self[:len])
+        end
+      end
 
       # Core API
       attach_function :init, :aws_crt_init, [], :void
@@ -26,9 +37,9 @@ module Aws
       # Auth API
       attach_function :credentials_new, :aws_crt_credentials_new, %i[string string string uint64], :pointer
       attach_function :credentials_release, :aws_crt_credentials_release, [:pointer], :void
-      attach_function :credentials_get_access_key_id, :aws_crt_credentials_get_access_key_id, [:pointer], :string
-      attach_function :credentials_get_secret_access_key, :aws_crt_credentials_get_secret_access_key, [:pointer], :string
-      attach_function :credentials_get_session_token, :aws_crt_credentials_get_session_token, [:pointer], :string
+      attach_function :credentials_get_access_key_id, :aws_crt_credentials_get_access_key_id, [:pointer], ByteCursor.by_value
+      attach_function :credentials_get_secret_access_key, :aws_crt_credentials_get_secret_access_key, [:pointer], ByteCursor.by_value
+      attach_function :credentials_get_session_token, :aws_crt_credentials_get_session_token, [:pointer], ByteCursor.by_value
       attach_function :credentials_get_expiration, :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
 
       # Internal testing API

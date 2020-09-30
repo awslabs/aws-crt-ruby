@@ -49,9 +49,9 @@ AWS_CRT_API struct aws_credentials *aws_crt_credentials_new(
     const char *session_token,
     uint64_t expiration_timepoint_seconds);
 AWS_CRT_API void aws_crt_credentials_release(struct aws_credentials *credentials);
-AWS_CRT_API const char *aws_crt_credentials_get_access_key_id(const struct aws_credentials *credentials);
-AWS_CRT_API const char *aws_crt_credentials_get_secret_access_key(const struct aws_credentials *credentials);
-AWS_CRT_API const char *aws_crt_credentials_get_session_token(const struct aws_credentials *credentials);
+AWS_CRT_API struct aws_byte_cursor aws_crt_credentials_get_access_key_id(const struct aws_credentials *credentials);
+AWS_CRT_API struct aws_byte_cursor aws_crt_credentials_get_secret_access_key(const struct aws_credentials *credentials);
+AWS_CRT_API struct aws_byte_cursor aws_crt_credentials_get_session_token(const struct aws_credentials *credentials);
 AWS_CRT_API uint64_t aws_crt_credentials_get_expiration_timepoint_seconds(const struct aws_credentials *credentials);
 
 AWS_EXTERN_C_END
