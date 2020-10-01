@@ -52,7 +52,9 @@ module Aws
 
         # @return [Time,nil]
         def expiration
-          exp = Aws::Crt::Native.credentials_get_expiration(native)
+          exp = Aws::Crt::Native.credentials_get_expiration_timepoint_seconds!(
+            native
+          )
           return if exp == UINT64_MAX
 
           Time.at(exp)

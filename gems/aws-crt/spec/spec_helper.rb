@@ -15,5 +15,5 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  Aws::Crt.call { Aws::Crt::Native.global_thread_creator_shutdown_wait_for(10) }
+  Aws::Crt::Native.global_thread_creator_shutdown_wait_for(10)
 end

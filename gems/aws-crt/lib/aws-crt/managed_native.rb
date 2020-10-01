@@ -31,7 +31,7 @@ module Aws
                   'set the method used to cleanup the native object this ' \
                   'class manages.'
         end
-        native = Aws::Crt.call { block.call }
+        native = block.call
         @native = FFI::AutoPointer.new(native, self.class.method(:on_release))
       end
 
