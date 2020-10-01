@@ -61,18 +61,6 @@ module Aws
           end
         end
 
-        describe '#set?' do
-          it 'returns true when the key and secret are both non nil values' do
-            expect(Credentials.new('akid', 'secret').set?).to be(true)
-          end
-
-          it 'returns false after the credentials have been released' do
-            creds = Credentials.new('akid', 'secret')
-            creds.release
-            expect(creds.set?).to be(false)
-          end
-        end
-
         describe '#inspect' do
           let(:creds) { Credentials.new('akid', 'secret', 'token') }
 

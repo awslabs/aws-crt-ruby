@@ -60,17 +60,6 @@ module Aws
           Time.at(exp)
         end
 
-        # @return [Credentials]
-        def credentials
-          self
-        end
-
-        # @return [Boolean] Returns `true` if the access key id and secret
-        #   access key are both set.
-        def set?
-          native_set?
-        end
-
         # Removing the secret access key from the default inspect string.
         # @api private
         def inspect
