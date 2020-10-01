@@ -69,6 +69,7 @@ static int s_aws_crt_signable_get_payload_stream(
     const struct aws_signable *signable,
     struct aws_input_stream **out_input_stream) {
 
+// TODO: Need to implement bindings for input_stream
 //    struct aws_crt_signable_impl *impl = signable->impl;
 //    *out_input_stream = aws_http_message_get_body_stream(impl->request);
     (void)signable;
@@ -339,7 +340,6 @@ int aws_crt_signable_set_property_list(
     for(size_t i = 0; i < count; i++) {
         name = aws_string_new_from_c_str(impl->allocator, property_names[i]);
         value = aws_string_new_from_c_str(impl->allocator, property_values[i]);
-        printf("\tAdding item %zu: %s -> %s\n", i, property_names[i], property_values[i]);
         if (name == NULL || value == NULL) {
             goto on_error;
         }
@@ -353,7 +353,6 @@ int aws_crt_signable_set_property_list(
         }
     }
 
-    printf("Copy complete.  List size: %zu \n", properties->length);
     aws_string_destroy(list_name_str);
     return AWS_OP_SUCCESS;
 

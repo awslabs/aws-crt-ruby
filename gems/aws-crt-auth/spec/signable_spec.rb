@@ -7,27 +7,52 @@ module Aws
   module Crt
     module Auth #:nodoc:
       describe Signable do
-        it 'works' do
-          ptr = Aws::Crt::Native.signable_new
-          puts ptr
-          puts Aws::Crt::Native.signable_set_property(ptr, 'name', 'value')
-          puts Aws::Crt::Native.signable_get_property(ptr, 'name')
+        let(:properties) { { 'uri' => 'test_uri', 'http_method' => 'get' }}
+        let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v' } }
+        let(:property_lists) { { 'headers' => headers } }
 
-          puts Aws::Crt::Native.signable_append_property_list(ptr, 'p1', 'k1', 'v1')
-          puts Aws::Crt::Native.signable_append_property_list(ptr, 'p1', 'k2', 'v2')
-          puts Aws::Crt::Native.signable_append_property_list(ptr, 'p2', 'k1', 'v1')
-
-          h = {'k1' => 'v1', 'k2' => 'v2'}
-          count = h.size
-          key_array = FFI::MemoryPointer.new(:pointer, count)
-          value_array = FFI::MemoryPointer.new(:pointer, count)
-          key_array.write_array_of_pointer(h.keys.map {|s| FFI::MemoryPointer.from_string(s)})
-          value_array.write_array_of_pointer(h.keys.map {|s| FFI::MemoryPointer.from_string(s)})
-          puts Aws::Crt::Native.signable_set_property_list(ptr, 'p3', count, key_array, value_array)
+        describe '#initialize' do
+          it 'creates the native object' do
+            signable = Signable.new(
+              properties: properties,
+              property_lists: property_lists
+            )
+            expect(signable).not_to be_nil
+            expect(signable.native).to be_a_kind_of(FFI::AutoPointer)
+          end
+        end
 
 
+        describe '.on_release' do
+          # Note: Cannot use let with GC tests
+          it 'cleans up with release' do
+            signable = Signable.new(
+              properties: properties,
+              property_lists: property_lists
+            )
 
-          Aws::Crt::Native.signable_release(ptr)
+            expect(signable).to_not be_nil
+
+            signable.release
+            check_for_clean_shutdown
+          end
+
+          if garbage_collect_is_immediate?
+            it 'cleans up with GC' do
+              signable = Signable.new(
+                properties: properties,
+                property_lists: property_lists
+              )
+              weakref = WeakRef.new(signable)
+              expect(weakref.weakref_alive?).to be true
+
+              # force cleanup via GC
+              signable = nil # rubocop:disable Lint/UselessAssignment
+              ObjectSpace.garbage_collect
+              expect(weakref.weakref_alive?).to be_falsey
+              check_for_clean_shutdown
+            end
+          end
         end
       end
     end
