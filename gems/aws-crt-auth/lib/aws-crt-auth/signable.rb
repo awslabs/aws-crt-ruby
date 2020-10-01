@@ -11,9 +11,7 @@ module Aws
         # @param [Hash] options
         # @option options [required, Aws::Crt::Native::signing_algorithm]
         #   :algorithm
-        def initialize(options = {})
-
-        end
+        def initialize(options = {}); end
       end
     end
   end
