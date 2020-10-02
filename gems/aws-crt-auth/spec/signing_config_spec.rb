@@ -24,6 +24,21 @@ module Aws
             end.not_to raise_error
           end
 
+          it 'constructs the object with a signed_body_value' do
+            creds = Credentials.new('akid', 'secret')
+            expect do
+              SigningConfig.new(
+                algorithm: :v4,
+                signature_type: :http_request_headers,
+                region: 'us-west-2',
+                service: 's3',
+                signed_body_value: 'UNSIGNED-PAYLOAD',
+                credentials: creds
+              )
+            end.not_to raise_error
+          end
+
+
           it 'raises an InvalidConfigError when missing a required parameter' do
             expect do
               SigningConfig.new(

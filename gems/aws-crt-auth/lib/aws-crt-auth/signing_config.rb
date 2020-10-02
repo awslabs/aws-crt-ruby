@@ -21,6 +21,15 @@ module Aws
         #   :unsigned_headers ([])
         # @option options [Boolean] :uri_escape_path (true)
         # @option options [Boolean] :apply_checksum_header (true)
+        # @option options [String] :signed_body_value - Optional string to use
+        #   as the canonical request's body value. If string is empty, a value
+        #   will be calculated from the payload during signing. Typically,
+        #   this is the SHA-256 of the (request/chunk/event) payload,
+        #   written as lowercase hex. If this has been precalculated, it can
+        #   be set here. Special values used by certain services can also
+        #   be set (e.g. "UNSIGNED-PAYLOAD"
+        #   "STREAMING-AWS4-HMAC-SHA256-PAYLOAD"
+        #   "STREAMING-AWS4-HMAC-SHA256-EVENTS").
         def initialize(options = {})
           # validation of parameters is handled in signing_config_new
 
@@ -38,6 +47,7 @@ module Aws
               options[:signature_type],
               options[:region],
               options[:service],
+              options[:signed_body_value],
               extract_date(options),
               @credentials&.native
             )

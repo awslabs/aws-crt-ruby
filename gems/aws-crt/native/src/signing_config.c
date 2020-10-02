@@ -14,13 +14,15 @@ struct aws_crt_signing_config {
     struct aws_atomic_var ref_count;
     struct aws_string *region_str;
     struct aws_string *service_str;
+    struct aws_string *signed_body_value_str;
 };
 
 struct aws_crt_signing_config *aws_crt_signing_config_new(
     int algorithm,
     int signature_type,
-    char *region,
-    char *service,
+    const char *region,
+    const char *service,
+    const char *signed_body_value,
     uint64_t date_epoch_ms,
     struct aws_credentials *credentials) {
     struct aws_allocator *allocator = aws_crt_allocator();
@@ -36,12 +38,17 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     config->region_str = aws_string_new_from_c_str(allocator, region);
     config->service_str = aws_string_new_from_c_str(allocator, service);
 
-
     config->native.config_type = AWS_SIGNING_CONFIG_AWS;
     config->native.algorithm = algorithm;
     config->native.signature_type = signature_type;
     config->native.region = aws_byte_cursor_from_string(config->region_str);
     config->native.service = aws_byte_cursor_from_string(config->service_str);
+
+    if (signed_body_value != NULL) {
+        config->signed_body_value_str = aws_string_new_from_c_str(allocator, signed_body_value);
+        config->native.signed_body_value = aws_byte_cursor_from_string(config->signed_body_value_str);
+    }
+
     aws_date_time_init_epoch_millis(&config->native.date, date_epoch_ms); // TODO: should this be ms or sec?
     config->native.credentials = credentials;
 
@@ -69,6 +76,9 @@ void aws_crt_signing_config_release(struct aws_crt_signing_config *config) {
         }
         if (config->service_str != NULL) {
             aws_string_destroy(config->service_str);
+        }
+        if (config->signed_body_value_str != NULL) {
+            aws_string_destroy(config->signed_body_value_str);
         }
         aws_mem_release(config->allocator, config);
     }

@@ -13,8 +13,10 @@
 #define INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE 10
 
 struct aws_crt_signable_property {
-    struct aws_string *name;
-    struct aws_string *value;
+    struct aws_byte_cursor name;
+    struct aws_byte_cursor value;
+    struct aws_string *name_str;
+    struct aws_string *value_str;
 };
 
 struct aws_crt_signable_impl {
@@ -40,6 +42,7 @@ static int s_aws_crt_signable_get_property(
         return AWS_OP_SUCCESS;
     }
 
+
     return aws_raise_error(AWS_ERROR_HASHTBL_ITEM_NOT_FOUND);
 }
 
@@ -48,19 +51,15 @@ static int s_aws_crt_signable_get_property_list(
     const struct aws_string *name,
     struct aws_array_list **out_list) {
 
-    (void)signable;
-    (void)name;
-    (void)out_list;
+    struct aws_crt_signable_impl *impl = signable->impl;
+    *out_list = NULL;
 
-//    struct aws_crt_signable_impl *impl = signable->impl;
-//
-//    *out_list = NULL;
-//
-//    if (aws_string_eq(name, g_aws_http_headers_property_list_name)) {
-//        *out_list = &impl->headers;
-//    } else {
-//        return AWS_OP_ERR;
-//    }
+    struct aws_hash_element *element = NULL;
+    aws_hash_table_find(&impl->property_lists, name, &element);
+
+    if (element != NULL) {
+        *out_list = element->value;
+    }
 
     return AWS_OP_SUCCESS;
 }
@@ -102,8 +101,8 @@ static struct aws_signable_vtable s_aws_crt_signable_vtable = {
 };
 
 static void s_aws_crt_signable_property_clean_up(struct aws_crt_signable_property *pair) {
-    aws_string_destroy(pair->name);
-    aws_string_destroy(pair->value);
+    aws_string_destroy(pair->name_str);
+    aws_string_destroy(pair->value_str);
 }
 
 static void s_aws_hash_callback_property_list_destroy(void *value) {
@@ -291,8 +290,10 @@ int aws_crt_signable_append_property_list(
     }
 
     struct aws_crt_signable_property property;
-    property.name = name;
-    property.value = value;
+    property.name_str = name;
+    property.value_str = value;
+    property.name = aws_byte_cursor_from_string(name);
+    property.value = aws_byte_cursor_from_string(value);
 
     if (aws_array_list_push_back(properties, &property)) {
         goto on_error;
@@ -345,8 +346,10 @@ int aws_crt_signable_set_property_list(
         }
 
         struct aws_crt_signable_property property;
-        property.name = name;
-        property.value = value;
+        property.name_str = name;
+        property.value_str = value;
+        property.name = aws_byte_cursor_from_string(name);
+        property.value = aws_byte_cursor_from_string(value);
 
         if (aws_array_list_push_back(properties, &property)) {
             goto on_error;
