@@ -21,6 +21,28 @@ module Aws
         end
       end
 
+      class PropertyList < FFI::ManagedStruct
+        layout :len, :size_t,
+               :names, :pointer,
+               :values, :pointer
+
+        def props
+          return {} unless (self[:len]).positive?
+
+          out = {}
+          names_p = self[:names].get_array_of_pointer(0, self[:len])
+          values_p = self[:values].get_array_of_pointer(0, self[:len])
+          names_p.zip(values_p).each do |name_p, value_p|
+            out[name_p.read_string.dup] = value_p.read_string.dup
+          end
+          out
+        end
+
+        def self.release(ptr)
+          Aws::Crt::Native.aws_crt_property_list_release(ptr)
+        end
+      end
+
       # Core API
       attach_function :init, :aws_crt_init, [], :void
       attach_function :last_error, :aws_crt_last_error, [], :int
@@ -90,8 +112,12 @@ module Aws
       attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
       attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
 
-      callback :signing_complete_fn, [:pointer, :int, :string], :void
-      attach_function :aws_crt_sign_request, %i[pointer pointer string signing_complete_fn], :int, blocking: false
+      callback :signing_complete_fn, %i[pointer int string], :void
+      attach_function :aws_crt_sign_request, %i[pointer pointer string signing_complete_fn], :int
+
+      attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string
+      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], :pointer
+      attach_function :aws_crt_property_list_release, %i[pointer], :void
 
       # Internal testing API
       attach_function :aws_crt_test_error, [:int], :int

@@ -38,7 +38,6 @@ module Aws
             end.not_to raise_error
           end
 
-
           it 'raises an InvalidConfigError when missing a required parameter' do
             expect do
               SigningConfig.new(

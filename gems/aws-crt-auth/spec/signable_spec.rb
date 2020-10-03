@@ -22,7 +22,6 @@ module Aws
           end
         end
 
-
         describe '.on_release' do
           # Note: Cannot use let with GC tests
           it 'cleans up with release' do

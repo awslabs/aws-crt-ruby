@@ -22,6 +22,7 @@
 /* Forward declarations */
 struct aws_event_loop_group;
 struct aws_crt_test_struct;
+struct aws_crt_property_list;
 
 /* Public function definitions */
 AWS_EXTERN_C_BEGIN
@@ -74,7 +75,10 @@ AWS_CRT_API int aws_crt_signable_set_property_list(struct aws_signable *signable
 
 AWS_CRT_API int aws_crt_sign_request(const struct aws_signable *signable, const struct aws_crt_signing_config *config, const char *sign_id, aws_signing_complete_fn *on_complete);
 
-AWS_CRT_API void aws_crt_signing_result_clean_up(struct aws_signing_result *result);
+AWS_CRT_API const char *aws_crt_signing_result_get_property(const struct aws_signing_result *result, const char *name);
+AWS_CRT_API struct aws_crt_property_list *aws_crt_signing_result_get_property_list(const struct aws_signing_result *result, const char *list_name);
+AWS_CRT_API void aws_crt_property_list_release(struct aws_crt_property_list *property_list);
+
 AWS_EXTERN_C_END
 
 #endif /* AWS_CRT_API_H */

@@ -14,7 +14,6 @@ module Aws
         # @option options [required, Hash[String,Hash[String,String]]]
         #   :property_lists - Should include headers.
         def initialize(options = {})
-
           manage_native do
             Aws::Crt::Native.signable_new
           end
@@ -27,8 +26,8 @@ module Aws
             count = h.size
             key_array = FFI::MemoryPointer.new(:pointer, count)
             value_array = FFI::MemoryPointer.new(:pointer, count)
-            key_array.write_array_of_pointer(h.keys.map {|s| FFI::MemoryPointer.from_string(s)})
-            value_array.write_array_of_pointer(h.keys.map {|s| FFI::MemoryPointer.from_string(s)})
+            key_array.write_array_of_pointer(h.keys.map { |s| FFI::MemoryPointer.from_string(s) })
+            value_array.write_array_of_pointer(h.keys.map { |s| FFI::MemoryPointer.from_string(s) })
             Aws::Crt::Native.signable_set_property_list(native, k, count, key_array, value_array)
           end
         end
