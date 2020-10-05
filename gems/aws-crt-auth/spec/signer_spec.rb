@@ -8,7 +8,7 @@ module Aws
     module Auth #:nodoc:
       describe Signer do
         let(:properties) { { 'uri' => 'https://domain.com', 'method' => 'PUT' }}
-        let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v', "host"=>"domain.com" } } #{ { 'borkbork' => 'h1_v', 'someheader' => 'foo', 'foo'=> 'bar', 'h3' => 'h3_v', 'h4' => 'h4_value' } }
+        let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v', "content-length" => 9, "host"=>"domain.com" } } #{ { 'borkbork' => 'h1_v', 'someheader' => 'foo', 'foo'=> 'bar', 'h3' => 'h3_v', 'h4' => 'h4_value' } }
         let(:property_lists) { { 'headers' => headers } }
 
         it 'works' do
@@ -20,7 +20,8 @@ module Aws
             service: 'SERVICE',
             date: Time.parse('20120101T112233Z'),
             signed_body_value: '5c861aa8efc83488e5f0f006ca8d8ad54eb6541a0123b5c008cc40f9c7b7f202',
-            credentials: creds
+            credentials: creds,
+            unsigned_headers: ['content-length']
           )
           signable = Signable.new(
             properties: properties,
@@ -50,6 +51,7 @@ module Aws
             secret_access_key: 'secret',
             service: 'SERVICE',
             region: 'REGION',
+            unsigned_headers: ['content-length']
           }
           require 'aws-sigv4'
           signature = Aws::Sigv4::Signer.new(options).sign_request(
@@ -58,6 +60,7 @@ module Aws
             headers: {
               'h1' => 'h1_v',
               'h2' => 'h2_v',
+              "content-length" => 9,
               'X-Amz-Date' => '20120101T112233Z'
             },
             body: StringIO.new('http-body')

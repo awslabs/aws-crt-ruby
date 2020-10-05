@@ -39,7 +39,6 @@ module Aws
           sign_header_fn = extract_unsigned_header_fn(
             options[:unsigned_headers]
           )
-          puts "TODO: imp #{sign_header_fn}" if sign_header_fn
 
           apply_checksum_header =
             if options.fetch(:apply_checksum_header, true)
@@ -59,7 +58,8 @@ module Aws
               options[:signed_body_value],
               extract_date(options),
               @credentials&.native,
-              apply_checksum_header
+              apply_checksum_header,
+              sign_header_fn
             )
           end
         end
@@ -72,10 +72,13 @@ module Aws
 
         def extract_unsigned_header_fn(unsigned_headers)
           if unsigned_headers && !unsigned_headers.respond_to?(:call)
-            unsigned_headers = Set.new(unsigned_headers)
-            sign_header_fn = proc { |param| unsigned_headers.include? param }
+            unsigned_headers = Set.new(unsigned_headers.map(&:upcase))
+            proc do |param, p|
+              !unsigned_headers.include? param.to_s.upcase
+            end
+          else
+            unsigned_headers
           end
-          sign_header_fn
         end
       end
     end

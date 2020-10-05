@@ -56,7 +56,7 @@ AWS_CRT_API struct aws_byte_cursor aws_crt_credentials_get_secret_access_key(con
 AWS_CRT_API struct aws_byte_cursor aws_crt_credentials_get_session_token(const struct aws_credentials *credentials);
 AWS_CRT_API uint64_t aws_crt_credentials_get_expiration_timepoint_seconds(const struct aws_credentials *credentials);
 
-AWS_CRT_API struct aws_crt_signing_config *aws_crt_signing_config_new(int algorithm, int signature_type, const char *region, const char *service, const char *signed_body_value, uint64_t date_epoch_ms, struct aws_credentials *credentials, int aws_signed_body_header_type);
+AWS_CRT_API struct aws_crt_signing_config *aws_crt_signing_config_new(int algorithm, int signature_type, const char *region, const char *service, const char *signed_body_value, uint64_t date_epoch_ms, struct aws_credentials *credentials, int aws_signed_body_header_type, aws_should_sign_header_fn *should_sign_header);
 AWS_CRT_API void aws_crt_signing_config_release(struct aws_crt_signing_config *config);
 
 AWS_CRT_API struct aws_signable *aws_crt_signable_new(void);

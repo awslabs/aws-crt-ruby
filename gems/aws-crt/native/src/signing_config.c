@@ -25,7 +25,8 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     const char *signed_body_value,
     uint64_t date_epoch_ms,
     struct aws_credentials *credentials,
-    int aws_signed_body_header_type) {
+    int aws_signed_body_header_type,
+    aws_should_sign_header_fn *should_sign_header) {
     struct aws_allocator *allocator = aws_crt_allocator();
     struct aws_crt_signing_config *config = aws_mem_acquire(allocator, sizeof(struct aws_crt_signing_config));
     if (config == NULL) {
@@ -51,11 +52,15 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
         config->native.signed_body_value = aws_byte_cursor_from_string(config->signed_body_value_str);
     }
 
-    aws_date_time_init_epoch_secs(&config->native.date, date_epoch_ms); // TODO: should this be ms or sec?
+    aws_date_time_init_epoch_secs(&config->native.date, date_epoch_ms);
     config->native.credentials = credentials;
 
+    if (should_sign_header != NULL) {
+        config->native.should_sign_header = should_sign_header;
+        config->native.should_sign_header_ud = config;
+    }
+
     // TODO:
-    // should_sign_header +  should_sign_header_ud (set to self?)
     // flags for: use_double_uri_encode, should_normalize_uri_path, ect
 
     if (aws_validate_aws_signing_config_aws(&config->native) != 0) {
