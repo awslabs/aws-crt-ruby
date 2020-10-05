@@ -24,7 +24,8 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     const char *service,
     const char *signed_body_value,
     uint64_t date_epoch_ms,
-    struct aws_credentials *credentials) {
+    struct aws_credentials *credentials,
+    int aws_signed_body_header_type) {
     struct aws_allocator *allocator = aws_crt_allocator();
     struct aws_crt_signing_config *config = aws_mem_acquire(allocator, sizeof(struct aws_crt_signing_config));
     if (config == NULL) {
@@ -43,13 +44,14 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     config->native.signature_type = signature_type;
     config->native.region = aws_byte_cursor_from_string(config->region_str);
     config->native.service = aws_byte_cursor_from_string(config->service_str);
+    config->native.signed_body_header = aws_signed_body_header_type;
 
     if (signed_body_value != NULL) {
         config->signed_body_value_str = aws_string_new_from_c_str(allocator, signed_body_value);
         config->native.signed_body_value = aws_byte_cursor_from_string(config->signed_body_value_str);
     }
 
-    aws_date_time_init_epoch_millis(&config->native.date, date_epoch_ms); // TODO: should this be ms or sec?
+    aws_date_time_init_epoch_secs(&config->native.date, date_epoch_ms); // TODO: should this be ms or sec?
     config->native.credentials = credentials;
 
     // TODO:

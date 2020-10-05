@@ -102,7 +102,8 @@ module Aws
       enum :signing_algorithm, [:v4]
       enum :signature_type, %i[http_request_headers http_request_query_params
                                http_request_chunk http_request_event]
-      attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer], :pointer
+      enum :signed_body_header_type, [:sbht_none, :sbht_content_sha256]
+      attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type], :pointer
       attach_function :aws_crt_signing_config_release, [:pointer], :void
 
       attach_function :aws_crt_signable_new, [], :pointer

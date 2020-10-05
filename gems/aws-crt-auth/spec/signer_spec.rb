@@ -7,8 +7,8 @@ module Aws
   module Crt
     module Auth #:nodoc:
       describe Signer do
-        let(:properties) { { 'uri' => 'test_uri', 'http_method' => 'GET' }}
-        let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v' } }
+        let(:properties) { { 'uri' => 'https://domain.com', 'method' => 'PUT' }}
+        let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v', "host"=>"domain.com" } } #{ { 'borkbork' => 'h1_v', 'someheader' => 'foo', 'foo'=> 'bar', 'h3' => 'h3_v', 'h4' => 'h4_value' } }
         let(:property_lists) { { 'headers' => headers } }
 
         it 'works' do
@@ -16,9 +16,10 @@ module Aws
           config = SigningConfig.new(
             algorithm: :v4,
             signature_type: :http_request_headers,
-            region: 'us-west-2',
-            service: 's3',
-            signed_body_value: 'UNSIGNED-PAYLOAD',
+            region: 'REGION',
+            service: 'SERVICE',
+            date: Time.parse('20120101T112233Z'),
+            signed_body_value: '5c861aa8efc83488e5f0f006ca8d8ad54eb6541a0123b5c008cc40f9c7b7f202',
             credentials: creds
           )
           signable = Signable.new(
@@ -41,6 +42,31 @@ module Aws
           end
           Aws::Crt::Native.sign_request(signable.native, config.native, 'my-test', callback)
           puts "At the end of the day:\n\tsig: #{out[:sig]}\n\tprops: #{out[:props]}"
+        end
+
+        it 'compares to sigv4a' do
+          options = {
+            access_key_id: 'akid',
+            secret_access_key: 'secret',
+            service: 'SERVICE',
+            region: 'REGION',
+          }
+          require 'aws-sigv4'
+          signature = Aws::Sigv4::Signer.new(options).sign_request(
+            http_method: 'PUT',
+            url: 'https://domain.com',
+            headers: {
+              'h1' => 'h1_v',
+              'h2' => 'h2_v',
+              'X-Amz-Date' => '20120101T112233Z'
+            },
+            body: StringIO.new('http-body')
+          )
+          puts "\n-------------------------\nSDK Sigv4a:"
+          puts signature.headers['authorization']
+          puts "Canonical request: \n#{signature.canonical_request}"
+
+          puts "string_to_sign: \n#{signature.string_to_sign}"
         end
       end
     end

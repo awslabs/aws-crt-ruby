@@ -61,6 +61,8 @@ static int s_aws_crt_signable_get_property_list(
         *out_list = element->value;
     }
 
+    printf("Got a property list for: %s with length: %zu\n", aws_string_c_str(name), aws_array_list_length(*out_list));
+
     return AWS_OP_SUCCESS;
 }
 

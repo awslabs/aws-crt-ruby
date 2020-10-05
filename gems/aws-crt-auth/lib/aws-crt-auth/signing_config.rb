@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'time'
+
 module Aws
   module Crt
     module Auth
@@ -39,6 +41,13 @@ module Aws
           )
           puts "TODO: imp #{sign_header_fn}" if sign_header_fn
 
+          apply_checksum_header =
+            if options.fetch(:apply_checksum_header, true)
+              :sbht_content_sha256
+            else
+              :sbht_none
+            end
+
           # ensure we retain a reference to the credentials to avoid GC
           @credentials = options[:credentials]
           manage_native do
@@ -49,7 +58,8 @@ module Aws
               options[:service],
               options[:signed_body_value],
               extract_date(options),
-              @credentials&.native
+              @credentials&.native,
+              apply_checksum_header
             )
           end
         end
