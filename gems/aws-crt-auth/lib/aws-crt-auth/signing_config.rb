@@ -21,7 +21,10 @@ module Aws
         # @option options [Time] :date (Time.now)
         # @option options [Array<String>|Proc(String->Boolean)]
         #   :unsigned_headers ([])
-        # @option options [Boolean] :uri_escape_path (true)
+        # @option options [Boolean] :use_double_uri_encode (false)
+        # @option options [Boolean] :should_normalize_uri_path (false)
+        # @option options [Boolean] :omit_session_token (false)
+
         # @option options [Boolean] :apply_checksum_header (true)
         # @option options [String] :signed_body_value - Optional string to use
         #   as the canonical request's body value. If string is empty, a value
@@ -59,7 +62,10 @@ module Aws
               extract_date(options),
               @credentials&.native,
               apply_checksum_header,
-              sign_header_fn
+              sign_header_fn,
+              options.fetch(:use_double_uri_encode, false),
+              options.fetch(:should_normalize_uri_path, false),
+              options.fetch(:omit_session_token, false)
             )
           end
         end
