@@ -10,6 +10,11 @@ struct aws_crt_property_list {
 };
 
 const char *aws_crt_signing_result_get_property(const struct aws_signing_result *result, const char *name) {
+    if (result == NULL || name == NULL) {
+        aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
+        return NULL;
+    }
+
     struct aws_string *out_property_value = NULL;
     struct aws_string *name_str = aws_string_new_from_c_str(result->allocator, name);
 
@@ -20,8 +25,12 @@ const char *aws_crt_signing_result_get_property(const struct aws_signing_result 
 }
 
 struct aws_crt_property_list *aws_crt_signing_result_get_property_list(const struct aws_signing_result *result, const char *list_name) {
-    struct aws_array_list *result_param_list = NULL;
+    if (result == NULL || list_name == NULL) {
+        aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
+        return NULL;
+    }
 
+    struct aws_array_list *result_param_list = NULL;
     struct aws_string *list_name_str = aws_string_new_from_c_str(result->allocator, list_name);
 
     aws_signing_result_get_property_list(result, list_name_str, &result_param_list);

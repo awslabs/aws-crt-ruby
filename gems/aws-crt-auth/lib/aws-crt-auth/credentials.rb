@@ -60,6 +60,10 @@ module Aws
           Time.at(exp)
         end
 
+        def set?
+          native_set?
+        end
+
         # Removing the secret access key from the default inspect string.
         # @api private
         def inspect
