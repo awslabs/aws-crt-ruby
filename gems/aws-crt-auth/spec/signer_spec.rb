@@ -7,19 +7,22 @@ module Aws
   module Crt
     module Auth #:nodoc:
       describe Signer do
-        let(:credentials) {{
-          access_key_id: 'akid',
-          secret_access_key: 'secret',
-        }}
+        let(:credentials) do
+          {
+            access_key_id: 'akid',
+            secret_access_key: 'secret'
+          }
+        end
 
-        let(:options) {{
-          service: 'SERVICE',
-          region: 'REGION',
-          credentials_provider: StaticCredentialsProvider.new(credentials),
-        }}
+        let(:options) do
+          {
+            service: 'SERVICE',
+            region: 'REGION',
+            credentials_provider: StaticCredentialsProvider.new(credentials)
+          }
+        end
 
         context '#service' do
-
           it 'requires a service' do
             expect do
               Signer.new(
@@ -33,11 +36,9 @@ module Aws
           it 'accepts a string' do
             expect(Signer.new(options).service).to eq(options[:service])
           end
-
         end
 
         context '#region' do
-
           it 'requires a region' do
             expect do
               Signer.new(
@@ -51,12 +52,10 @@ module Aws
           it 'accepts a string' do
             expect(Signer.new(options).region).to eq(options[:region])
           end
-
         end
 
         describe '#credentials' do
-
-          let(:options) {{ service: 'ec2', region: 'us-east-1' }}
+          let(:options) { { service: 'ec2', region: 'us-east-1' } }
 
           it 'requires credentials' do
             expect do
@@ -66,9 +65,9 @@ module Aws
 
           it 'accepts :access_key_id and :secret_access_key' do
             signer = Signer.new(options.merge(
-              access_key_id: 'akid',
-              secret_access_key: 'secret'
-            ))
+                                  access_key_id: 'akid',
+                                  secret_access_key: 'secret'
+                                ))
             creds = signer.credentials_provider.credentials
             expect(creds.access_key_id).to eq('akid')
             expect(creds.secret_access_key).to eq('secret')
@@ -77,10 +76,10 @@ module Aws
 
           it 'accepts credentials with a session token' do
             signer = Signer.new(options.merge(
-              access_key_id: 'akid',
-              secret_access_key: 'secret',
-              session_token: 'token'
-            ))
+                                  access_key_id: 'akid',
+                                  secret_access_key: 'secret',
+                                  session_token: 'token'
+                                ))
             creds = signer.credentials_provider.credentials
             expect(creds.access_key_id).to eq('akid')
             expect(creds.secret_access_key).to eq('secret')
@@ -89,8 +88,8 @@ module Aws
 
           it 'accepts :credentials' do
             signer = Signer.new(options.merge(
-              credentials: Credentials.new('akid', 'secret','token')
-            ))
+                                  credentials: Credentials.new('akid', 'secret', 'token')
+                                ))
             creds = signer.credentials_provider.credentials
             expect(creds.access_key_id).to eq('akid')
             expect(creds.secret_access_key).to eq('secret')
@@ -99,12 +98,12 @@ module Aws
 
           it 'accepts :credentials_provider' do
             signer = Signer.new(options.merge(
-              credentials_provider: StaticCredentialsProvider.new(
-                access_key_id: 'akid',
-                secret_access_key: 'secret',
-                session_token: 'token'
-              )
-            ))
+                                  credentials_provider: StaticCredentialsProvider.new(
+                                    access_key_id: 'akid',
+                                    secret_access_key: 'secret',
+                                    session_token: 'token'
+                                  )
+                                ))
             creds = signer.credentials_provider.credentials
             expect(creds.access_key_id).to eq('akid')
             expect(creds.secret_access_key).to eq('secret')
@@ -115,16 +114,14 @@ module Aws
           it 'does not accept empty credentials' do
             expect do
               Signer.new(options.merge(
-                access_key_id: '',
-                secret_access_key: ''
-              ))
+                           access_key_id: '',
+                           secret_access_key: ''
+                         ))
             end.to raise_error(ArgumentError)
           end
-
         end
 
         context '#sign_request' do
-
           let(:request) do
             {
               http_method: 'GET',
@@ -149,7 +146,6 @@ module Aws
           end
 
           context 'when URI schema is known' do
-
             it 'omits port in Host when port not provided' do
               signature = Signer.new(options).sign_request(
                 http_method: 'GET',
@@ -173,18 +169,15 @@ module Aws
               )
               expect(signature.headers['host']).to eq('domain.com:123')
             end
-
           end
 
           context 'when URI schema is unknown' do
-
             it 'omits port in Host when uri port not provided' do
               signature = Signer.new(options).sign_request(
                 http_method: 'GET',
                 url: 'abcd://domain.com'
               )
               expect(signature.headers['host']).to eq('domain.com')
-
             end
 
             it 'includes port in Host when uri port provided' do
@@ -194,7 +187,6 @@ module Aws
               )
               expect(signature.headers['host']).to eq('domain.com:123')
             end
-
           end
 
           it 'sets the X-Amz-Date header' do
@@ -204,11 +196,11 @@ module Aws
               http_method: 'GET',
               url: 'https://domain.com:123'
             )
-            expect(signature.headers['x-amz-date']).to eq(now.utc.strftime("%Y%m%dT%H%M%SZ"))
+            expect(signature.headers['x-amz-date']).to eq(now.utc.strftime('%Y%m%dT%H%M%SZ'))
           end
 
           it 'uses the X-Amz-Date header of the request if present' do
-            now = Time.now.utc.strftime("%Y%m%dT%H%M%SZ")
+            now = Time.now.utc.strftime('%Y%m%dT%H%M%SZ')
             signature = Signer.new(options).sign_request(
               http_method: 'GET',
               url: 'https://domain.com',
@@ -317,7 +309,7 @@ module Aws
                 'Bar' => 'bar  bar',
                 'Bar2' => '"bar  bar"',
                 'Content-Length' => 9,
-                'X-Amz-Date' => '20120101T112233Z',
+                'X-Amz-Date' => '20120101T112233Z'
               },
               body: StringIO.new('http-body')
             )
@@ -341,9 +333,7 @@ module Aws
             )
             expect(signature.headers['authorization']).to eq('AWS4-HMAC-SHA256 Credential=akid/20120101/REGION/SERVICE/aws4_request, SignedHeaders=bar;bar2;foo;host;x-amz-content-sha256;x-amz-date, Signature=4bae5054b2e035212a0eb42339a957809a8c9428e628fd4b92e5a295d0fa6e5b')
           end
-
         end
-
       end
     end
   end

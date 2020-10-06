@@ -42,7 +42,7 @@ def compile_bin
   build_dir = File.expand_path('../tmp', File.dirname(__FILE__))
   bin_dir = crt_bin_dir(platform)
 
-  config_cmd = [CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}", '-DCMAKE_BUILD_TYPE=Debug']
+  config_cmd = [CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}"]
   config_cmd.append("-DCMAKE_PREFIX_PATH=#{libcrypto_path}") if libcrypto_path
 
   build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt']

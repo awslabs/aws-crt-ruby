@@ -4,7 +4,6 @@ module Aws
   module Crt
     module Auth
       module Errors
-
         class MissingCredentialsError < ArgumentError
           def initialize(msg = nil)
             super(msg || <<-MSG.strip)
@@ -17,12 +16,11 @@ module Aws
         end
 
         class MissingRegionError < ArgumentError
-          def initialize(*args)
-            super("missing required option :region")
+          def initialize(*_args)
+            super('missing required option :region')
           end
         end
       end
     end
   end
 end
-

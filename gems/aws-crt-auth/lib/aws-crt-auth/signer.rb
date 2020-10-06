@@ -2,13 +2,13 @@
 
 require 'openssl'
 require 'time'
+require 'tempfile'
 
 module Aws
   module Crt
     module Auth
       # Utility class for creating AWS signature version 4 signature.
       class Signer
-
         # @overload initialize(service:, region:, access_key_id:, secret_access_key:, session_token:nil, **options)
         #   @param [String] :service The service signing name, e.g. 's3'.
         #   @param [String] :region The region name, e.g. 'us-east-1'.
@@ -182,9 +182,11 @@ module Aws
           callback = proc do |result, status, _userdata|
             Aws::Crt::Errors.raise_last_error unless status.zero?
             out[:signature] = Aws::Crt::Native.signing_result_get_property(
-              result, 'signature')
+              result, 'signature'
+            )
             p_list_p = Aws::Crt::Native.signing_result_get_property_list(
-              result, 'headers')
+              result, 'headers'
+            )
             out[:headers] = Aws::Crt::Native::PropertyList.new(p_list_p).props
             nil
           end
@@ -193,7 +195,8 @@ module Aws
           # (because we are resolving credentials) - so do not need to
           # sync threads/callbacks
           Aws::Crt::Native.sign_request(
-            signable.native, config.native, config.to_s, callback)
+            signable.native, config.native, config.to_s, callback
+          )
 
           Signature.new(
             headers: sigv4_headers.merge(downcase_headers(out[:headers])),
@@ -265,19 +268,20 @@ module Aws
         end
 
         def downcase_headers(headers)
-          (headers || {}).to_hash.transform_keys { |k| k.downcase }
+          (headers || {}).to_hash.transform_keys(&:downcase)
         end
 
         # @param [File, Tempfile, IO#read, String] value
         # @return [String<SHA256 Hexdigest>]
         def sha256_hexdigest(value)
-          if (File === value || Tempfile === value) && !value.path.nil? && File.exist?(value.path)
+          if (value.is_a?(File) || value.is_a?(Tempfile)) && !value.path.nil? && File.exist?(value.path)
             OpenSSL::Digest::SHA256.file(value).hexdigest
           elsif value.respond_to?(:read)
-            sha256 = OpenSSL::Digest::SHA256.new
+            sha256 = OpenSSL::Digest.new('SHA256')
             loop do
               chunk = value.read(1024 * 1024) # 1MB
               break unless chunk
+
               sha256.update(chunk)
             end
             value.rewind
@@ -301,7 +305,6 @@ module Aws
       # `:access_key_id` and `:secret_access_key` constructor options.
       # @api private
       class StaticCredentialsProvider
-
         # @option options [Credentials] :credentials
         # @option options [String] :access_key_id
         # @option options [String] :secret_access_key
@@ -309,10 +312,10 @@ module Aws
         def initialize(options = {})
           @credentials =
             options[:credentials] || Credentials.new(
-                options[:access_key_id],
-                options[:secret_access_key],
-                options[:session_token]
-              )
+              options[:access_key_id],
+              options[:secret_access_key],
+              options[:session_token]
+            )
         end
 
         # @return [Credentials]
@@ -328,7 +331,6 @@ module Aws
         :headers, :canonical_request,
         :string_to_sign, :content_sha256, keyword_init: true
       )
-
     end
   end
 end

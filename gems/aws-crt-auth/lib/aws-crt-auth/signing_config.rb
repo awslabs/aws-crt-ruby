@@ -79,7 +79,7 @@ module Aws
         def extract_unsigned_header_fn(unsigned_headers)
           if unsigned_headers && !unsigned_headers.respond_to?(:call)
             unsigned_headers = Set.new(unsigned_headers.map(&:downcase))
-            proc do |param, p|
+            proc do |param, _p|
               !unsigned_headers.include? param.to_s.downcase
             end
           else

@@ -2,9 +2,9 @@
 
 source 'https://rubygems.org'
 
+gem 'aws-sigv4'
 gem 'ffi'
 gem 'rake'
-gem 'aws-sigv4'
 
 group :test do
   gem 'rspec'

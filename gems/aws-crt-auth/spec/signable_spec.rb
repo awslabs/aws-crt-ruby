@@ -7,7 +7,7 @@ module Aws
   module Crt
     module Auth #:nodoc:
       describe Signable do
-        let(:properties) { { 'uri' => 'test_uri', 'http_method' => 'get' }}
+        let(:properties) { { 'uri' => 'test_uri', 'http_method' => 'get' } }
         let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v' } }
         let(:property_lists) { { 'headers' => headers } }
 

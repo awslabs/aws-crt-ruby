@@ -102,7 +102,7 @@ module Aws
       enum :signing_algorithm, [:v4]
       enum :signature_type, %i[http_request_headers http_request_query_params
                                http_request_chunk http_request_event]
-      enum :signed_body_header_type, [:sbht_none, :sbht_content_sha256]
+      enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
       callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
       attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool], :pointer
       attach_function :aws_crt_signing_config_release, [:pointer], :void
