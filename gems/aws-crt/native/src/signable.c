@@ -4,8 +4,8 @@
  */
 #include "crt.h"
 
-#include <aws/common/hash_table.h>
 #include <aws/auth/signable.h>
+#include <aws/common/hash_table.h>
 #include <aws/common/string.h>
 
 #define INITIAL_AWS_CRT_SIGNABLE_PROPERTIES_SIZE 10
@@ -42,7 +42,6 @@ static int s_aws_crt_signable_get_property(
         return AWS_OP_SUCCESS;
     }
 
-
     return aws_raise_error(AWS_ERROR_HASHTBL_ITEM_NOT_FOUND);
 }
 
@@ -68,9 +67,9 @@ static int s_aws_crt_signable_get_payload_stream(
     const struct aws_signable *signable,
     struct aws_input_stream **out_input_stream) {
 
-// TODO: Need to implement bindings for input_stream
-//    struct aws_crt_signable_impl *impl = signable->impl;
-//    *out_input_stream = aws_http_message_get_body_stream(impl->request);
+    // TODO: Need to implement bindings for input_stream
+    //    struct aws_crt_signable_impl *impl = signable->impl;
+    //    *out_input_stream = aws_http_message_get_body_stream(impl->request);
     (void)signable;
     (void)out_input_stream;
 
@@ -166,11 +165,11 @@ struct aws_signable *aws_crt_signable_new(void) {
 
     return signable;
 
-    on_error:
+on_error:
 
-        aws_signable_destroy(signable);
+    aws_signable_destroy(signable);
 
-        return NULL;
+    return NULL;
 }
 
 int aws_crt_signable_set_property(
@@ -256,7 +255,6 @@ on_error:
     return NULL;
 }
 
-
 int aws_crt_signable_append_property_list(
     struct aws_signable *signable,
     const char *list_name,
@@ -338,7 +336,7 @@ int aws_crt_signable_set_property_list(
         goto on_error;
     }
 
-    for(size_t i = 0; i < count; i++) {
+    for (size_t i = 0; i < count; i++) {
         name = aws_string_new_from_c_str(impl->allocator, property_names[i]);
         value = aws_string_new_from_c_str(impl->allocator, property_values[i]);
         if (name == NULL || value == NULL) {
@@ -386,12 +384,12 @@ const char *aws_crt_signable_get_property(const struct aws_signable *signable, c
         goto on_error;
     }
 
-    return (char*)out_value.ptr;
+    return (char *)out_value.ptr;
 
-    on_error:
+on_error:
 
-        aws_string_destroy(name);
-        return NULL;
+    aws_string_destroy(name);
+    return NULL;
 }
 
 void aws_crt_signable_release(struct aws_signable *signable) {

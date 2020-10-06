@@ -24,7 +24,9 @@ const char *aws_crt_signing_result_get_property(const struct aws_signing_result 
     return aws_string_c_str(out_property_value);
 }
 
-struct aws_crt_property_list *aws_crt_signing_result_get_property_list(const struct aws_signing_result *result, const char *list_name) {
+struct aws_crt_property_list *aws_crt_signing_result_get_property_list(
+    const struct aws_signing_result *result,
+    const char *list_name) {
     if (result == NULL || list_name == NULL) {
         aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
         return NULL;
@@ -41,10 +43,10 @@ struct aws_crt_property_list *aws_crt_signing_result_get_property_list(const str
     if (result_param_list && aws_array_list_length(result_param_list) > 0) {
         size_t len = aws_array_list_length(result_param_list);
         out->len = len;
-        out->names = aws_mem_acquire(result->allocator, len * sizeof(char*));
-        out->values = aws_mem_acquire(result->allocator, len * sizeof(char*));
+        out->names = aws_mem_acquire(result->allocator, len * sizeof(char *));
+        out->values = aws_mem_acquire(result->allocator, len * sizeof(char *));
 
-        for(size_t i = 0; i < len; i++) {
+        for (size_t i = 0; i < len; i++) {
             struct aws_signing_result_property property;
             aws_array_list_get_at(result_param_list, &property, i);
             out->names[i] = aws_string_c_str(property.name);
@@ -58,8 +60,7 @@ struct aws_crt_property_list *aws_crt_signing_result_get_property_list(const str
 
 void aws_crt_property_list_release(struct aws_crt_property_list *property_list) {
     struct aws_allocator *allocator = aws_crt_allocator();
-    if (property_list != NULL || property_list->len > 0)
-    {
+    if (property_list != NULL || property_list->len > 0) {
         aws_mem_release(allocator, property_list->names);
         aws_mem_release(allocator, property_list->values);
     }
