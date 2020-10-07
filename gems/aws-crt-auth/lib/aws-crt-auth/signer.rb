@@ -3,6 +3,7 @@
 require 'openssl'
 require 'time'
 require 'tempfile'
+require 'uri'
 
 module Aws
   module Crt
@@ -184,10 +185,10 @@ module Aws
             out[:signature] = Aws::Crt::Native.signing_result_get_property(
               result, 'signature'
             )
-            p_list_p = Aws::Crt::Native.signing_result_get_property_list(
+            p_list = Aws::Crt::Native.signing_result_get_property_list(
               result, 'headers'
             )
-            out[:headers] = Aws::Crt::Native::PropertyList.new(p_list_p).props
+            out[:headers] = p_list.props
             nil
           end
 

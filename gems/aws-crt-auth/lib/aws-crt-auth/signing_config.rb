@@ -54,7 +54,7 @@ module Aws
               options[:region],
               options[:service],
               options[:signed_body_value],
-              extract_date(options),
+              extract_date_ms(options),
               @credentials&.native,
               apply_checksum_header,
               sign_header_fn,
@@ -75,8 +75,8 @@ module Aws
           end
         end
 
-        def extract_date(options)
-          (options[:date] || Time.now).to_i
+        def extract_date_ms(options)
+          (options[:date] || Time.now).to_i * 1000
         end
 
         def extract_unsigned_header_fn(unsigned_headers)

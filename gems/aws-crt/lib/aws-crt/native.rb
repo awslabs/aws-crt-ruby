@@ -136,7 +136,7 @@ module Aws
       attach_function :aws_crt_sign_request, %i[pointer pointer string signing_complete_fn], :int
 
       attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string
-      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], :pointer
+      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref
       attach_function :aws_crt_property_list_release, %i[pointer], :void
 
       # Internal testing API

@@ -60,9 +60,7 @@ struct aws_crt_property_list *aws_crt_signing_result_get_property_list(
 
 void aws_crt_property_list_release(struct aws_crt_property_list *property_list) {
     struct aws_allocator *allocator = aws_crt_allocator();
-    if (property_list != NULL || property_list->len > 0) {
-        aws_mem_release(allocator, property_list->names);
-        aws_mem_release(allocator, property_list->values);
+    if (property_list != NULL) {
+        aws_mem_release(allocator, property_list);
     }
-    aws_mem_release(allocator, property_list);
 }

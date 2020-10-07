@@ -55,7 +55,7 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
         config->native.signed_body_value = aws_byte_cursor_from_string(config->signed_body_value_str);
     }
 
-    aws_date_time_init_epoch_secs(&config->native.date, date_epoch_ms);
+    aws_date_time_init_epoch_millis(&config->native.date, date_epoch_ms);
     config->native.credentials = credentials;
 
     if (should_sign_header != NULL) {
