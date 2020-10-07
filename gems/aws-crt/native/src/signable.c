@@ -12,17 +12,11 @@
 #define INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LISTS_TABLE_SIZE 10
 #define INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE 10
 
-struct aws_crt_signable_property {
-    struct aws_byte_cursor name;
-    struct aws_byte_cursor value;
-    struct aws_string *name_str;
-    struct aws_string *value_str;
-};
-
 struct aws_crt_signable_impl {
     struct aws_allocator *allocator;
     struct aws_hash_table properties;
     struct aws_hash_table property_lists;
+    struct aws_array_list str_buffer;
 };
 
 static int s_aws_crt_signable_get_property(
@@ -89,6 +83,16 @@ static void s_aws_crt_signable_destroy(struct aws_signable *signable) {
     aws_hash_table_clean_up(&impl->properties);
     aws_hash_table_clean_up(&impl->property_lists);
 
+    if (aws_array_list_is_valid(&impl->str_buffer)) {
+        const size_t string_count = aws_array_list_length(&impl->str_buffer);
+        for (size_t i = 0; i < string_count; ++i) {
+            struct aws_string *string = NULL;
+            aws_array_list_get_at(&impl->str_buffer, &string, i);
+            aws_string_destroy(string);
+        }
+        aws_array_list_clean_up(&impl->str_buffer);
+    }
+
     aws_mem_release(signable->allocator, signable);
 }
 
@@ -99,29 +103,9 @@ static struct aws_signable_vtable s_aws_crt_signable_vtable = {
     .destroy = s_aws_crt_signable_destroy,
 };
 
-static void s_aws_crt_signable_property_clean_up(struct aws_crt_signable_property *pair) {
-    aws_string_destroy(pair->name_str);
-    aws_string_destroy(pair->value_str);
-}
-
 static void s_aws_hash_callback_property_list_destroy(void *value) {
     struct aws_array_list *property_list = value;
-
-    size_t property_count = aws_array_list_length(property_list);
-    for (size_t i = 0; i < property_count; ++i) {
-        struct aws_crt_signable_property property;
-        AWS_ZERO_STRUCT(property);
-
-        if (aws_array_list_get_at(property_list, &property, i)) {
-            continue;
-        }
-
-        s_aws_crt_signable_property_clean_up(&property);
-    }
-
-    struct aws_allocator *allocator = property_list->alloc;
     aws_array_list_clean_up(property_list);
-    aws_mem_release(allocator, property_list);
 }
 
 struct aws_signable *aws_crt_signable_new(void) {
@@ -159,7 +143,12 @@ struct aws_signable *aws_crt_signable_new(void) {
             aws_hash_string,
             aws_hash_callback_string_eq,
             aws_hash_callback_string_destroy,
-            s_aws_hash_callback_property_list_destroy)) {
+            s_aws_hash_callback_property_list_destroy) ||
+        aws_array_list_init_dynamic(
+            &impl->str_buffer,
+            allocator,
+            INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE * 2,
+            sizeof(struct aws_string*))) {
         goto on_error;
     }
 
@@ -236,7 +225,7 @@ static struct aws_array_list *s_get_or_create_property_list(
             properties,
             impl->allocator,
             INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE,
-            sizeof(struct aws_crt_signable_property))) {
+            sizeof(struct aws_signable_property_list_pair))) {
         goto on_error;
     }
 
@@ -287,11 +276,14 @@ int aws_crt_signable_append_property_list(
         goto on_error;
     }
 
-    struct aws_crt_signable_property property;
-    property.name_str = name;
-    property.value_str = value;
+    struct aws_signable_property_list_pair property;
     property.name = aws_byte_cursor_from_string(name);
     property.value = aws_byte_cursor_from_string(value);
+
+    if (aws_array_list_push_back(&impl->str_buffer, &name) ||
+        aws_array_list_push_back(&impl->str_buffer, &value)) {
+        goto on_error;
+    }
 
     if (aws_array_list_push_back(properties, &property)) {
         goto on_error;
@@ -343,11 +335,14 @@ int aws_crt_signable_set_property_list(
             goto on_error;
         }
 
-        struct aws_crt_signable_property property;
-        property.name_str = name;
-        property.value_str = value;
+        struct aws_signable_property_list_pair property;
         property.name = aws_byte_cursor_from_string(name);
         property.value = aws_byte_cursor_from_string(value);
+
+        if (aws_array_list_push_back(&impl->str_buffer, &name) ||
+            aws_array_list_push_back(&impl->str_buffer, &value)) {
+            goto on_error;
+        }
 
         if (aws_array_list_push_back(properties, &property)) {
             goto on_error;

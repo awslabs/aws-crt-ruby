@@ -298,24 +298,6 @@ module Aws
             expect(signature.headers['authorization']).to_not be(nil)
           end
 
-          it 'warbles the barbles' do
-            require 'aws-sigv4'
-            options[:unsigned_headers] = ['content-length']
-            signature = Aws::Sigv4::Signer.new(options).sign_request(
-              http_method: 'PUT',
-              url: 'https://domain.com',
-              headers: {
-                'Foo' => 'foo',
-                'Bar' => 'bar  bar',
-                'Bar2' => '"bar  bar"',
-                'Content-Length' => 9,
-                'X-Amz-Date' => '20120101T112233Z'
-              },
-              body: StringIO.new('http-body')
-            )
-            puts signature.headers['authorization']
-          end
-
           it 'signs the request' do
             options[:unsigned_headers] = ['content-length']
             signature = Signer.new(options).sign_request(
