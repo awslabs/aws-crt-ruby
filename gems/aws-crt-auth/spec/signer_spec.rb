@@ -131,7 +131,6 @@ module Aws
 
           it 'populates the Host header' do
             signature = Signer.new(options).sign_request(request)
-            puts signature.inspect
             expect(signature.headers['host']).to eq('domain.com')
           end
 

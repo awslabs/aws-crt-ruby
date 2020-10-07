@@ -3,7 +3,9 @@
 module Aws
   module Crt
     module Auth
+      # Errors types for CRT Auth bindings
       module Errors
+        # Error raised when credentials are missing
         class MissingCredentialsError < ArgumentError
           def initialize(msg = nil)
             super(msg || <<-MSG.strip)
@@ -15,6 +17,7 @@ module Aws
           end
         end
 
+        # Error raised for Missing Regions
         class MissingRegionError < ArgumentError
           def initialize(*_args)
             super('missing required option :region')

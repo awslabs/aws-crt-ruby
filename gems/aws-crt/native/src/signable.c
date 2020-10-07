@@ -148,7 +148,7 @@ struct aws_signable *aws_crt_signable_new(void) {
             &impl->str_buffer,
             allocator,
             INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE * 2,
-            sizeof(struct aws_string*))) {
+            sizeof(struct aws_string *))) {
         goto on_error;
     }
 
@@ -280,8 +280,7 @@ int aws_crt_signable_append_property_list(
     property.name = aws_byte_cursor_from_string(name);
     property.value = aws_byte_cursor_from_string(value);
 
-    if (aws_array_list_push_back(&impl->str_buffer, &name) ||
-        aws_array_list_push_back(&impl->str_buffer, &value)) {
+    if (aws_array_list_push_back(&impl->str_buffer, &name) || aws_array_list_push_back(&impl->str_buffer, &value)) {
         goto on_error;
     }
 
@@ -339,8 +338,7 @@ int aws_crt_signable_set_property_list(
         property.name = aws_byte_cursor_from_string(name);
         property.value = aws_byte_cursor_from_string(value);
 
-        if (aws_array_list_push_back(&impl->str_buffer, &name) ||
-            aws_array_list_push_back(&impl->str_buffer, &value)) {
+        if (aws_array_list_push_back(&impl->str_buffer, &name) || aws_array_list_push_back(&impl->str_buffer, &value)) {
             goto on_error;
         }
 

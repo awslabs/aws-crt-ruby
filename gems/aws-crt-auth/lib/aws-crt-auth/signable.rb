@@ -23,12 +23,10 @@ module Aws
           end
 
           options.fetch(:property_lists, {}).each do |k, h|
-            count = h.size
-            key_array = FFI::MemoryPointer.new(:pointer, count)
-            value_array = FFI::MemoryPointer.new(:pointer, count)
-            key_array.write_array_of_pointer(h.keys.map { |s| FFI::MemoryPointer.from_string(s.to_s) })
-            value_array.write_array_of_pointer(h.values.map { |s| FFI::MemoryPointer.from_string(s.to_s) })
-            Aws::Crt::Native.signable_set_property_list(native, k, count, key_array, value_array)
+            keys, values = Aws::Crt::Native.hash_to_native_arrays(h)
+            Aws::Crt::Native.signable_set_property_list(
+              native, k, h.size, keys, values
+            )
           end
         end
       end

@@ -43,12 +43,7 @@ module Aws
             options[:unsigned_headers]
           )
 
-          apply_checksum_header =
-            if options.fetch(:apply_checksum_header, true)
-              :sbht_content_sha256
-            else
-              :sbht_none
-            end
+          apply_checksum_header = extract_checksum_header(options)
 
           # ensure we retain a reference to the credentials to avoid GC
           @credentials = options[:credentials]
@@ -71,6 +66,14 @@ module Aws
         end
 
         private
+
+        def extract_checksum_header(options)
+          if options.fetch(:apply_checksum_header, true)
+            :sbht_content_sha256
+          else
+            :sbht_none
+          end
+        end
 
         def extract_date(options)
           (options[:date] || Time.now).to_i

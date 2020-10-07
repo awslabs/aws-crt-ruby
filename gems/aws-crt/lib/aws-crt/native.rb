@@ -21,6 +21,7 @@ module Aws
         end
       end
 
+      # Managed PropertyList Struct (for outputs)
       class PropertyList < FFI::ManagedStruct
         layout :len, :size_t,
                :names, :pointer,
@@ -41,6 +42,23 @@ module Aws
         def self.release(ptr)
           Aws::Crt::Native.aws_crt_property_list_release(ptr)
         end
+      end
+
+      # Given a ruby hash (string -> string), return two native arrays:
+      # char** (:pointer)
+      def self.hash_to_native_arrays(hash)
+        key_array = array_to_native(hash.keys)
+        value_array = array_to_native(hash.values)
+        [key_array, value_array]
+      end
+
+      # Given a ruby array of strings, return a native array: char**
+      def self.array_to_native(array)
+        native = FFI::MemoryPointer.new(:pointer, array.size)
+        native.write_array_of_pointer(array.map do |s|
+          FFI::MemoryPointer.from_string(s.to_s)
+        end)
+        native
       end
 
       # Core API

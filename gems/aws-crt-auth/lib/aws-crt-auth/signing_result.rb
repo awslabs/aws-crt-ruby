@@ -11,7 +11,8 @@ module Aws
         # include Aws::Crt::ManagedNative
         # native_destroy Aws::Crt::Native.method(:signing_result_clean_up)
 
-        # @param [FFI::Pointer] signing_result_ptr - FFI Pointer to a signing_result
+        # @param [FFI::Pointer] signing_result_ptr -
+        #   FFI Pointer to a signing_result
         def initialize(signing_result_ptr)
           # manage_native { signing_result_ptr }
         end
