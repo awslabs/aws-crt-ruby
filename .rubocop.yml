@@ -3,8 +3,8 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'gems/aws-crt/native/aws-common-runtime/**/*.rb'
-    - 'gems/aws-crt-auth/spec/signer_spec.rb'
-    - 'gems/aws-crt-auth/lib/aws-crt-auth/signer.rb'
+    - 'gems/aws-crt-signer/spec/signer_spec.rb'
+    - 'gems/aws-crt-signer/lib/aws-crt-signer/signer.rb'
 
 Style/HashSyntax:
   Exclude:
