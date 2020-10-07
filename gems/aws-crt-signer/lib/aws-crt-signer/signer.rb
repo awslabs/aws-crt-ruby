@@ -242,7 +242,7 @@ module Aws
 
       def fetch_credentials
         credentials = @credentials_provider.credentials
-        if credentials&.set?
+        if credentials&.native_set?
           credentials
         else
           raise Errors::MissingCredentialsError,

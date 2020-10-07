@@ -19,7 +19,7 @@ module Aws
         # @option options [required, String] :region
         # @option options [required, String] :service
         # @option options [Time] :date (Time.now)
-        # @option options [Array<String>|Proc(String->Boolean)]
+        # @option options [Array<String>|Proc(ByteBuf->Boolean)]
         #   :unsigned_headers ([])
         # @option options [Boolean] :use_double_uri_encode (false)
         # @option options [Boolean] :should_normalize_uri_path (false)
