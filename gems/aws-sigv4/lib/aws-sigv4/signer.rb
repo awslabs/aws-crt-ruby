@@ -6,7 +6,7 @@ require 'tempfile'
 require 'uri'
 
 module Aws
-  module Crt
+  module Sigv4
     # Utility class for creating AWS signature version 4 signature.
     class Signer
       # @overload initialize(service:, region:, access_key_id:, secret_access_key:, session_token:nil, **options)
@@ -280,6 +280,23 @@ module Aws
           uri.host
         else
           "#{uri.host}:#{uri.port}"
+        end
+      end
+
+      class << self
+
+        # @api private
+        def uri_escape_path(path)
+          path.gsub(/[^\/]+/) { |part| uri_escape(part) }
+        end
+
+        # @api private
+        def uri_escape(string)
+          if string.nil?
+            nil
+          else
+            CGI.escape(string.encode('UTF-8')).gsub('+', '%20').gsub('%7E', '~')
+          end
         end
       end
     end

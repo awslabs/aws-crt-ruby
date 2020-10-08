@@ -3,7 +3,7 @@
 require_relative 'spec_helper'
 
 module Aws
-  module Crt #:nodoc:
+  module Sigv4 #:nodoc:
     describe Signer do
       let(:credentials) do
         {
@@ -87,7 +87,7 @@ module Aws
         it 'accepts :credentials' do
           signer = Signer.new(
             options.merge(
-              credentials: Auth::Credentials.new('akid', 'secret', 'token')
+              credentials: Aws::Crt::Auth::Credentials.new('akid', 'secret', 'token')
             )
           )
           creds = signer.credentials_provider.credentials

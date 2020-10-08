@@ -4,7 +4,7 @@ AllCops:
   Exclude:
     - 'gems/aws-crt/native/aws-common-runtime/**/*.rb'
     - 'gems/aws-crt-signer/spec/signer_spec.rb'
-    - 'gems/aws-crt-signer/lib/aws-crt-signer/signer.rb'
+    - 'gems/aws-sigv4/**/*.rb'
 
 Style/HashSyntax:
   Exclude:
