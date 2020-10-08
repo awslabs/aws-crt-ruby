@@ -178,25 +178,7 @@ module Aws
           property_lists: { 'headers' => headers }
         )
 
-        out = {}
-        callback = proc do |result, status, _userdata|
-          Aws::Crt::Errors.raise_last_error unless status.zero?
-          out[:signature] = Aws::Crt::Native.signing_result_get_property(
-            result, 'signature'
-          )
-          p_list = Aws::Crt::Native.signing_result_get_property_list(
-            result, 'headers'
-          )
-          out[:headers] = p_list.props
-          nil
-        end
-
-        # Currently this will always be synchronous
-        # (because we are resolving credentials) - so do not need to
-        # sync threads/callbacks
-        Aws::Crt::Native.sign_request(
-          signable.native, config.native, config.to_s, callback
-        )
+        out = Aws::Crt::Auth::Signer.sign_request(config, signable)
 
         Signature.new(
           headers: sigv4_headers.merge(downcase_headers(out[:headers])),
