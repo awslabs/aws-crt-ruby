@@ -28,6 +28,10 @@ Metrics/MethodLength:
   Exclude:
     - 'gems/aws-crt/ext/compile.rb'
 
+Metrics/ModuleLength:
+  Exclude:
+    - 'gems/**/spec/**/*.rb'
+
 Metrics/AbcSize:
   Max: 20
 

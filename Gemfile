@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'aws-sigv4'
+gem 'aws-eventstream'
 gem 'ffi'
 gem 'rake'
 
