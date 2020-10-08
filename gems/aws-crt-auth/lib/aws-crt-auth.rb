@@ -2,7 +2,6 @@
 
 require 'aws-crt'
 require_relative 'aws-crt-auth/credentials'
-require_relative 'aws-crt-auth/signer'
 
 module Aws
   module Crt
