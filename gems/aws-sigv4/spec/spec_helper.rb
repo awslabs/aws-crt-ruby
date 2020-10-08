@@ -7,4 +7,4 @@ $LOAD_PATH.unshift File.expand_path('../../aws-crt/lib', __dir__)
 $LOAD_PATH.unshift File.expand_path('../../aws-crt-auth/lib', __dir__)
 
 require_relative '../../aws-crt/spec/spec_helper'
-require 'aws-crt-signer'
+require 'aws-sigv4'
