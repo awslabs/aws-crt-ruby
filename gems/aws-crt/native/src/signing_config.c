@@ -63,7 +63,6 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
         config->native.should_sign_header_ud = config;
     }
 
-    // TODO:
     config->native.flags.should_normalize_uri_path = should_normalize_uri_path;
     config->native.flags.use_double_uri_encode = use_double_uri_encode;
     config->native.flags.omit_session_token = omit_session_token;
