@@ -5,21 +5,21 @@ require_relative 'spec_helper'
 describe Aws::Crt::Errors do
   describe '.raise_last_error' do
     it 'translates and raises the last error' do
-      Aws::Crt::Native.test_error(3) # generate an error
+      Aws::Crt::Native.test_error!(3) # generate an error
       expect do
         Aws::Crt::Errors.raise_last_error
       end.to raise_error(Aws::Crt::Error)
     end
 
     it 'does not raise when no error' do
-      Aws::Crt::Native.test_error(0) # success
+      Aws::Crt::Native.test_error!(0) # success
       expect do
         Aws::Crt::Errors.raise_last_error
       end.not_to raise_error
     end
 
     it 'resets the error after raising it' do
-      Aws::Crt::Native.test_error(3) # raise error
+      Aws::Crt::Native.test_error!(3) # raise error
       expect do
         Aws::Crt::Errors.raise_last_error
       end.to raise_error(Aws::Crt::Error)

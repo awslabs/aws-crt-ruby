@@ -19,11 +19,15 @@ Metrics/BlockLength:
   Exclude:
     - 'gems/aws-crt/Rakefile'
     - '**/*.rake'
-    - 'gems/aws-crt/spec/**/*.rb'
+    - 'gems/**/spec/**/*.rb'
 
 Metrics/MethodLength:
+  Max: 25
   Exclude:
     - 'gems/aws-crt/ext/compile.rb'
+
+Metrics/AbcSize:
+  Max: 20
 
 Naming/FileName:
   Exclude:
