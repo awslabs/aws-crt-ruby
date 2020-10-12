@@ -74,7 +74,6 @@ module Aws
 
             it 'does not include unsigned_headers in SignedHeaders' do
               res = Signer.sign_request(signing_config, signable)
-              puts res
               expect(res[:headers]['Authorization'])
                 .to include 'SignedHeaders=h2'
             end
@@ -91,6 +90,7 @@ module Aws
                 'f453526ae113b1e1cb48c1c0e'
 
               failures = Array.new(n_test_threads, 0)
+
               n_test_threads.times do |i|
                 threads << Thread.new do
                   until shutdown_threads
@@ -121,9 +121,8 @@ module Aws
               sleep(test_duration)
               shutdown_threads = true
               threads.each(&:join)
-              puts "Total failures: #{failures.sum}"
-              # TODO: This fails sometimes
-              # expect(failures.all? { |f| f.zero? } ).to be true
+
+              expect(failures.all?(&:zero?)).to be true
             end
 
             # TODO: Stress test with unsigned_headers -

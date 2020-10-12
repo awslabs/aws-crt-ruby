@@ -23,7 +23,10 @@ module Aws
           end
 
           options.fetch(:property_lists, {}).each do |k, h|
-            keys, values = Aws::Crt::Native.hash_to_native_arrays(h)
+            # h.each do |p, v|
+            #   Aws::Crt::Native.signable_append_property_list(native, k, p, v)
+            # end
+            keys, values, _pointers = Aws::Crt::Native.hash_to_native_arrays(h)
             Aws::Crt::Native.signable_set_property_list(
               native, k, h.size, keys, values
             )

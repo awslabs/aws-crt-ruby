@@ -45,20 +45,24 @@ module Aws
       end
 
       # Given a ruby hash (string -> string), return two native arrays:
-      # char** (:pointer)
+      # char** (:pointer) AND a list of all of the FFI::MemoryPointers
+      # that must be kept around to avoid GC
       def self.hash_to_native_arrays(hash)
-        key_array = array_to_native(hash.keys)
-        value_array = array_to_native(hash.values)
-        [key_array, value_array]
+        key_array, keys_p = array_to_native(hash.keys)
+        value_array, values_p = array_to_native(hash.values)
+        [key_array, value_array, keys_p + values_p]
       end
 
-      # Given a ruby array of strings, return a native array: char**
+      # Given a ruby array of strings, return a native array: char** and
+      # the FFI::MemoryPointers (these need to be pined for the length the
+      # native memory will be used to avoid GC)
       def self.array_to_native(array)
-        native = FFI::MemoryPointer.new(:pointer, array.size)
-        native.write_array_of_pointer(array.map do |s|
+        native = FFI::MemoryPointer.new(:pointer, array.size + 1)
+        pointers = array.map do |s|
           FFI::MemoryPointer.from_string(s.to_s)
-        end)
-        native
+        end
+        native.write_array_of_pointer(pointers)
+        [native, pointers]
       end
 
       # Extends FFI::attach_function
@@ -72,6 +76,7 @@ module Aws
         ruby_name = c_name.to_s.sub(/aws_crt_/, '').to_sym
         raise_errors = options.fetch(:raise, true)
         options.delete(:raise)
+        options[:blocking] = true
         unless raise_errors
           return super(ruby_name, c_name, params, returns, options)
         end
