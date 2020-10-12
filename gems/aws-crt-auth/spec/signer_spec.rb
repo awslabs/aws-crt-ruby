@@ -102,13 +102,18 @@ module Aws
                       date: Time.parse('20120101T112233Z'),
                       credentials: Credentials.new('akid', 'secret'),
                       signed_body_value: 'UNSIGNED-PAYLOAD',
-                      unsigned_headers: nil
+                      unsigned_headers: ['unsigned']
                     )
                     signable = Signable.new(
                       properties:
                         { 'uri' => 'test_uri', 'http_method' => 'get' },
                       property_lists:
-                        { 'headers' => { 'h1' => 'h1_v', 'h2' => 'h2_v' } }
+                        { 'headers' =>
+                            {
+                              'h1' => 'h1_v',
+                              'h2' => 'h2_v',
+                              'unsigned' => 'unsigned_value'
+                            } }
                     )
                     res = Signer.sign_request(signing_config, signable)
                     failures[i] += 1 if res[:signature] != expected_signature
@@ -124,9 +129,6 @@ module Aws
 
               expect(failures.all?(&:zero?)).to be true
             end
-
-            # TODO: Stress test with unsigned_headers -
-            #   currently causes segfault
           end
         end
       end

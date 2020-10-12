@@ -21,13 +21,6 @@ module Aws
             out[:signature] = Aws::Crt::Native.signing_result_get_property(
               result, 'signature'
             )
-            out[:string_to_sign] = Aws::Crt::Native.signing_result_get_property(
-              result, 'string_to_sign'
-            )
-
-            out[:c_req] = Aws::Crt::Native.signing_result_get_property(
-              result, 'c_req'
-            )
             p_list = Aws::Crt::Native.signing_result_get_property_list(
               result, 'headers'
             )

@@ -39,7 +39,7 @@ module Aws
           # validation of parameters is handled in signing_config_new
 
           # create a callback function for aws_should_sign_header_fn
-          sign_header_fn = extract_unsigned_header_fn(
+          @sign_header_fn = extract_unsigned_header_fn(
             options[:unsigned_headers]
           )
 
@@ -57,7 +57,7 @@ module Aws
               extract_date_ms(options),
               @credentials&.native,
               apply_checksum_header,
-              sign_header_fn,
+              @sign_header_fn,
               options.fetch(:use_double_uri_encode, false),
               options.fetch(:should_normalize_uri_path, false),
               options.fetch(:omit_session_token, false)

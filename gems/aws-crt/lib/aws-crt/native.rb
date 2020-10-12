@@ -76,7 +76,6 @@ module Aws
         ruby_name = c_name.to_s.sub(/aws_crt_/, '').to_sym
         raise_errors = options.fetch(:raise, true)
         options.delete(:raise)
-        options[:blocking] = true
         unless raise_errors
           return super(ruby_name, c_name, params, returns, options)
         end
