@@ -19,7 +19,7 @@ module Aws
         # @option options [required, String] :region
         # @option options [required, String] :service
         # @option options [Time] :date (Time.now)
-        # @option options [Array<String>|Proc(ByteBuf->Boolean)]
+        # @option options [Array<String>]
         #   :unsigned_headers ([])
         # @option options [Boolean] :use_double_uri_encode (false)
         # @option options [Boolean] :should_normalize_uri_path (false)
@@ -80,13 +80,11 @@ module Aws
         end
 
         def extract_unsigned_header_fn(unsigned_headers)
-          if unsigned_headers && !unsigned_headers.respond_to?(:call)
-            unsigned_headers = Set.new(unsigned_headers.map(&:downcase))
-            proc do |param, _p|
-              !unsigned_headers.include? param.to_s.downcase
-            end
-          else
-            unsigned_headers
+          return nil unless unsigned_headers&.size&.positive?
+
+          unsigned_headers = Set.new(unsigned_headers.map(&:downcase))
+          proc do |param, _p|
+            !unsigned_headers.include? param.to_s.downcase
           end
         end
       end

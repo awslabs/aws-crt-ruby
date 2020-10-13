@@ -57,7 +57,7 @@ module Aws
       # the FFI::MemoryPointers (these need to be pined for the length the
       # native memory will be used to avoid GC)
       def self.array_to_native(array)
-        native = FFI::MemoryPointer.new(:pointer, array.size + 1)
+        native = FFI::MemoryPointer.new(:pointer, array.size)
         pointers = array.map do |s|
           FFI::MemoryPointer.from_string(s.to_s)
         end

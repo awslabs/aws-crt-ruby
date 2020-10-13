@@ -13,7 +13,6 @@
 #define INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE 10
 
 struct aws_crt_signable_impl {
-    struct aws_allocator *allocator;
     struct aws_hash_table properties;
     struct aws_hash_table property_lists;
     struct aws_array_list str_buffer;
@@ -116,10 +115,6 @@ struct aws_signable *aws_crt_signable_new(void) {
     aws_mem_acquire_many(
         allocator, 2, &signable, sizeof(struct aws_signable), &impl, sizeof(struct aws_crt_signable_impl));
 
-    if (signable == NULL || impl == NULL) {
-        return NULL;
-    }
-
     AWS_ZERO_STRUCT(*signable);
     AWS_ZERO_STRUCT(*impl);
 
@@ -127,7 +122,6 @@ struct aws_signable *aws_crt_signable_new(void) {
     signable->vtable = &s_aws_crt_signable_vtable;
     signable->impl = impl;
 
-    impl->allocator = allocator;
     if (aws_hash_table_init(
             &impl->properties,
             allocator,
@@ -178,11 +172,8 @@ int aws_crt_signable_set_property(
     struct aws_string *name = NULL;
     struct aws_string *value = NULL;
 
-    name = aws_string_new_from_c_str(impl->allocator, property_name);
-    value = aws_string_new_from_c_str(impl->allocator, property_value);
-    if (name == NULL || value == NULL) {
-        goto on_error;
-    }
+    name = aws_string_new_from_c_str(signable->allocator, property_name);
+    value = aws_string_new_from_c_str(signable->allocator, property_value);
 
     if (aws_hash_table_put(&impl->properties, name, value, NULL)) {
         goto on_error;
@@ -210,20 +201,20 @@ static struct aws_array_list *s_get_or_create_property_list(
         return element->value;
     }
 
-    struct aws_array_list *properties = aws_mem_acquire(impl->allocator, sizeof(struct aws_array_list));
+    struct aws_array_list *properties = aws_mem_acquire(signable->allocator, sizeof(struct aws_array_list));
     if (properties == NULL) {
         return NULL;
     }
 
     AWS_ZERO_STRUCT(*properties);
-    struct aws_string *name_copy = aws_string_new_from_string(impl->allocator, list_name);
+    struct aws_string *name_copy = aws_string_new_from_string(signable->allocator, list_name);
     if (name_copy == NULL) {
         goto on_error;
     }
 
     if (aws_array_list_init_dynamic(
             properties,
-            impl->allocator,
+            signable->allocator,
             INITIAL_AWS_CRT_SIGNABLE_PROPERTY_LIST_SIZE,
             sizeof(struct aws_signable_property_list_pair))) {
         goto on_error;
@@ -239,7 +230,7 @@ on_error:
 
     aws_string_destroy(name_copy);
     aws_array_list_clean_up(properties);
-    aws_mem_release(impl->allocator, properties);
+    aws_mem_release(signable->allocator, properties);
 
     return NULL;
 }
@@ -263,18 +254,15 @@ int aws_crt_signable_append_property_list(
     struct aws_string *name = NULL;
     struct aws_string *value = NULL;
 
-    list_name_str = aws_string_new_from_c_str(impl->allocator, list_name);
+    list_name_str = aws_string_new_from_c_str(signable->allocator, list_name);
 
     struct aws_array_list *properties = s_get_or_create_property_list(signable, list_name_str);
     if (properties == NULL) {
         return AWS_OP_ERR;
     }
 
-    name = aws_string_new_from_c_str(impl->allocator, property_name);
-    value = aws_string_new_from_c_str(impl->allocator, property_value);
-    if (name == NULL || value == NULL) {
-        goto on_error;
-    }
+    name = aws_string_new_from_c_str(signable->allocator, property_name);
+    value = aws_string_new_from_c_str(signable->allocator, property_value);
 
     struct aws_signable_property_list_pair property;
     property.name = aws_byte_cursor_from_string(name);
@@ -320,7 +308,7 @@ int aws_crt_signable_set_property_list(
     struct aws_string *name = NULL;
     struct aws_string *value = NULL;
 
-    list_name_str = aws_string_new_from_c_str(impl->allocator, list_name);
+    list_name_str = aws_string_new_from_c_str(signable->allocator, list_name);
 
     struct aws_array_list *properties = s_get_or_create_property_list(signable, list_name_str);
     if (properties == NULL) {
@@ -328,11 +316,8 @@ int aws_crt_signable_set_property_list(
     }
 
     for (size_t i = 0; i < count; i++) {
-        name = aws_string_new_from_c_str(impl->allocator, property_names[i]);
-        value = aws_string_new_from_c_str(impl->allocator, property_values[i]);
-        if (name == NULL || value == NULL) {
-            goto on_error;
-        }
+        name = aws_string_new_from_c_str(signable->allocator, property_names[i]);
+        value = aws_string_new_from_c_str(signable->allocator, property_values[i]);
 
         struct aws_signable_property_list_pair property;
         property.name = aws_byte_cursor_from_string(name);
@@ -367,10 +352,7 @@ const char *aws_crt_signable_get_property(const struct aws_signable *signable, c
     struct aws_string *name = NULL;
     struct aws_byte_cursor out_value;
 
-    name = aws_string_new_from_c_str(impl->allocator, property_name);
-    if (name == NULL) {
-        goto on_error;
-    }
+    name = aws_string_new_from_c_str(signable->allocator, property_name);
 
     int success = s_aws_crt_signable_get_property(signable, name, &out_value);
     if (success != 0) {

@@ -10,8 +10,6 @@
 
 struct aws_crt_signing_config {
     struct aws_signing_config_aws native;
-    struct aws_allocator *allocator;
-    struct aws_atomic_var ref_count;
     struct aws_string *region_str;
     struct aws_string *service_str;
     struct aws_string *signed_body_value_str;
@@ -32,11 +30,6 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     bool omit_session_token) {
     struct aws_allocator *allocator = aws_crt_allocator();
     struct aws_crt_signing_config *config = aws_mem_acquire(allocator, sizeof(struct aws_crt_signing_config));
-    if (config == NULL) {
-        return NULL;
-    }
-    config->allocator = allocator;
-    aws_atomic_init_int(&config->ref_count, 1);
 
     AWS_ZERO_STRUCT(*config);
     // copy string data
@@ -56,6 +49,7 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     }
 
     aws_date_time_init_epoch_millis(&config->native.date, date_epoch_ms);
+    aws_credentials_acquire(credentials);
     config->native.credentials = credentials;
 
     if (should_sign_header != NULL) {
@@ -79,18 +73,17 @@ void aws_crt_signing_config_release(struct aws_crt_signing_config *config) {
     if (config == NULL) {
         return;
     }
-
-    size_t old_value = aws_atomic_fetch_sub(&config->ref_count, 1);
-    if (old_value == 1) {
-        if (config->region_str != NULL) {
-            aws_string_destroy(config->region_str);
-        }
-        if (config->service_str != NULL) {
-            aws_string_destroy(config->service_str);
-        }
-        if (config->signed_body_value_str != NULL) {
-            aws_string_destroy(config->signed_body_value_str);
-        }
-        aws_mem_release(config->allocator, config);
+    if (config->region_str != NULL) {
+        aws_string_destroy(config->region_str);
     }
+    if (config->service_str != NULL) {
+        aws_string_destroy(config->service_str);
+    }
+    if (config->signed_body_value_str != NULL) {
+        aws_string_destroy(config->signed_body_value_str);
+    }
+    if (config->native.credentials != NULL) {
+        aws_credentials_release(config->native.credentials);
+    }
+    aws_mem_release(aws_crt_allocator(), config);
 }
