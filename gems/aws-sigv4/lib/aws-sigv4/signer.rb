@@ -4,6 +4,7 @@ require 'openssl'
 require 'time'
 require 'tempfile'
 require 'uri'
+require 'set'
 
 module Aws
   module Sigv4
