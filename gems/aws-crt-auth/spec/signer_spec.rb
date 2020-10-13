@@ -79,57 +79,57 @@ module Aws
             end
           end
 
-          context 'stress test' do
-            let(:n_test_threads) { 5 }
-            let(:test_duration) { 2 }
-
-            it 'is stable under multiple threads' do
-              shutdown_threads = false
-              threads = []
-              expected_signature = '1647c6a6a79fb9eddaa5f69459c50152e8fa32e' \
-                'f453526ae113b1e1cb48c1c0e'
-
-              failures = Array.new(n_test_threads, 0)
-
-              n_test_threads.times do |i|
-                threads << Thread.new do
-                  until shutdown_threads
-                    signing_config = SigningConfig.new(
-                      algorithm: :v4,
-                      signature_type: :http_request_headers,
-                      region: 'REGION',
-                      service: 'SERVICE',
-                      date: Time.parse('20120101T112233Z'),
-                      credentials: Credentials.new('akid', 'secret'),
-                      signed_body_value: 'UNSIGNED-PAYLOAD',
-                      unsigned_headers: ['unsigned']
-                    )
-                    signable = Signable.new(
-                      properties:
-                        { 'uri' => 'test_uri', 'http_method' => 'get' },
-                      property_lists:
-                        { 'headers' =>
-                            {
-                              'h1' => 'h1_v',
-                              'h2' => 'h2_v',
-                              'unsigned' => 'unsigned_value'
-                            } }
-                    )
-                    res = Signer.sign_request(signing_config, signable)
-                    failures[i] += 1 if res[:signature] != expected_signature
-                  end
-                end
-              end
-
-              # run a stress test for a few seconds.
-              # Increase this to stress test more locally
-              sleep(test_duration)
-              shutdown_threads = true
-              threads.each(&:join)
-
-              expect(failures.all?(&:zero?)).to be true
-            end
-          end
+          # context 'stress test' do
+          #   let(:n_test_threads) { 5 }
+          #   let(:test_duration) { 2 }
+          #
+          #   it 'is stable under multiple threads' do
+          #     shutdown_threads = false
+          #     threads = []
+          #     expected_signature = '1647c6a6a79fb9eddaa5f69459c50152e8fa32e' \
+          #       'f453526ae113b1e1cb48c1c0e'
+          #
+          #     failures = Array.new(n_test_threads, 0)
+          #
+          #     n_test_threads.times do |i|
+          #       threads << Thread.new do
+          #         until shutdown_threads
+          #           signing_config = SigningConfig.new(
+          #             algorithm: :v4,
+          #             signature_type: :http_request_headers,
+          #             region: 'REGION',
+          #             service: 'SERVICE',
+          #             date: Time.parse('20120101T112233Z'),
+          #             credentials: Credentials.new('akid', 'secret'),
+          #             signed_body_value: 'UNSIGNED-PAYLOAD',
+          #             unsigned_headers: ['unsigned']
+          #           )
+          #           signable = Signable.new(
+          #             properties:
+          #               { 'uri' => 'test_uri', 'http_method' => 'get' },
+          #             property_lists:
+          #               { 'headers' =>
+          #                   {
+          #                     'h1' => 'h1_v',
+          #                     'h2' => 'h2_v',
+          #                     'unsigned' => 'unsigned_value'
+          #                   } }
+          #           )
+          #           res = Signer.sign_request(signing_config, signable)
+          #           failures[i] += 1 if res[:signature] != expected_signature
+          #         end
+          #       end
+          #     end
+          #
+          #     # run a stress test for a few seconds.
+          #     # Increase this to stress test more locally
+          #     sleep(test_duration)
+          #     shutdown_threads = true
+          #     threads.each(&:join)
+          #
+          #     expect(failures.all?(&:zero?)).to be true
+          #   end
+          # end
         end
       end
     end

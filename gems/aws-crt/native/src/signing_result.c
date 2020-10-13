@@ -62,10 +62,10 @@ void aws_crt_property_list_release(struct aws_crt_property_list *property_list) 
     struct aws_allocator *allocator = aws_crt_allocator();
     if (property_list != NULL) {
         if (property_list->names != NULL) {
-            aws_mem_release(allocator, property_list->names);
+            aws_mem_release(allocator, (void *)property_list->names);
         }
         if (property_list->values != NULL) {
-            aws_mem_release(allocator, property_list->values);
+            aws_mem_release(allocator, (void *)property_list->values);
         }
         aws_mem_release(allocator, property_list);
     }

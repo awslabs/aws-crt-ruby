@@ -346,8 +346,6 @@ on_error:
 
 const char *aws_crt_signable_get_property(const struct aws_signable *signable, const char *property_name) {
     AWS_PRECONDITION(signable);
-    struct aws_crt_signable_impl *impl = signable->impl;
-    AWS_PRECONDITION(impl);
 
     struct aws_string *name = NULL;
     struct aws_byte_cursor out_value;
