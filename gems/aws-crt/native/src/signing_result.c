@@ -21,10 +21,9 @@ const char *aws_crt_signing_result_get_property(const struct aws_signing_result 
     aws_signing_result_get_property(result, name_str, &out_property_value);
     aws_string_destroy(name_str);
 
-    if(out_property_value == NULL) {
+    if (out_property_value == NULL) {
         return NULL;
     }
-
 
     return aws_string_c_str(out_property_value);
 }

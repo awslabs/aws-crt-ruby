@@ -242,7 +242,8 @@ int aws_crt_signable_append_property_list(
 
     struct aws_crt_signable_impl *impl = signable->impl;
     if (impl == NULL) {
-        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);;
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
+        ;
     }
 
     struct aws_string *list_name_str = NULL;
@@ -280,7 +281,7 @@ int aws_crt_signable_set_property_list(
     const char **property_values) {
 
     if (signable == NULL) {
-         return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
     }
 
     struct aws_crt_signable_impl *impl = signable->impl;
