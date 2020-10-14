@@ -169,7 +169,8 @@ module Aws
           service: @service,
           date: datetime,
           signed_body_value: content_sha256,
-          apply_checksum_header: @apply_checksum_header,
+          signed_body_header_type: @apply_checksum_header ?
+            :sbht_content_sha256 : :sbht_none,
           credentials: creds,
           unsigned_headers: @unsigned_headers,
           use_double_uri_encode: @uri_escape_path
