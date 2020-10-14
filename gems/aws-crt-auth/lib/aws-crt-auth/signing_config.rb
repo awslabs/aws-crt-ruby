@@ -65,6 +65,11 @@ module Aws
           end
         end
 
+        # @return [Boolean] - True when signing will be synchronous
+        def signing_synchronous?
+          Aws::Crt::Native.signing_config_is_signing_synchronous(native)
+        end
+
         private
 
         def extract_checksum_header(options)

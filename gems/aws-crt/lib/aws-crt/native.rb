@@ -28,6 +28,8 @@ module Aws
                :values, :pointer
 
         def props
+          return nil if to_ptr.null?
+
           return {} unless (self[:len]).positive?
 
           out = {}
@@ -132,19 +134,20 @@ module Aws
       callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
       attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool], :pointer
       attach_function :aws_crt_signing_config_release, [:pointer], :void
+      attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool, raise: false
 
       attach_function :aws_crt_signable_new, [], :pointer
       attach_function :aws_crt_signable_release, [:pointer], :void
       attach_function :aws_crt_signable_set_property, %i[pointer string string], :int
-      attach_function :aws_crt_signable_get_property, %i[pointer string], :string
+      attach_function :aws_crt_signable_get_property, %i[pointer string], :string, raise: false
       attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
       attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
 
       callback :signing_complete_fn, %i[pointer int string], :void
       attach_function :aws_crt_sign_request, %i[pointer pointer string signing_complete_fn], :int
 
-      attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string
-      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref
+      attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
+      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false
       attach_function :aws_crt_property_list_release, %i[pointer], :void
 
       # Internal testing API

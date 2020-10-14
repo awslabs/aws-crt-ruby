@@ -70,8 +70,8 @@ AWS_CRT_API struct aws_crt_signing_config *aws_crt_signing_config_new(
     bool should_normalize_uri_path,
     bool omit_session_token);
 AWS_CRT_API void aws_crt_signing_config_release(struct aws_crt_signing_config *config);
+AWS_CRT_API bool aws_crt_signing_config_is_signing_synchronous(struct aws_crt_signing_config *config);
 
-AWS_CRT_API struct aws_signable *aws_crt_signable_new(void);
 AWS_CRT_API void aws_crt_signable_release(struct aws_signable *signable);
 AWS_CRT_API int aws_crt_signable_set_property(
     struct aws_signable *signable,

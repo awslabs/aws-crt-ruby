@@ -72,17 +72,18 @@ void aws_crt_signing_config_release(struct aws_crt_signing_config *config) {
     if (config == NULL) {
         return;
     }
-    if (config->region_str != NULL) {
-        aws_string_destroy(config->region_str);
-    }
-    if (config->service_str != NULL) {
-        aws_string_destroy(config->service_str);
-    }
-    if (config->signed_body_value_str != NULL) {
-        aws_string_destroy(config->signed_body_value_str);
-    }
-    if (config->native.credentials != NULL) {
-        aws_credentials_release(config->native.credentials);
-    }
+
+    aws_string_destroy(config->region_str);
+    aws_string_destroy(config->service_str);
+    aws_string_destroy(config->signed_body_value_str);
+    aws_credentials_release(config->native.credentials);
+
     aws_mem_release(aws_crt_allocator(), config);
+}
+
+bool aws_crt_signing_config_is_signing_synchronous(struct aws_crt_signing_config *config) {
+    if (config == NULL) {
+        return false;
+    }
+    return config->native.credentials_provider == NULL;
 }

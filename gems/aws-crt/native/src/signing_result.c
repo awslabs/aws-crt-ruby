@@ -9,9 +9,9 @@ struct aws_crt_property_list {
     const char **values;
 };
 
+// Cannot error - return NULL for property not found
 const char *aws_crt_signing_result_get_property(const struct aws_signing_result *result, const char *name) {
     if (result == NULL || name == NULL) {
-        aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
         return NULL;
     }
 
@@ -21,14 +21,19 @@ const char *aws_crt_signing_result_get_property(const struct aws_signing_result 
     aws_signing_result_get_property(result, name_str, &out_property_value);
     aws_string_destroy(name_str);
 
+    if(out_property_value == NULL) {
+        return NULL;
+    }
+
+
     return aws_string_c_str(out_property_value);
 }
 
+// Cannot error - return NULL for property not found
 struct aws_crt_property_list *aws_crt_signing_result_get_property_list(
     const struct aws_signing_result *result,
     const char *list_name) {
     if (result == NULL || list_name == NULL) {
-        aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
         return NULL;
     }
 
@@ -36,11 +41,16 @@ struct aws_crt_property_list *aws_crt_signing_result_get_property_list(
     struct aws_string *list_name_str = aws_string_new_from_c_str(result->allocator, list_name);
 
     aws_signing_result_get_property_list(result, list_name_str, &result_param_list);
+    aws_string_destroy(list_name_str);
+
+    if (result_param_list == NULL) {
+        return NULL;
+    }
 
     struct aws_crt_property_list *out = aws_mem_acquire(result->allocator, sizeof(struct aws_crt_property_list));
     AWS_ZERO_STRUCT(*out);
 
-    if (result_param_list && aws_array_list_length(result_param_list) > 0) {
+    if (aws_array_list_length(result_param_list) > 0) {
         size_t len = aws_array_list_length(result_param_list);
         out->len = len;
         out->names = aws_mem_acquire(result->allocator, len * sizeof(char *));
@@ -54,7 +64,6 @@ struct aws_crt_property_list *aws_crt_signing_result_get_property_list(
         }
     }
 
-    aws_string_destroy(list_name_str);
     return out;
 }
 

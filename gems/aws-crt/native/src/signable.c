@@ -76,6 +76,7 @@ static void s_aws_crt_signable_destroy(struct aws_signable *signable) {
 
     struct aws_crt_signable_impl *impl = signable->impl;
     if (impl == NULL) {
+        aws_mem_release(signable->allocator, signable);
         return;
     }
 
@@ -161,12 +162,12 @@ int aws_crt_signable_set_property(
     const char *property_value) {
 
     if (signable == NULL) {
-        return AWS_OP_ERR;
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
     }
 
     struct aws_crt_signable_impl *impl = signable->impl;
     if (impl == NULL) {
-        return AWS_OP_ERR;
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
     }
 
     struct aws_string *name = NULL;
@@ -202,15 +203,9 @@ static struct aws_array_list *s_get_or_create_property_list(
     }
 
     struct aws_array_list *properties = aws_mem_acquire(signable->allocator, sizeof(struct aws_array_list));
-    if (properties == NULL) {
-        return NULL;
-    }
 
     AWS_ZERO_STRUCT(*properties);
     struct aws_string *name_copy = aws_string_new_from_string(signable->allocator, list_name);
-    if (name_copy == NULL) {
-        goto on_error;
-    }
 
     if (aws_array_list_init_dynamic(
             properties,
@@ -242,12 +237,12 @@ int aws_crt_signable_append_property_list(
     const char *property_value) {
 
     if (signable == NULL) {
-        return AWS_OP_ERR;
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
     }
 
     struct aws_crt_signable_impl *impl = signable->impl;
     if (impl == NULL) {
-        return AWS_OP_ERR;
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);;
     }
 
     struct aws_string *list_name_str = NULL;
@@ -257,9 +252,7 @@ int aws_crt_signable_append_property_list(
     list_name_str = aws_string_new_from_c_str(signable->allocator, list_name);
 
     struct aws_array_list *properties = s_get_or_create_property_list(signable, list_name_str);
-    if (properties == NULL) {
-        return AWS_OP_ERR;
-    }
+    aws_string_destroy(list_name_str);
 
     name = aws_string_new_from_c_str(signable->allocator, property_name);
     value = aws_string_new_from_c_str(signable->allocator, property_value);
@@ -268,24 +261,15 @@ int aws_crt_signable_append_property_list(
     property.name = aws_byte_cursor_from_string(name);
     property.value = aws_byte_cursor_from_string(value);
 
-    if (aws_array_list_push_back(&impl->str_buffer, &name) || aws_array_list_push_back(&impl->str_buffer, &value)) {
-        goto on_error;
-    }
+    aws_array_list_push_back(&impl->str_buffer, &name);
+    aws_array_list_push_back(&impl->str_buffer, &value);
 
-    if (aws_array_list_push_back(properties, &property)) {
-        goto on_error;
-    }
-
-    aws_string_destroy(list_name_str);
-    return AWS_OP_SUCCESS;
-
-on_error:
-
-    aws_string_destroy(list_name_str);
     aws_string_destroy(name);
     aws_string_destroy(value);
 
-    return AWS_OP_ERR;
+    aws_array_list_push_back(properties, &property);
+
+    return AWS_OP_SUCCESS;
 }
 
 int aws_crt_signable_set_property_list(
@@ -296,12 +280,12 @@ int aws_crt_signable_set_property_list(
     const char **property_values) {
 
     if (signable == NULL) {
-        return AWS_OP_ERR;
+         return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
     }
 
     struct aws_crt_signable_impl *impl = signable->impl;
     if (impl == NULL) {
-        return AWS_OP_ERR;
+        return aws_raise_error(AWS_ERROR_INVALID_ARGUMENT);
     }
 
     struct aws_string *list_name_str = NULL;
@@ -311,9 +295,7 @@ int aws_crt_signable_set_property_list(
     list_name_str = aws_string_new_from_c_str(signable->allocator, list_name);
 
     struct aws_array_list *properties = s_get_or_create_property_list(signable, list_name_str);
-    if (properties == NULL) {
-        goto on_error;
-    }
+    aws_string_destroy(list_name_str);
 
     for (size_t i = 0; i < count; i++) {
         name = aws_string_new_from_c_str(signable->allocator, property_names[i]);
@@ -323,29 +305,19 @@ int aws_crt_signable_set_property_list(
         property.name = aws_byte_cursor_from_string(name);
         property.value = aws_byte_cursor_from_string(value);
 
-        if (aws_array_list_push_back(&impl->str_buffer, &name) || aws_array_list_push_back(&impl->str_buffer, &value)) {
-            goto on_error;
-        }
+        aws_array_list_push_back(&impl->str_buffer, &name);
+        aws_array_list_push_back(&impl->str_buffer, &value);
 
-        if (aws_array_list_push_back(properties, &property)) {
-            goto on_error;
-        }
+        aws_array_list_push_back(properties, &property);
     }
 
-    aws_string_destroy(list_name_str);
     return AWS_OP_SUCCESS;
-
-on_error:
-
-    aws_string_destroy(list_name_str);
-    aws_string_destroy(name);
-    aws_string_destroy(value);
-
-    return AWS_OP_ERR;
 }
 
 const char *aws_crt_signable_get_property(const struct aws_signable *signable, const char *property_name) {
-    AWS_PRECONDITION(signable);
+    if (signable == NULL) {
+        return NULL;
+    }
 
     struct aws_string *name = NULL;
     struct aws_byte_cursor out_value;
@@ -353,16 +325,13 @@ const char *aws_crt_signable_get_property(const struct aws_signable *signable, c
     name = aws_string_new_from_c_str(signable->allocator, property_name);
 
     int success = s_aws_crt_signable_get_property(signable, name, &out_value);
+    aws_string_destroy(name);
+
     if (success != 0) {
-        goto on_error;
+        return NULL;
     }
 
     return (char *)out_value.ptr;
-
-on_error:
-
-    aws_string_destroy(name);
-    return NULL;
 }
 
 void aws_crt_signable_release(struct aws_signable *signable) {

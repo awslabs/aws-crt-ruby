@@ -15,16 +15,24 @@ module Aws
         #   * headers[Hash] - signed headers, including the `Authorization`
         #      header.
         def self.sign_request(signing_config, signable)
+          unless signing_config.signing_synchronous?
+            raise ArgumentError, 'Signing will be asynchronous - this is not ' \
+              'currently supported.  Please provide credentials directly ' \
+              'when creating the SigningConfig.'
+          end
           out = {}
           callback = proc do |result, status, _userdata|
             Aws::Crt::Errors.raise_last_error unless status.zero?
             out[:signature] = Aws::Crt::Native.signing_result_get_property(
               result, 'signature'
             )
-            p_list = Aws::Crt::Native.signing_result_get_property_list(
+            out[:headers] = Aws::Crt::Native.signing_result_get_property_list(
               result, 'headers'
-            )
-            out[:headers] = p_list.props
+            ).props
+
+            out[:params] = Aws::Crt::Native.signing_result_get_property_list(
+              result, 'params'
+            ).props
             nil
           end
 
