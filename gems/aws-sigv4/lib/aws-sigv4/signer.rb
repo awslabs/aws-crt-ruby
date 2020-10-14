@@ -179,10 +179,12 @@ module Aws
           property_lists: { 'headers' => headers }
         )
 
-        out = Aws::Crt::Auth::Signer.sign_request(config, signable)
+        signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable)
 
         Signature.new(
-          headers: sigv4_headers.merge(downcase_headers(out[:headers])),
+          headers: sigv4_headers.merge(
+            downcase_headers(signing_result[:headers])
+          ),
           string_to_sign: 'CRT_INTERNAL',
           canonical_request: 'CRT_INTERNAL',
           content_sha256: content_sha256

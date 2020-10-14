@@ -54,7 +54,6 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
 
     if (should_sign_header != NULL) {
         config->native.should_sign_header = should_sign_header;
-        config->native.should_sign_header_ud = config;
     }
 
     config->native.flags.should_normalize_uri_path = should_normalize_uri_path;

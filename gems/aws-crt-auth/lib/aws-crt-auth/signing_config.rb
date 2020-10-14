@@ -76,7 +76,7 @@ module Aws
         end
 
         def extract_date_ms(options)
-          (options[:date] || Time.now).to_i * 1000
+          ((options[:date] || Time.now).to_f * 1000).to_i
         end
 
         def extract_unsigned_header_fn(unsigned_headers)

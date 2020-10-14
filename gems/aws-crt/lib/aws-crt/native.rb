@@ -136,7 +136,7 @@ module Aws
       attach_function :aws_crt_signable_new, [], :pointer
       attach_function :aws_crt_signable_release, [:pointer], :void
       attach_function :aws_crt_signable_set_property, %i[pointer string string], :int
-      attach_function :aws_crt_signable_get_property, %i[pointer string], :string # TODO: byteCursor needs to be passed in
+      attach_function :aws_crt_signable_get_property, %i[pointer string], :string
       attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
       attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
 

@@ -3,7 +3,7 @@
 Gem::Specification.new do |spec|
   spec.name = 'aws-crt-signer'
   spec.version = File.read(File.expand_path('VERSION', __dir__)).strip
-  spec.summary = 'AWS SDK for Ruby - Common Run Time (CRT) based Signer'
+  spec.summary = 'AWS SDK for Ruby - Common Runtime (CRT) based Signer'
   spec.description = 'Amazon Web Services signing library. Generates signatures for HTTP requests'
   spec.author = 'Amazon Web Services'
   spec.homepage = 'https://github.com/awslabs/aws-crt-ruby'
