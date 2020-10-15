@@ -17,7 +17,7 @@ module Aws
         def to_s
           return unless (self[:len]).positive? && !(self[:ptr]).null?
 
-          self[:ptr].get_string(0, self[:len])
+          self[:ptr].read_string(self[:len])
         end
       end
 
@@ -67,25 +67,21 @@ module Aws
         [native, pointers]
       end
 
-      # Core API
-      attach_function :init, :aws_crt_init, [], :void
-      attach_function :last_error, :aws_crt_last_error, [], :int
-      attach_function :error_str, :aws_crt_error_str, [:int], :string
-      attach_function :error_name, :aws_crt_error_name, [:int], :string
-      attach_function :error_debug_str, :aws_crt_error_debug_str, [:int], :string
-      attach_function :reset_error, :aws_crt_reset_error, [], :void
-
-      # This MUST follow definitions of core error functions since it relies on them
-      # And error functions should NOT be wrapped.
+      # Extends FFI::attach_function
       #
-      # Overridden for three purposes.
-      #
-      # 1. Allows us to only supply the aws_crt C name, and converts it removes
+      # 1. Allows us to only supply the aws_crt C name and removes
       #     the aws_crt.
-      # 2. Wraps the call in an error-raise checker.
+      # 2. Wraps the call in an error-raise checker (unless options[:raise]
+      #   = false)
       # 3. Creates a bang method that does not do automatic error checking.
       def self.attach_function(c_name, params, returns, options = {})
         ruby_name = c_name.to_s.sub(/aws_crt_/, '').to_sym
+        raise_errors = options.fetch(:raise, true)
+        options.delete(:raise)
+        unless raise_errors
+          return super(ruby_name, c_name, params, returns, options)
+        end
+
         bang_name = "#{ruby_name}!"
 
         super(ruby_name, c_name, params, returns, options)
@@ -109,6 +105,14 @@ module Aws
         module_function bang_name
       end
 
+      # Core API
+      attach_function :aws_crt_init, [], :void, raise: false
+      attach_function :aws_crt_last_error, [], :int, raise: false
+      attach_function :aws_crt_error_str, [:int], :string, raise: false
+      attach_function :aws_crt_error_name, [:int], :string, raise: false
+      attach_function :aws_crt_error_debug_str, [:int], :string, raise: false
+      attach_function :aws_crt_reset_error, [], :void, raise: false
+
       attach_function :aws_crt_global_thread_creator_shutdown_wait_for, [:uint32], :int
 
       # IO API
@@ -130,20 +134,20 @@ module Aws
       callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
       attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool], :pointer
       attach_function :aws_crt_signing_config_release, [:pointer], :void
-      attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool
+      attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool, raise: false
 
       attach_function :aws_crt_signable_new, [], :pointer
       attach_function :aws_crt_signable_release, [:pointer], :void
       attach_function :aws_crt_signable_set_property, %i[pointer string string], :int
-      attach_function :aws_crt_signable_get_property, %i[pointer string], :string
+      attach_function :aws_crt_signable_get_property, %i[pointer string], :string, raise: false
       attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
       attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
 
       callback :signing_complete_fn, %i[pointer int string], :void
-      attach_function :aws_crt_sign_request, %i[pointer pointer string signing_complete_fn], :int
+      attach_function :aws_crt_sign_request, %i[pointer pointer string signing_complete_fn], :int, blocking: true
 
-      attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string
-      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref
+      attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
+      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false
       attach_function :aws_crt_property_list_release, %i[pointer], :void
 
       # Internal testing API
