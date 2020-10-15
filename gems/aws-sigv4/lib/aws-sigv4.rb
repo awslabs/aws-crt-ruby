@@ -3,3 +3,5 @@
 puts 'Loading Aws sigv4....'
 puts require 'aws-crt-auth'
 puts require_relative 'aws-sigv4/signer'
+
+puts $LOADED_FEATURES.select { |f| f.include? 'aws' }
