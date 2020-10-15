@@ -5,121 +5,121 @@ require_relative 'spec_helper'
 module Aws
   module Sigv4 #:nodoc:
     describe Signer do
-      let(:credentials) do
-        {
-          access_key_id: 'akid',
-          secret_access_key: 'secret'
-        }
-      end
-
-      let(:options) do
-        {
-          service: 'SERVICE',
-          region: 'REGION',
-          credentials_provider: StaticCredentialsProvider.new(credentials)
-        }
-      end
-
-      context '#service' do
-        it 'requires a service' do
-          expect do
-            Signer.new(
-              region: 'us-east-1',
-              access_key_id: 'akid',
-              secret_access_key: 'secret'
-            )
-          end.to raise_error(ArgumentError, /:service/)
-        end
-
-        it 'accepts a string' do
-          expect(Signer.new(options).service).to eq(options[:service])
-        end
-      end
-
-      context '#region' do
-        it 'requires a region' do
-          expect do
-            Signer.new(
-              service: 'ec2',
-              access_key_id: 'akid',
-              secret_access_key: 'secret'
-            )
-          end.to raise_error(ArgumentError, /:region/)
-        end
-
-        it 'accepts a string' do
-          expect(Signer.new(options).region).to eq(options[:region])
-        end
-      end
-
-      describe '#credentials' do
-        let(:options) { { service: 'ec2', region: 'us-east-1' } }
-
-        it 'requires credentials' do
-          expect do
-            Signer.new(options)
-          end.to raise_error(ArgumentError, /Missing credentials/)
-        end
-
-        it 'accepts :access_key_id and :secret_access_key' do
-          signer = Signer.new(options.merge(
-                                access_key_id: 'akid',
-                                secret_access_key: 'secret'
-                              ))
-          creds = signer.credentials_provider.credentials
-          expect(creds.access_key_id).to eq('akid')
-          expect(creds.secret_access_key).to eq('secret')
-          expect(creds.session_token).to be(nil)
-        end
-
-        it 'accepts credentials with a session token' do
-          signer = Signer.new(options.merge(
-                                access_key_id: 'akid',
-                                secret_access_key: 'secret',
-                                session_token: 'token'
-                              ))
-          creds = signer.credentials_provider.credentials
-          expect(creds.access_key_id).to eq('akid')
-          expect(creds.secret_access_key).to eq('secret')
-          expect(creds.session_token).to eq('token')
-        end
-
-        it 'accepts :credentials' do
-          signer = Signer.new(
-            options.merge(
-              credentials: Aws::Crt::Auth::Credentials.new('akid', 'secret', 'token')
-            )
-          )
-          creds = signer.credentials_provider.credentials
-          expect(creds.access_key_id).to eq('akid')
-          expect(creds.secret_access_key).to eq('secret')
-          expect(creds.session_token).to eq('token')
-        end
-
-        it 'accepts :credentials_provider' do
-          signer = Signer.new(options.merge(
-                                credentials_provider: StaticCredentialsProvider.new(
-                                  access_key_id: 'akid',
-                                  secret_access_key: 'secret',
-                                  session_token: 'token'
-                                )
-                              ))
-          creds = signer.credentials_provider.credentials
-          expect(creds.access_key_id).to eq('akid')
-          expect(creds.secret_access_key).to eq('secret')
-          expect(creds.session_token).to eq('token')
-        end
-
-        # NOTE: This is a different behavior from SDK Sigv4 Signer
-        it 'does not accept empty credentials' do
-          expect do
-            Signer.new(options.merge(
-                         access_key_id: '',
-                         secret_access_key: ''
-                       ))
-          end.to raise_error(ArgumentError)
-        end
-      end
+      # let(:credentials) do
+      #   {
+      #     access_key_id: 'akid',
+      #     secret_access_key: 'secret'
+      #   }
+      # end
+      #
+      # let(:options) do
+      #   {
+      #     service: 'SERVICE',
+      #     region: 'REGION',
+      #     credentials_provider: StaticCredentialsProvider.new(credentials)
+      #   }
+      # end
+      #
+      # context '#service' do
+      #   it 'requires a service' do
+      #     expect do
+      #       Signer.new(
+      #         region: 'us-east-1',
+      #         access_key_id: 'akid',
+      #         secret_access_key: 'secret'
+      #       )
+      #     end.to raise_error(ArgumentError, /:service/)
+      #   end
+      #
+      #   it 'accepts a string' do
+      #     expect(Signer.new(options).service).to eq(options[:service])
+      #   end
+      # end
+      #
+      # context '#region' do
+      #   it 'requires a region' do
+      #     expect do
+      #       Signer.new(
+      #         service: 'ec2',
+      #         access_key_id: 'akid',
+      #         secret_access_key: 'secret'
+      #       )
+      #     end.to raise_error(ArgumentError, /:region/)
+      #   end
+      #
+      #   it 'accepts a string' do
+      #     expect(Signer.new(options).region).to eq(options[:region])
+      #   end
+      # end
+      #
+      # describe '#credentials' do
+      #   let(:options) { { service: 'ec2', region: 'us-east-1' } }
+      #
+      #   it 'requires credentials' do
+      #     expect do
+      #       Signer.new(options)
+      #     end.to raise_error(ArgumentError, /Missing credentials/)
+      #   end
+      #
+      #   it 'accepts :access_key_id and :secret_access_key' do
+      #     signer = Signer.new(options.merge(
+      #                           access_key_id: 'akid',
+      #                           secret_access_key: 'secret'
+      #                         ))
+      #     creds = signer.credentials_provider.credentials
+      #     expect(creds.access_key_id).to eq('akid')
+      #     expect(creds.secret_access_key).to eq('secret')
+      #     expect(creds.session_token).to be(nil)
+      #   end
+      #
+      #   it 'accepts credentials with a session token' do
+      #     signer = Signer.new(options.merge(
+      #                           access_key_id: 'akid',
+      #                           secret_access_key: 'secret',
+      #                           session_token: 'token'
+      #                         ))
+      #     creds = signer.credentials_provider.credentials
+      #     expect(creds.access_key_id).to eq('akid')
+      #     expect(creds.secret_access_key).to eq('secret')
+      #     expect(creds.session_token).to eq('token')
+      #   end
+      #
+      #   it 'accepts :credentials' do
+      #     signer = Signer.new(
+      #       options.merge(
+      #         credentials: Aws::Crt::Auth::Credentials.new('akid', 'secret', 'token')
+      #       )
+      #     )
+      #     creds = signer.credentials_provider.credentials
+      #     expect(creds.access_key_id).to eq('akid')
+      #     expect(creds.secret_access_key).to eq('secret')
+      #     expect(creds.session_token).to eq('token')
+      #   end
+      #
+      #   it 'accepts :credentials_provider' do
+      #     signer = Signer.new(options.merge(
+      #                           credentials_provider: StaticCredentialsProvider.new(
+      #                             access_key_id: 'akid',
+      #                             secret_access_key: 'secret',
+      #                             session_token: 'token'
+      #                           )
+      #                         ))
+      #     creds = signer.credentials_provider.credentials
+      #     expect(creds.access_key_id).to eq('akid')
+      #     expect(creds.secret_access_key).to eq('secret')
+      #     expect(creds.session_token).to eq('token')
+      #   end
+      #
+      #   # NOTE: This is a different behavior from SDK Sigv4 Signer
+      #   it 'does not accept empty credentials' do
+      #     expect do
+      #       Signer.new(options.merge(
+      #                    access_key_id: '',
+      #                    secret_access_key: ''
+      #                  ))
+      #     end.to raise_error(ArgumentError)
+      #   end
+      # end
 
       # context '#sign_request' do
       #   let(:request) do
