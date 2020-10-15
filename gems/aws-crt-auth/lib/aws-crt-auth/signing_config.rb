@@ -73,7 +73,7 @@ module Aws
 
         # @return [Boolean] - True when signing will be synchronous
         def signing_synchronous?
-          Aws::Crt::Native.signing_config_is_signing_synchronous(native)
+          Aws::Crt::Native.signing_config_is_signing_synchronous!(native)
         end
 
         private
