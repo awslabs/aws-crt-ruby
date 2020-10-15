@@ -15,7 +15,9 @@ struct aws_allocator *aws_crt_allocator(void) {
 }
 
 int aws_crt_global_thread_creator_shutdown_wait_for(uint32_t wait_timeout_in_seconds) {
-    return aws_global_thread_creator_shutdown_wait_for(wait_timeout_in_seconds);
+    int result = aws_global_thread_creator_shutdown_wait_for(wait_timeout_in_seconds);
+    printf("wait for shutdown: %d\n", result);
+    return result;
 }
 
 void aws_crt_init(void) {
