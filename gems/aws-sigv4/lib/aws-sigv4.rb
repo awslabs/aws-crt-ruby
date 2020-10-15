@@ -1,4 +1,5 @@
 # frozen_string_literal: true
 
-require 'aws-crt-auth'
-require_relative 'aws-sigv4/signer'
+puts 'Loading Aws sigv4....'
+puts require 'aws-crt-auth'
+puts require_relative 'aws-sigv4/signer'
