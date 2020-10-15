@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # require 'openssl'
-# require 'time'
+require 'time'
 require 'tempfile'
 require 'uri'
 require 'set'
