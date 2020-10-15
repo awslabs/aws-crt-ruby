@@ -22,7 +22,7 @@ end
 
 desc 'Execute all specs'
 task :spec => :bin do
-  Dir.glob('**/spec').tap do |spec_file_list|
+  Dir.glob('**/aws-crt*/spec').tap do |spec_file_list|
     sh("bundle exec rspec -b #{spec_file_list.join(' ')}")
     puts 'spec complete'
   end
