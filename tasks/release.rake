@@ -1,9 +1,20 @@
 # frozen_string_literal: true
 
 task 'gem:*'
-rule(/gem:aws-.+$/) do |task|
+rule(/gem:aws-crt-.+$/) do |task|
   require 'rubygems/package'
   gem_name = task.name.split(':').last
+  puts "Building gem: #{gem_name}"
+  FileUtils.chdir("gems/#{gem_name}") do
+    spec = Gem::Specification.load("#{gem_name}.gemspec")
+    gem_file = Gem::Package.build(spec)
+    FileUtils.cp(gem_file, '../../pkg/')
+  end
+end
+
+task 'gem:aws-sigv4' do
+  require 'rubygems/package'
+  gem_name = 'aws-sigv4'
   puts "Building gem: #{gem_name}"
   FileUtils.chdir("gems/#{gem_name}") do
     spec = Gem::Specification.load("#{gem_name}.gemspec")
