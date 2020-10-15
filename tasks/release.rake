@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 task 'gem:*'
-rule(/gem:aws-crt-.+$/) do |task|
+rule(/gem:aws-.+$/) do |task|
   require 'rubygems/package'
   gem_name = task.name.split(':').last
   puts "Building gem: #{gem_name}"

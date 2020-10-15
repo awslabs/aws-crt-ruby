@@ -9,8 +9,6 @@ $LOAD_PATH.unshift File.expand_path('../../aws-crt-auth/lib', __dir__)
 require_relative '../../aws-crt/spec/spec_helper'
 require 'rspec'
 require 'aws-sigv4'
-require 'aws-eventstream'
-
 
 module SpecHelper
   class << self
