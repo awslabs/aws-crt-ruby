@@ -44,15 +44,13 @@ end
 task :release => %i[clean spec]
 
 task :ci_run do
+  Rake::Task['clean'].invoke
   if ENV['LINUX_BUILD_ONLY']
-    Rake::Task['clean'].invoke
     Rake::Task['bin'].invoke
   elsif ENV['GEM']
-    Rake::Task['clean'].invoke
     Rake::Task['bin'].invoke
     Rake::Task['gem:aws-crt'].invoke
   else
-    Rake::Task['clean'].invoke
     Rake::Task['spec'].invoke
   end
 end

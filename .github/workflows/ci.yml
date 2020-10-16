@@ -46,16 +46,12 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-
       - uses: actions/checkout@v2
-          with:
-            submodules: false
-
       - name: Download Test Bin
         uses: actions/download-artifact@v2
         with:
           name: linux_testing_bin
       - name: Test
-          run: |
-            bundle install
-            bundle exec rake spec_only
+        run: |
+          bundle install
+          bundle exec rake spec_only
