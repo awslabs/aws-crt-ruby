@@ -30,6 +30,9 @@ end
 
 desc 'Execute all specs without building'
 task :spec_only do
+  sh('pwd')
+  sh('ls')
+  sh('ls -R gems/aws-crt/bin')
   Dir.glob('**/aws*/spec').tap do |spec_file_list|
     sh("bundle exec rspec -b #{spec_file_list.join(' ')}")
     puts 'spec complete'
