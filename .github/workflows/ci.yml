@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: linux_testing_bin
-          path: '*/gems/aws-crt/bin/'
+          path: aws-crt-ruby/*/aws-crt/bin/
 
   linux_test:
     needs: [linux_build]
