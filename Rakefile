@@ -22,7 +22,15 @@ end
 
 desc 'Execute all specs'
 task :spec => :bin do
-  Dir.glob('**/aws-crt*/spec').tap do |spec_file_list|
+  Dir.glob('**/aws*/spec').tap do |spec_file_list|
+    sh("bundle exec rspec -b #{spec_file_list.join(' ')}")
+    puts 'spec complete'
+  end
+end
+
+desc 'Execute all specs without building'
+task :spec_only do
+  Dir.glob('**/aws*/spec').tap do |spec_file_list|
     sh("bundle exec rspec -b #{spec_file_list.join(' ')}")
     puts 'spec complete'
   end
@@ -33,7 +41,18 @@ RuboCop::RakeTask.new(:rubocop) do |t|
   t.options = ['-E', '-S', '-c', config_file]
 end
 
-task :release => %i[clean spec] do
-  Rake::Task['gem:aws-crt'].invoke if ENV['GEM']
-  puts 'Release complete'
+task :release => %i[clean spec]
+
+task :ci_run do
+  if ENV['LINUX_BUILD_ONLY']
+    Rake::Task['clean'].invoke
+    Rake::Task['bin'].invoke
+  elsif ENV['GEM']
+    Rake::Task['clean'].invoke
+    Rake::Task['bin'].invoke
+    Rake::Task['gem:aws-crt'].invoke
+  else
+    Rake::Task['clean'].invoke
+    Rake::Task['spec'].invoke
+  end
 end

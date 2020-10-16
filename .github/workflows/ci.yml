@@ -14,10 +14,29 @@ env:
   LINUX_BASE_IMAGE: ubuntu-16-x64
   RUN: ${{ github.run_id }}-${{ github.run_number }}
 
-# https://github.com/ruby/setup-ruby
 jobs:
 
-  linux:
+  linux_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Generate Linux bins
+        env:
+          LINUX_BUILD_ONLY: true
+        run: |
+          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+          chmod a+x builder
+          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux_testing_bin
+          path: aws-crt-ruby/gems/aws-crt/bin/
+
+  linux_test:
+    needs: [linux_build]
     strategy:
       fail-fast: false
       matrix:
@@ -27,8 +46,16 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Build ${{ env.PACKAGE_NAME }} + consumers
-        run: |
-          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
-          chmod a+x builder
-          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+
+      - uses: actions/checkout@v2
+          with:
+            submodules: false
+
+      - name: Download Test Bin
+        uses: actions/download-artifact@v2
+        with:
+          name: linux_testing_bin
+      - name: Test
+          run: |
+            bundle install
+            bundle exec rake spec_only

@@ -7,7 +7,6 @@ require_relative 'aws-crt-auth/signable'
 require_relative 'aws-crt-auth/signer'
 require 'openssl'
 
-
 module Aws
   module Crt
     # High level Ruby abstractions for CRT Auth functionality

@@ -1,7 +1,4 @@
 # frozen_string_literal: true
 
-puts 'Loading Aws sigv4....'
-puts require 'aws-crt-auth'
-puts require_relative 'aws-sigv4/signer'
-
-puts $LOADED_FEATURES.select { |f| f.include? 'aws' }
+require 'aws-crt-auth'
+require_relative 'aws-sigv4/signer'
