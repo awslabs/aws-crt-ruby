@@ -5,7 +5,6 @@ require_relative 'aws-crt-auth/credentials'
 require_relative 'aws-crt-auth/signing_config'
 require_relative 'aws-crt-auth/signable'
 require_relative 'aws-crt-auth/signer'
-require 'openssl'
 
 module Aws
   module Crt
