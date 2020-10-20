@@ -1,9 +1,6 @@
 [submodule "aws-common-runtime/aws-c-common"]
 	path = gems/aws-crt/native/aws-common-runtime/aws-c-common
 	url = https://github.com/awslabs/aws-c-common.git
-[submodule "aws-common-runtime/aws-c-cal"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-cal
-	url = https://github.com/awslabs/aws-c-cal.git
 [submodule "aws-common-runtime/aws-c-compression"]
 	path = gems/aws-crt/native/aws-common-runtime/aws-c-compression
 	url = https://github.com/awslabs/aws-c-compression
