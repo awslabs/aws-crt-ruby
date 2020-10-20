@@ -3,6 +3,8 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'gems/aws-crt/native/aws-common-runtime/**/*.rb'
+    - 'gems/aws-crt-signer/spec/signer_spec.rb'
+    - 'gems/aws-sigv4/**/*.rb'
 
 Style/HashSyntax:
   Exclude:
@@ -19,16 +21,25 @@ Metrics/BlockLength:
   Exclude:
     - 'gems/aws-crt/Rakefile'
     - '**/*.rake'
-    - 'gems/aws-crt/spec/**/*.rb'
+    - 'gems/**/spec/**/*.rb'
 
 Metrics/MethodLength:
+  Max: 25
   Exclude:
     - 'gems/aws-crt/ext/compile.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'gems/**/spec/**/*.rb'
+
+Metrics/AbcSize:
+  Max: 20
 
 Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'
     - 'gems/aws-crt-auth/lib/aws-crt-auth.rb'
+    - 'gems/aws-sigv4/lib/aws-sigv4.rb'
 
 Style/TrailingCommaInArrayLiteral:
   Enabled: false

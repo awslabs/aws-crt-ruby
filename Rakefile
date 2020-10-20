@@ -22,8 +22,20 @@ end
 
 desc 'Execute all specs'
 task :spec => :bin do
-  Dir.glob('**/spec').tap do |spec_file_list|
-    sh("bundle exec rspec #{spec_file_list.join(' ')}")
+  Dir.glob('**/aws*/spec').tap do |spec_file_list|
+    sh("bundle exec rspec -b #{spec_file_list.join(' ')}")
+    puts 'spec complete'
+  end
+end
+
+desc 'Execute all specs without building'
+task :spec_only do
+  sh('pwd')
+  sh('ls')
+  sh('ls -R gems/aws-crt/bin')
+  Dir.glob('**/aws-crt*/spec').tap do |spec_file_list|
+    sh("bundle exec rspec -b #{spec_file_list.join(' ')}")
+    puts 'spec complete'
   end
 end
 
@@ -32,34 +44,16 @@ RuboCop::RakeTask.new(:rubocop) do |t|
   t.options = ['-E', '-S', '-c', config_file]
 end
 
-task :release => %i[clean spec] do
-  Rake::Task['gem:aws-crt'].invoke if ENV['GEM']
-end
+task :release => %i[clean spec]
 
-task 'gem:*'
-rule(/gem:aws-crt-.+$/) do |task|
-  require 'rubygems/package'
-  gem_name = task.name.split(':').last
-  puts "Building gem: #{gem_name}"
-  FileUtils.chdir("gems/#{gem_name}") do
-    spec = Gem::Specification.load("#{gem_name}.gemspec")
-    gem_file = Gem::Package.build(spec)
-    FileUtils.cp(gem_file, '../../pkg/')
-  end
-end
-
-task 'package-all' do
-  # aws-crt specific tasks
-  Rake::Task['gem:aws-crt:pure-ruby'].invoke
-  Rake::Task['gem:aws-crt:jruby'].invoke
-  FileUtils.cp_r('gems/aws-crt/pkg/', './')
-
-  # build all other gems
-  gems = Dir.glob('gems/*').select { |f| File.directory? f }
-            .map { |f| File.basename f }
-            .reject { |f| f == 'aws-crt' }
-
-  gems.each do |gem|
-    Rake::Task["gem:#{gem}"].invoke
+task :ci_run do
+  Rake::Task['clean'].invoke
+  if ENV['LINUX_BUILD_ONLY']
+    Rake::Task['bin'].invoke
+  elsif ENV['GEM']
+    Rake::Task['bin'].invoke
+    Rake::Task['gem:aws-crt'].invoke
+  else
+    Rake::Task['spec'].invoke
   end
 end

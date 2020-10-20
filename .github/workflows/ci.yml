@@ -14,72 +14,44 @@ env:
   LINUX_BASE_IMAGE: ubuntu-16-x64
   RUN: ${{ github.run_id }}-${{ github.run_number }}
 
-# https://github.com/ruby/setup-ruby
 jobs:
 
-  linux:
+  linux_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Generate Linux bins
+        env:
+          LINUX_BUILD_ONLY: true
+        run: |
+          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+          chmod a+x builder
+          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux_testing_bin
+          path: aws-crt-ruby/*/aws-crt/bin/
+
+  linux_test:
+    needs: [linux_build]
     strategy:
       fail-fast: false
       matrix:
-        ruby: [2.5, 2.6, 2.7, jruby, truffleruby]
+        ruby: [2.5]
     runs-on: ubuntu-latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Build ${{ env.PACKAGE_NAME }} + consumers
-        run: |
-          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
-          chmod a+x builder
-          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
-
-
-  windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows]
-        ruby: [2.5, 2.6, 2.7, jruby]
-    runs-on: windows-latest
-    steps:
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v2
+      - name: Download Test Bin
+        uses: actions/download-artifact@v2
         with:
-          ruby-version: ${{ matrix.ruby }}
-      - name: Build ${{ env.PACKAGE_NAME }} + consumers
+          name: linux_testing_bin
+      - name: Test
         run: |
-          python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
-          python builder.pyz build -p ${{ env.PACKAGE_NAME }}
-
-  windows-vc14:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        arch: [x86, x64]
-    steps:
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 14.0
-          arch: ${{ matrix.arch }}
-          uwp: false
-          spectre: true
-      - name: Build ${{ env.PACKAGE_NAME }} + consumers
-        run: |
-          python -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
-          python builder.pyz build -p ${{ env.PACKAGE_NAME }}
-
-  osx:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos]
-        ruby: [2.5, 2.6, 2.7, jruby, truffleruby]
-    runs-on: macos-latest
-    steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-      - name: Build ${{ env.PACKAGE_NAME }} + consumers
-        run: |
-          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
-          chmod a+x builder
-          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+          bundle install
+          bundle exec rake spec_only

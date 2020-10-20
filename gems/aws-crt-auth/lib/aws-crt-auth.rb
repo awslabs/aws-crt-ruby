@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require 'aws-crt'
+require_relative 'aws-crt-auth/credentials'
+require_relative 'aws-crt-auth/signing_config'
+require_relative 'aws-crt-auth/signable'
+require_relative 'aws-crt-auth/signer'
 
 module Aws
   module Crt
