@@ -63,6 +63,7 @@ module Aws
         @unsigned_headers << 'authorization'
         @unsigned_headers << 'x-amzn-trace-id'
         @unsigned_headers << 'expect'
+        @signing_algorithm = options.fetch(:signing_algorithm, :v4)
         @uri_escape_path = options.fetch(:uri_escape_path, true)
         @apply_checksum_header = options.fetch(:apply_checksum_header, true)
       end
@@ -163,7 +164,7 @@ module Aws
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
         config = Aws::Crt::Auth::SigningConfig.new(
-          algorithm: :v4,
+          algorithm: @signing_algorithm,
           signature_type: :http_request_headers,
           region: @region,
           service: @service,
