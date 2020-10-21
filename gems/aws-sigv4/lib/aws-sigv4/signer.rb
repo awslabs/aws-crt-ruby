@@ -157,9 +157,6 @@ module Aws
 
         sigv4_headers = {}
         sigv4_headers['host'] = headers['host'] || host(url)
-        if creds.session_token
-          sigv4_headers['x-amz-security-token'] = creds.session_token
-        end
 
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
@@ -189,7 +186,8 @@ module Aws
           ),
           string_to_sign: 'CRT_INTERNAL',
           canonical_request: 'CRT_INTERNAL',
-          content_sha256: content_sha256
+          content_sha256: content_sha256,
+          extra: {config: config, signable: signable}
         )
       end
 
@@ -334,7 +332,7 @@ module Aws
 
     Signature = Struct.new(
       :headers, :canonical_request,
-      :string_to_sign, :content_sha256, keyword_init: true
+      :string_to_sign, :content_sha256, :extra, keyword_init: true
     )
   end
 end

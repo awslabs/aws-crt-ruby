@@ -36,31 +36,6 @@ module Aws
           }
         end
 
-        it 'signs the CRT suite vanilla request' do
-          require 'json'
-          signature = Signer.new(options).sign_request(request)
-          puts signature
-          prefix = File.expand_path('../v4a_suite/get-vanilla', __FILE__)
-          expected_creq = File.read(File.join(prefix, 'canonical-request.txt'))
-          expected_sts = File.read(File.join(prefix, 'header-string-to-sign.txt'))
-          expected_pk = JSON.parse(File.read(File.join(prefix, 'public-key.json')))
-          expected_req = SpecHelper.parse_request(File.read(File.join(prefix, 'header-signed-request.txt')))
-          #expect(signature.canonical_request).to eq(expected_creq)
-          #expect(signature.string_to_sign).to eq(expected_sts)
-          #expect(signature.extra[:pk_x].to_s(16)).to eq expected_pk['X']
-          #expect(signature.extra[:pk_y].to_s(16)).to eq expected_pk['Y']
-
-          expected_req[:headers].each do |k,v|
-            if k == 'Authorization'
-              expected_parts = v.split(' ')
-              actual_parts = signature.headers['authorization'].split(' ')
-              expected_parts.zip(actual_parts).each do |e, a|
-                expect(a).to eq(e)
-              end
-            end
-            expect(signature.headers[k.downcase]).to eq(v)
-          end
-        end
       end
     end
   end

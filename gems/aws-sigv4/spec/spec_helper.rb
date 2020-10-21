@@ -6,6 +6,7 @@ require_relative '../../aws-crt/spec/spec_helper'
 require_relative '../../aws-crt-auth/spec/spec_helper'
 require 'aws-sigv4'
 
+
 module SpecHelper
   class << self
 
@@ -15,23 +16,31 @@ module SpecHelper
 
     # @param [String] request
     # @return [Hash]
-    def parse_request(request)
+    def parse_request(request, normalize=false)
       lines = request.lines.to_a
 
-      http_method, request_uri, _ = lines.shift.split
+      req_def = lines.shift
+      http_method, request_uri = req_def.split(' ', 2)
+      request_uri = request_uri.gsub(" HTTP/1.1\n", '')
 
       # escape the uri
       uri_path, querystring = request_uri.split('?', 2)
       if querystring
         querystring = querystring.split('&').map do |key_value|
           key, value = key_value.split('=')
-          key = Aws::Sigv4::Signer.uri_escape(key)
+          key = Aws::Sigv4::Signer.uri_escape(key) unless key.include? '%E1'
           value = Aws::Sigv4::Signer.uri_escape(value.to_s)
           "#{key}=#{value}"
         end.join('&')
       end
 
       request_uri = Aws::Sigv4::Signer.uri_escape_path(uri_path)
+      if normalize
+        trailing_slash = /\/$/.match?(request_uri)
+        request_uri = File.absolute_path(URI.parse(request_uri.gsub('//', '/')).path)
+        request_uri = "#{request_uri}/" if trailing_slash && request_uri.length > 1
+      end
+
       request_uri += '?' + querystring if querystring
 
       # extract headers
