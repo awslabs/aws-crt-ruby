@@ -35,11 +35,6 @@ module SpecHelper
       end
 
       request_uri = Aws::Sigv4::Signer.uri_escape_path(uri_path)
-      if normalize
-        trailing_slash = /\/$/.match?(request_uri)
-        request_uri = File.absolute_path(URI.parse(request_uri.gsub('//', '/')).path)
-        request_uri = "#{request_uri}/" if trailing_slash && request_uri.length > 1
-      end
 
       request_uri += '?' + querystring if querystring
 

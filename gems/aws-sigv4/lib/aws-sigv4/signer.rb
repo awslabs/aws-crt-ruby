@@ -54,6 +54,8 @@ module Aws
       #   headers. This is required for AWS Glacier, and optional for
       #   every other AWS service as of late 2016.
       #
+      # @option options [Boolean] :normalize_path (true) When `true`,
+      #   the uri paths will be normalized when building the canonical request
       def initialize(options = {})
         @service = extract_service(options)
         @region = extract_region(options)
@@ -63,9 +65,10 @@ module Aws
         @unsigned_headers << 'authorization'
         @unsigned_headers << 'x-amzn-trace-id'
         @unsigned_headers << 'expect'
-        @signing_algorithm = options.fetch(:signing_algorithm, :sigv4)
         @uri_escape_path = options.fetch(:uri_escape_path, true)
         @apply_checksum_header = options.fetch(:apply_checksum_header, true)
+        @signing_algorithm = options.fetch(:signing_algorithm, :sigv4)
+        @normalize_path = options.fetch(:normalize_path, true)
       end
 
       # @return [String]
@@ -171,7 +174,8 @@ module Aws
             :sbht_content_sha256 : :sbht_none,
           credentials: creds,
           unsigned_headers: @unsigned_headers,
-          use_double_uri_encode: @uri_escape_path
+          use_double_uri_encode: @uri_escape_path,
+          should_normalize_uri_path: @normalize_path
         )
         signable = Aws::Crt::Auth::Signable.new(
           properties: { 'uri' => url.to_s, 'method' => http_method },

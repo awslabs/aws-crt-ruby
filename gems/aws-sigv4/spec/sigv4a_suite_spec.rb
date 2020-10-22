@@ -30,7 +30,8 @@ module Aws
                    context['credentials']['secret_access_key'],
                    context['credentials']['token']
                  ),
-                 uri_escape_path: false, #context['normalize'],
+                 uri_escape_path: false,
+                 normalize_path: context['normalize'],
                  apply_checksum_header: context['sign_body']
                })
             end
