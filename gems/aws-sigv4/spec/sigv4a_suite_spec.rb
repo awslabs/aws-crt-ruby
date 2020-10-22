@@ -24,7 +24,7 @@ module Aws
               Signer.new({
                  service: context['service'],
                  region: context['region'],
-                 signing_algorithm: :v4a,
+                 signing_algorithm: :sigv4a,
                  credentials: Aws::Crt::Auth::Credentials.new(
                    context['credentials']['access_key_id'],
                    context['credentials']['secret_access_key'],

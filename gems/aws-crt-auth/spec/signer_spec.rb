@@ -16,7 +16,7 @@ module Aws
           let(:unsigned_headers) { nil }
           let(:signing_config) do
             SigningConfig.new(
-              algorithm: :v4,
+              algorithm: :sigv4,
               signature_type: signature_type,
               region: region,
               service: service,

@@ -17,7 +17,7 @@ credentials = {
 options = {
   service: 'SERVICE',
   region: 'REGION',
-  signing_algorithm: :v4a,
+  signing_algorithm: :sigv4a,
   credentials_provider: Aws::Sigv4::StaticCredentialsProvider.new(credentials),
   unsigned_headers: ['Content-Length']
 }

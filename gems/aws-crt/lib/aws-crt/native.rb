@@ -127,7 +127,7 @@ module Aws
       attach_function :aws_crt_credentials_get_session_token, [:pointer], ByteCursor.by_value
       attach_function :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
 
-      enum :signing_algorithm, [:v4, :v4a]
+      enum :signing_algorithm, [:sigv4, :sigv4a]
       enum :signature_type, %i[http_request_headers http_request_query_params
                                http_request_chunk http_request_event]
       enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]

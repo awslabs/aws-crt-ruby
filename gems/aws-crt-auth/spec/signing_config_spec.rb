@@ -15,7 +15,7 @@ module Aws
             creds = Credentials.new('akid', 'secret')
             expect do
               SigningConfig.new(
-                algorithm: :v4,
+                algorithm: :sigv4,
                 signature_type: :http_request_headers,
                 region: 'us-west-2',
                 service: 's3',
@@ -28,7 +28,7 @@ module Aws
             creds = Credentials.new('akid', 'secret')
             expect do
               SigningConfig.new(
-                algorithm: :v4,
+                algorithm: :sigv4,
                 signature_type: :http_request_headers,
                 region: 'us-west-2',
                 service: 's3',
@@ -41,7 +41,7 @@ module Aws
           it 'raises an InvalidConfigError when missing a required parameter' do
             expect do
               SigningConfig.new(
-                algorithm: :v4,
+                algorithm: :sigv4,
                 signature_type: :http_request_headers,
                 region: 'us-west-2',
                 service: 's3',
@@ -56,7 +56,7 @@ module Aws
           it 'cleans up with release' do
             creds = Credentials.new('akid', 'secret')
             config = SigningConfig.new(
-              algorithm: :v4,
+              algorithm: :sigv4,
               signature_type: :http_request_headers,
               region: 'us-west-2',
               service: 's3',
@@ -73,7 +73,7 @@ module Aws
             it 'cleans up with GC' do
               creds = Credentials.new('akid', 'secret')
               config = SigningConfig.new(
-                algorithm: :v4,
+                algorithm: :sigv4,
                 signature_type: :http_request_headers,
                 region: 'us-west-2',
                 service: 's3',

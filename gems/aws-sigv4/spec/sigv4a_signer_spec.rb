@@ -17,7 +17,7 @@ module Aws
         {
           service: service_name,
           region: region,
-          signing_algorithm: :v4a,
+          signing_algorithm: :sigv4a,
           apply_checksum_header: false,
           credentials_provider: StaticCredentialsProvider.new(credentials)
         }

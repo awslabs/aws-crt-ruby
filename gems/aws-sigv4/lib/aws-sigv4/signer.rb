@@ -63,7 +63,7 @@ module Aws
         @unsigned_headers << 'authorization'
         @unsigned_headers << 'x-amzn-trace-id'
         @unsigned_headers << 'expect'
-        @signing_algorithm = options.fetch(:signing_algorithm, :v4)
+        @signing_algorithm = options.fetch(:signing_algorithm, :sigv4)
         @uri_escape_path = options.fetch(:uri_escape_path, true)
         @apply_checksum_header = options.fetch(:apply_checksum_header, true)
       end
