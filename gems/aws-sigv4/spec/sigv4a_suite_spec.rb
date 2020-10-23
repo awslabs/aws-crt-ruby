@@ -97,6 +97,63 @@ module Aws
                 end
               end
             end
+
+            if File.exist?(File.join(path, 'query-signed-request.txt')) &&
+              !path.include?('utf8') && !path.include?('space')
+
+              it 'creates a presigned url' do
+                raw_expected = File.read(
+                  File.join(path, 'query-signed-request.txt'), encoding: 'utf-8'
+                )
+                expected = URI.parse(raw_expected.lines.first.split[1]).query
+                creq = File.read(
+                  File.join(path, 'query-canonical-request.txt'), encoding: "utf-8"
+                )
+                expected_pk = JSON.parse(File.read(File.join(path, 'public-key.json')))
+
+                request[:headers].delete('x-amz-date')
+                request[:time] = request_time
+                if context['expiration_in_seconds']
+                  request[:expires_in] = context['expiration_in_seconds']
+                end
+                request[:extra] = {}
+                presigned = signer.presign_url(request)
+
+
+                # validate the presigned url against expected
+                # because signature is non-deterministic we need to break down
+                # and compare parameters directly
+                expected_params = SpecHelper.split_query_to_params(expected)
+                params = SpecHelper.split_query_to_params(presigned.query)
+                expected_params.each do |k, v|
+                  expect(params).to include(k)
+                  if k == 'X-Amz-Signature'
+                    config = request[:extra][:config]
+                    signable = request[:extra][:signable]
+                    Aws::Crt::Native.verify_sigv4a_signing(
+                      signable.native,
+                      config.native,
+                      creq,
+                      v,
+                      expected_pk['X'],
+                      expected_pk['Y']
+                    )
+
+                    Aws::Crt::Native.verify_sigv4a_signing(
+                      signable.native,
+                      config.native,
+                      creq,
+                      params[k],
+                      expected_pk['X'],
+                      expected_pk['Y']
+                    )
+                  else
+                    expect(params[k]).to eq v
+                  end
+                end
+              end
+            end
+
           end
         end
       end
