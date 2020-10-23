@@ -38,6 +38,11 @@ module Aws
         #   be set (e.g. "UNSIGNED-PAYLOAD"
         #   "STREAMING-AWS4-HMAC-SHA256-PAYLOAD"
         #   "STREAMING-AWS4-HMAC-SHA256-EVENTS").
+        # @option options[Integer] :expiration_in_seconds (0) - If non-zero and the
+        #   signing transform is query param, then signing will add
+        #   X-Amz-Expires to the query string, equal to the value
+        #   specified here.  If this value is zero or if header signing
+        #   is being used then this parameter has no effect.
         def initialize(options = {})
           # validation of parameters is handled in signing_config_new
 
@@ -66,7 +71,8 @@ module Aws
               @sign_header_fn,
               options.fetch(:use_double_uri_encode, false),
               options.fetch(:should_normalize_uri_path, false),
-              options.fetch(:omit_session_token, false)
+              options.fetch(:omit_session_token, false),
+              options.fetch(:expiration_in_seconds, 0)
             )
           end
         end

@@ -199,8 +199,121 @@ module Aws
         # TODO
       end
 
+      # Signs a URL with query authentication. Using query parameters
+      # to authenticate requests is useful when you want to express a
+      # request entirely in a URL. This method is also referred as
+      # presigning a URL.
+      #
+      # See [Authenticating Requests: Using Query Parameters (AWS Signature Version 4)](http://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html) for more information.
+      #
+      # To generate a presigned URL, you must provide a HTTP URI and
+      # the http method.
+      #
+      #     url = signer.presign_url(
+      #       http_method: 'GET',
+      #       url: 'https://my-bucket.s3-us-east-1.amazonaws.com/key',
+      #       expires_in: 60
+      #     )
+      #
+      # By default, signatures are valid for 15 minutes. You can specify
+      # the number of seconds for the URL to expire in.
+      #
+      #     url = signer.presign_url(
+      #       http_method: 'GET',
+      #       url: 'https://my-bucket.s3-us-east-1.amazonaws.com/key',
+      #       expires_in: 3600 # one hour
+      #     )
+      #
+      # You can provide a hash of headers that you plan to send with the
+      # request. Every 'X-Amz-*' header you plan to send with the request
+      # **must** be provided, or the signature is invalid. Other headers
+      # are optional, but should be provided for security reasons.
+      #
+      #     url = signer.presign_url(
+      #       http_method: 'PUT',
+      #       url: 'https://my-bucket.s3-us-east-1.amazonaws.com/key',
+      #       headers: {
+      #         'X-Amz-Meta-Custom' => 'metadata'
+      #       }
+      #     )
+      #
+      # @option options [required, String] :http_method The HTTP request method,
+      #   e.g. 'GET', 'HEAD', 'PUT', 'POST', 'PATCH', or 'DELETE'.
+      #
+      # @option options [required, String, HTTPS::URI, HTTP::URI] :url
+      #   The URI to sign.
+      #
+      # @option options [Hash] :headers ({}) Headers that should
+      #   be signed and sent along with the request. All x-amz-*
+      #   headers must be present during signing. Other
+      #   headers are optional.
+      #
+      # @option options [Integer<Seconds>] :expires_in (900)
+      #   How long the presigned URL should be valid for. Defaults
+      #   to 15 minutes (900 seconds).
+      #
+      # @option options [optional, String, IO] :body
+      #   If the `:body` is set, then a SHA256 hexdigest will be computed of the body.
+      #   If `:body_digest` is set, this option is ignored. If neither are set, then
+      #   the `:body_digest` will be computed of the empty string.
+      #
+      # @option options [optional, String] :body_digest
+      #   The SHA256 hexdigest of the request body. If you wish to send the presigned
+      #   request without signing the body, you can pass 'UNSIGNED-PAYLOAD' as the
+      #   `:body_digest` in place of passing `:body`.
+      #
+      # @option options [Time] :time (Time.now) Time of the signature.
+      #   You should only set this value for testing.
+      #
+      # @return [HTTPS::URI, HTTP::URI]
+      #
       def presign_url(options)
-        # TODO
+        creds = fetch_credentials
+
+        http_method = extract_http_method(options)
+        url = extract_url(options)
+        headers = downcase_headers(options[:headers])
+
+        datetime = headers.delete('x-amz-date')
+        datetime ||= (options[:time] || Time.now)
+
+        content_sha256 = headers.delete('x-amz-content-sha256')
+        content_sha256 ||= options[:body_digest]
+        content_sha256 ||= sha256_hexdigest(options[:body] || '')
+
+        config = Aws::Crt::Auth::SigningConfig.new(
+          algorithm: @signing_algorithm,
+          signature_type: :http_request_query_params,
+          region: @region,
+          service: @service,
+          date: datetime,
+          signed_body_value: content_sha256,
+          signed_body_header_type: @apply_checksum_header ?
+            :sbht_content_sha256 : :sbht_none,
+          credentials: creds,
+          unsigned_headers: @unsigned_headers,
+          use_double_uri_encode: @uri_escape_path,
+          should_normalize_uri_path: @normalize_path,
+          expiration_in_seconds: options.fetch(:expires_in, 900)
+        )
+        signable = Aws::Crt::Auth::Signable.new(
+          properties: { 'uri' => url.to_s, 'method' => http_method },
+          property_lists: { 'headers' => headers }
+        )
+
+        signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable)
+        params = signing_result[:params].map {|k,v| "#{k}=#{v}"}.join('&')
+        if url.query
+          url.query += '&' + params
+        else
+          url.query = params
+        end
+
+        if options[:extra] && options[:extra].is_a?(Hash)
+          options[:extra][:config] = config
+          options[:extra][:signable] = signable
+        end
+        url
       end
 
       private
