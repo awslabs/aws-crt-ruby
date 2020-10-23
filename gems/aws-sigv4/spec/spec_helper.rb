@@ -61,5 +61,22 @@ module SpecHelper
         body: lines.join,
       }
     end
+
+    def split_query_to_params(query)
+      params = { }
+      query.split('&').each do |p|
+        k,v = p.split('=')
+        if params.key? k
+          if params[k].is_a?(Array)
+            params[k] << v
+          else
+            params[k] = [params[k], v]
+          end
+        else
+          params[k] = v
+        end
+      end
+      params
+    end
   end
 end

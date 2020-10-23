@@ -27,7 +27,8 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     aws_should_sign_header_fn *should_sign_header,
     bool use_double_uri_encode,
     bool should_normalize_uri_path,
-    bool omit_session_token) {
+    bool omit_session_token,
+    uint64_t expiration_in_seconds) {
     struct aws_allocator *allocator = aws_crt_allocator();
     struct aws_crt_signing_config *config = aws_mem_acquire(allocator, sizeof(struct aws_crt_signing_config));
 
@@ -59,6 +60,7 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     config->native.flags.should_normalize_uri_path = should_normalize_uri_path;
     config->native.flags.use_double_uri_encode = use_double_uri_encode;
     config->native.flags.omit_session_token = omit_session_token;
+    config->native.expiration_in_seconds = expiration_in_seconds;
 
     if (aws_validate_aws_signing_config_aws(&config->native) != 0) {
         aws_crt_signing_config_release(config);

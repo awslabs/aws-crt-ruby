@@ -68,7 +68,8 @@ AWS_CRT_API struct aws_crt_signing_config *aws_crt_signing_config_new(
     aws_should_sign_header_fn *should_sign_header,
     bool use_double_uri_encode,
     bool should_normalize_uri_path,
-    bool omit_session_token);
+    bool omit_session_token,
+    uint64_t expiration_in_seconds);
 AWS_CRT_API void aws_crt_signing_config_release(struct aws_crt_signing_config *config);
 AWS_CRT_API bool aws_crt_signing_config_is_signing_synchronous(struct aws_crt_signing_config *config);
 

@@ -315,6 +315,33 @@ module Aws
           expect(signature.headers['authorization']).to eq('AWS4-HMAC-SHA256 Credential=akid/20120101/REGION/SERVICE/aws4_request, SignedHeaders=bar;bar2;foo;host;x-amz-content-sha256;x-amz-date, Signature=4bae5054b2e035212a0eb42339a957809a8c9428e628fd4b92e5a295d0fa6e5b')
         end
       end
+
+      context 'presign_url' do
+        let(:request) do
+          {
+            http_method: 'GET',
+            url: 'http://domain.com'
+          }
+        end
+
+        it 'creates a presigned url' do
+          options[:unsigned_headers] = ['content-length']
+          presigned_url = Signer.new(options).presign_url(
+            http_method: 'PUT',
+            url: 'https://domain.com',
+            headers: {
+              'Foo' => 'foo',
+              'Bar' => 'bar  bar',
+              # NOTE: Ruby Sigv4 incorrectly keeps spaces in quoted headers
+              'Bar2' => '"bar bar"',
+              'Content-Length' => 9,
+              'X-Amz-Date' => '20120101T112233Z'
+            },
+            body: StringIO.new('http-body')
+          )
+          expect(presigned_url.query).to eq "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=akid%2F19700821%2FREGION%2FSERVICE%2Faws4_request&X-Amz-Date=19700821T205501Z&X-Amz-SignedHeaders=bar%3Bbar2%3Bfoo%3Bx-amz-content-sha256&X-Amz-Signature=a74584a7659f1ea6d5adfceebda6f1c11287157dd4e3a6144a030f6ff747a94d"
+        end
+      end
     end
   end
 end
