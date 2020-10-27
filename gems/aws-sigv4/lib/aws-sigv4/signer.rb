@@ -309,10 +309,6 @@ module Aws
           url.query = params
         end
 
-        if options[:extra] && options[:extra].is_a?(Hash)
-          options[:extra][:config] = config
-          options[:extra][:signable] = signable
-        end
         url
       end
 

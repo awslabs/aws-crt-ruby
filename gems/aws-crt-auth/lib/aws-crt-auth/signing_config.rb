@@ -38,8 +38,9 @@ module Aws
         #   be set (e.g. "UNSIGNED-PAYLOAD"
         #   "STREAMING-AWS4-HMAC-SHA256-PAYLOAD"
         #   "STREAMING-AWS4-HMAC-SHA256-EVENTS").
-        # @option options[Integer] :expiration_in_seconds (0) - If non-zero and the
-        #   signing transform is query param, then signing will add
+        # @option options[Integer] :expiration_in_seconds (0) -
+        #   If non-zero and the
+        #   signature_type is query param, then signing will add
         #   X-Amz-Expires to the query string, equal to the value
         #   specified here.  If this value is zero or if header signing
         #   is being used then this parameter has no effect.

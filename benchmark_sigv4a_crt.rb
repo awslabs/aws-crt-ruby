@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift File.expand_path('./gems/aws-sigv4/lib', __dir__)
 
 # use the local version of aws-crt libs
@@ -8,7 +10,7 @@ require 'aws-sigv4'
 require 'benchmark'
 
 type = 'CRT'
-n_sigs = 10000
+n_sigs = 10_000
 
 credentials = {
   access_key_id: 'akid',
@@ -26,8 +28,7 @@ t1 = Time.now
 Benchmark.bmbm do |bm|
   bm.report('CRT') do
     n_sigs.times do
-
-      signature = Aws::Sigv4::Signer.new(options).sign_request(
+      Aws::Sigv4::Signer.new(options).sign_request(
         http_method: 'PUT',
         url: 'https://domain.com',
         headers: {
@@ -43,5 +44,4 @@ Benchmark.bmbm do |bm|
   end
 end
 t2 = Time.now
-puts "#{type}, #{n_sigs}, #{t2-t1}, #{(t2-t1)/n_sigs*1000.0*1000}"
-
+puts "#{type}, #{n_sigs}, #{t2 - t1}, #{(t2 - t1) / n_sigs * 1000.0 * 1000}"

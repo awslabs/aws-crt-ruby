@@ -116,7 +116,16 @@ module Aws
                 if context['expiration_in_seconds']
                   request[:expires_in] = context['expiration_in_seconds']
                 end
-                request[:extra] = {}
+
+                extra = {}
+                allow(Aws::Crt::Auth::Signer)
+                  .to receive(:sign_request)
+                  .and_wrap_original do |original, config, signable|
+                  extra[:config] = config
+                  extra[:signable] = signable
+                  original.call(config, signable)
+                end
+
                 presigned = signer.presign_url(request)
 
 
@@ -128,8 +137,8 @@ module Aws
                 expected_params.each do |k, v|
                   expect(params).to include(k)
                   if k == 'X-Amz-Signature'
-                    config = request[:extra][:config]
-                    signable = request[:extra][:signable]
+                    config = extra[:config]
+                    signable = extra[:signable]
                     Aws::Crt::Native.verify_sigv4a_signing(
                       signable.native,
                       config.native,
