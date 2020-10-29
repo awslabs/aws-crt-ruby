@@ -5,7 +5,7 @@
         "ruby -v",
         "gem install bundler",
         "bundle install",
-        "bundle exec rake ci_run"
+        "bundle exec rake release"
     ],
     "targets": {
         "linux": {
