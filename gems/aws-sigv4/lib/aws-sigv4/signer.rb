@@ -156,9 +156,6 @@ module Aws
 
         sigv4_headers = {}
         sigv4_headers['host'] = headers['host'] || host(url)
-        if creds.session_token
-          sigv4_headers['x-amz-security-token'] = creds.session_token
-        end
 
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
