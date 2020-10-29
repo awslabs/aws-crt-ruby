@@ -16,7 +16,7 @@ module Aws
           let(:unsigned_headers) { nil }
           let(:signing_config) do
             SigningConfig.new(
-              algorithm: :v4,
+              algorithm: :sigv4,
               signature_type: signature_type,
               region: region,
               service: service,
@@ -95,7 +95,7 @@ module Aws
           #       threads << Thread.new do
           #         until shutdown_threads
           #           signing_config = SigningConfig.new(
-          #             algorithm: :v4,
+          #             algorithm: :sigv4,
           #             signature_type: :http_request_headers,
           #             region: 'REGION',
           #             service: 'SERVICE',

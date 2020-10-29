@@ -163,7 +163,7 @@ module Aws
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
         config = Aws::Crt::Auth::SigningConfig.new(
-          algorithm: :v4,
+          algorithm: :sigv4,
           signature_type: :http_request_headers,
           region: @region,
           service: @service,
@@ -279,7 +279,7 @@ module Aws
         content_sha256 ||= sha256_hexdigest(options[:body] || '')
 
         config = Aws::Crt::Auth::SigningConfig.new(
-          algorithm: @signing_algorithm,
+          algorithm: :sigv4,
           signature_type: :http_request_query_params,
           region: @region,
           service: @service,
@@ -290,7 +290,6 @@ module Aws
           credentials: creds,
           unsigned_headers: @unsigned_headers,
           use_double_uri_encode: @uri_escape_path,
-          should_normalize_uri_path: @normalize_path,
           expiration_in_seconds: options.fetch(:expires_in, 900)
         )
         signable = Aws::Crt::Auth::Signable.new(
@@ -325,8 +324,7 @@ module Aws
       end
 
       def extract_region(options)
-        options[:region] || raise(ArgumentError, 'Missing '\
-          'required option :region')
+        options[:region] || raise(Errors::MissingRegionError)
       end
 
       def extract_credentials_provider(options)
@@ -335,7 +333,7 @@ module Aws
         elsif options.key?(:credentials) || options.key?(:access_key_id)
           StaticCredentialsProvider.new(options)
         else
-          raise ArgumentError, 'Missing credentials'
+          raise Errors::MissingCredentialsError
         end
       end
 
@@ -417,36 +415,5 @@ module Aws
         end
       end
     end
-
-    # Users that wish to configure static credentials can use the
-    # `:access_key_id` and `:secret_access_key` constructor options.
-    # @api private
-    class StaticCredentialsProvider
-      # @option options [Credentials] :credentials
-      # @option options [String] :access_key_id
-      # @option options [String] :secret_access_key
-      # @option options [String] :session_token (nil)
-      def initialize(options = {})
-        @credentials =
-          options[:credentials] || Aws::Crt::Auth::Credentials.new(
-            options[:access_key_id],
-            options[:secret_access_key],
-            options[:session_token]
-          )
-      end
-
-      # @return [Credentials]
-      attr_reader :credentials
-
-      # @return [Boolean]
-      def set?
-        !!credentials && credentials.set?
-      end
-    end
-
-    Signature = Struct.new(
-      :headers, :canonical_request,
-      :string_to_sign, :content_sha256, keyword_init: true
-    )
   end
 end
