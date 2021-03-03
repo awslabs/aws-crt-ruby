@@ -38,8 +38,10 @@ def compile_bin
   bin_dir = crt_bin_dir(platform)
   install_dir = File.expand_path(build_dir, 'install')
 
-  config_cmd = [CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}",
-    "-DCMAKE_INSTALL_PREFIX=#{install_dir}"]
+  config_cmd = [
+    CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}",
+    "-DCMAKE_INSTALL_PREFIX=#{install_dir}"
+  ]
 
   build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt']
   build_cmd.append('--parallel') if cmake_has_parallel_flag?
