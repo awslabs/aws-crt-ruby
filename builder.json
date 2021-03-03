@@ -7,21 +7,8 @@
         "bundle install",
         "bundle exec rake release"
     ],
-    "targets": {
-        "linux": {
-            "_comment": "On linux platforms, the CRT needs libcrypto.a",
-            "_comment": "(part of openssl) compiled in a specific way.",
-            "_comment": "builder.pyz has a special 'libcrypto import' script",
-            "_comment": "that downloads a precompiled libcrypto and sets",
-            "_comment": "the variable 'libcrypto_path'.",
-            "imports": [
-                "libcrypto"
-            ],
-            "_comment": "The aws-crt gem uses environment variable",
-            "_comment": "'LIBCRYPTO_PATH' to let users hint where to find libcrypto",
-            "build_env": {
-                "LIBCRYPTO_PATH": "{libcrypto_path}"
-            }
-        }
+    "build_env": {
+        "CC": "clang",
+        "CXX": "clang++"
     }
 }

@@ -30,20 +30,18 @@ def run_cmd(args)
   system(*args) || raise("Error running: #{cmd_str}")
 end
 
-def libcrypto_path
-  path = ENV['LIBCRYPTO_PATH']
-  File.absolute_path(path) if path
-end
-
 # Compile bin to expected location
 def compile_bin
   platform = local_platform
   native_dir = File.expand_path('../native', File.dirname(__FILE__))
   build_dir = File.expand_path('../tmp', File.dirname(__FILE__))
   bin_dir = crt_bin_dir(platform)
+  install_dir = File.expand_path(build_dir, 'install')
 
-  config_cmd = [CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}"]
-  config_cmd.append("-DCMAKE_PREFIX_PATH=#{libcrypto_path}") if libcrypto_path
+  config_cmd = [
+    CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}",
+    "-DCMAKE_INSTALL_PREFIX=#{install_dir}"
+  ]
 
   build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt']
   build_cmd.append('--parallel') if cmake_has_parallel_flag?
