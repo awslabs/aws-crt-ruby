@@ -61,7 +61,7 @@ include(AwsSharedLibSetup)
 file(GLOB AWS_CRT_SRC "src/*.h" "src/*.c")
 
 add_library(${PROJECT_NAME} SHARED ${AWS_CRT_SRC})
-
+# Add direct dependencies, they will add their transitives
 aws_use_package(aws-c-http)
 aws_use_package(aws-c-auth)
 
