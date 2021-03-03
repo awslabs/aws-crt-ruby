@@ -1,21 +1,24 @@
 [submodule "aws-common-runtime/aws-c-common"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-common
+	path = gems/aws-crt/native/crt/aws-c-common
 	url = https://github.com/awslabs/aws-c-common.git
 [submodule "aws-common-runtime/aws-c-auth"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-auth
+	path = gems/aws-crt/native/crt/aws-c-auth
 	url = https://github.com/awslabs/aws-c-auth.git
 [submodule "aws-common-runtime/aws-c-cal"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-cal
+	path = gems/aws-crt/native/crt/aws-c-cal
 	url = https://github.com/awslabs/aws-c-cal.git
 [submodule "aws-common-runtime/aws-c-compression"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-compression
+	path = gems/aws-crt/native/crt/aws-c-compression
 	url = https://github.com/awslabs/aws-c-compression
 [submodule "aws-common-runtime/aws-c-http"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-http
+	path = gems/aws-crt/native/crt/aws-c-http
 	url = https://github.com/awslabs/aws-c-http.git
 [submodule "aws-common-runtime/aws-c-io"]
-	path = gems/aws-crt/native/aws-common-runtime/aws-c-io
+	path = gems/aws-crt/native/crt/aws-c-io
 	url = https://github.com/awslabs/aws-c-io.git
 [submodule "aws-common-runtime/s2n"]
-	path = gems/aws-crt/native/aws-common-runtime/s2n
+	path = gems/aws-crt/native/crt/s2n
 	url = https://github.com/awslabs/s2n.git
+[submodule "aws-common-runtime/aws-lc"]
+	path = gems/aws-crt/native/crt/aws-lc
+	url = https://github.com/awslabs/aws-lc.git
