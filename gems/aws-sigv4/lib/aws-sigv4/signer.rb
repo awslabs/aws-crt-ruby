@@ -157,6 +157,15 @@ module Aws
         sigv4_headers = {}
         sigv4_headers['host'] = headers['host'] || host(url)
 
+        # Modify the user-agent to add usage of crt-signer
+        # This should be temporary during developer preview only
+        if headers.include? 'user-agent'
+          headers['user-agent'] = "#{headers['user-agent']} crt-signer/#{Aws::Sigv4::VERSION}"
+          puts "Modified user-agent: #{headers['user-agent']}"
+          sigv4_headers['user-agent'] = headers['user-agent']
+        end
+
+
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
         config = Aws::Crt::Auth::SigningConfig.new(
@@ -324,10 +333,28 @@ module Aws
         options[:region] || raise(Errors::MissingRegionError)
       end
 
+      # The Credentials must be CRT native credentials
+      # convert them and return a static provider
       def extract_credentials_provider(options)
         if options[:credentials_provider]
-          options[:credentials_provider]
-        elsif options.key?(:credentials) || options.key?(:access_key_id)
+          credentials = options[:credentials_provider].credentials
+          StaticCredentialsProvider.new(
+            access_key_id: credentials.access_key_id,
+            secret_access_key: credentials.secret_access_key,
+            session_token: credentials.session_token
+          )
+        elsif options.key?(:credentials)
+          credentials = options[:credentials]
+          if credentials.is_a?(Aws::Crt::Auth::Credentials)
+            StaticCredentialsProvider.new(options)
+          else
+            StaticCredentialsProvider.new(
+              access_key_id: credentials.access_key_id,
+              secret_access_key: credentials.secret_access_key,
+              session_token: credentials.session_token
+            )
+          end
+        elsif options.key?(:access_key_id)
           StaticCredentialsProvider.new(options)
         else
           raise Errors::MissingCredentialsError

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Gem::Specification.new do |spec|
-  spec.name = 'aws-crt-signer'
+  spec.name = 'aws-sigv4'
   spec.version = File.read(File.expand_path('VERSION', __dir__)).strip
   spec.summary = 'AWS SDK for Ruby - Common Runtime (CRT) based Signer'
   spec.description = 'Amazon Web Services signing library. Generates signatures for HTTP requests'
