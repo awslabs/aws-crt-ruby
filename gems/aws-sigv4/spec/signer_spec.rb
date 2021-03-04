@@ -44,7 +44,7 @@ module Aws
               access_key_id: 'akid',
               secret_access_key: 'secret'
             )
-          end.to raise_error(ArgumentError, /:region/)
+          end.to raise_error(Errors::MissingRegionError)
         end
 
         it 'accepts a string' do
@@ -58,7 +58,7 @@ module Aws
         it 'requires credentials' do
           expect do
             Signer.new(options)
-          end.to raise_error(ArgumentError, /Missing credentials/)
+          end.to raise_error(Errors::MissingCredentialsError)
         end
 
         it 'accepts :access_key_id and :secret_access_key' do
@@ -339,7 +339,7 @@ module Aws
             },
             body: StringIO.new('http-body')
           )
-          expect(presigned_url.query).to eq "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=akid%2F19700821%2FREGION%2FSERVICE%2Faws4_request&X-Amz-Date=19700821T205501Z&X-Amz-SignedHeaders=bar%3Bbar2%3Bfoo%3Bx-amz-content-sha256&X-Amz-Expires=900&X-Amz-Signature=b6045d3927c425775d36491695e3306c4a37d047c235b179f4186cd6aefaf00a"
+          expect(presigned_url.query).to eq "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=akid%2F19700821%2FREGION%2FSERVICE%2Faws4_request&X-Amz-Date=19700821T205501Z&X-Amz-SignedHeaders=bar%3Bbar2%3Bfoo&X-Amz-Expires=900&X-Amz-Signature=6fde8775008a579e5f1d561642aa11c92f4c7eae88a5af97168dac09ab8e317b"
         end
       end
     end

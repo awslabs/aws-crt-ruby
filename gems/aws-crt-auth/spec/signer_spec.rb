@@ -95,7 +95,7 @@ module Aws
           #       threads << Thread.new do
           #         until shutdown_threads
           #           signing_config = SigningConfig.new(
-          #             algorithm: :v4,
+          #             algorithm: :sigv4,
           #             signature_type: :http_request_headers,
           #             region: 'REGION',
           #             service: 'SERVICE',

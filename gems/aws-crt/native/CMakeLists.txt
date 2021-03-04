@@ -31,7 +31,7 @@ string(REPLACE ";" "${AWS_MODULE_DIR};" AWS_MODULE_PATH "${CMAKE_PREFIX_PATH}${A
 # Append that generated list to the module search path
 list(APPEND CMAKE_MODULE_PATH ${AWS_MODULE_PATH})
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/aws-common-runtime/aws-c-common/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/crt/aws-c-common/cmake")
 
 include(AwsFindPackage)
 
@@ -42,17 +42,18 @@ set(IN_SOURCE_BUILD ON)
 # it as an option later and override the existing variable.
 option(BUILD_TESTING OFF)
 
-add_subdirectory(aws-common-runtime/aws-c-common)
+add_subdirectory(crt/aws-c-common)
 
 if (UNIX AND NOT APPLE)
-    add_subdirectory(aws-common-runtime/s2n)
+    include(crt/aws-c-cal/cmake/modules/aws-lc.cmake)
+    add_subdirectory(crt/s2n)
 endif()
 
-add_subdirectory(aws-common-runtime/aws-c-io)
-add_subdirectory(aws-common-runtime/aws-c-cal)
-add_subdirectory(aws-common-runtime/aws-c-compression)
-add_subdirectory(aws-common-runtime/aws-c-http)
-add_subdirectory(aws-common-runtime/aws-c-auth)
+add_subdirectory(crt/aws-c-io)
+add_subdirectory(crt/aws-c-cal)
+add_subdirectory(crt/aws-c-compression)
+add_subdirectory(crt/aws-c-http)
+add_subdirectory(crt/aws-c-auth)
 
 include(AwsCFlags)
 include(AwsSharedLibSetup)
@@ -60,11 +61,7 @@ include(AwsSharedLibSetup)
 file(GLOB AWS_CRT_SRC "src/*.h" "src/*.c")
 
 add_library(${PROJECT_NAME} SHARED ${AWS_CRT_SRC})
-
-aws_use_package(aws-c-common)
-aws_use_package(aws-c-io)
-aws_use_package(aws-c-cal)
-aws_use_package(aws-c-compression)
+# Add direct dependencies, they will add their transitives
 aws_use_package(aws-c-http)
 aws_use_package(aws-c-auth)
 

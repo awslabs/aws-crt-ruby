@@ -160,6 +160,18 @@ module Aws
 
         sigv4_headers = {}
         sigv4_headers['host'] = headers['host'] || host(url)
+        if creds.session_token
+          sigv4_headers['x-amz-security-token'] = creds.session_token
+        end
+
+
+        # Modify the user-agent to add usage of crt-signer
+        # This should be temporary during developer preview only
+        if headers.include? 'user-agent'
+          headers['user-agent'] = "#{headers['user-agent']} crt-signer/#{Aws::Sigv4::VERSION}"
+          puts "Modified user-agent: #{headers['user-agent']}"
+          sigv4_headers['user-agent'] = headers['user-agent']
+        end
 
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
@@ -309,6 +321,10 @@ module Aws
           url.query = params
         end
 
+        if options[:extra] && options[:extra].is_a?(Hash)
+          options[:extra][:config] = config
+          options[:extra][:signable] = signable
+        end
         url
       end
 
@@ -324,17 +340,34 @@ module Aws
       end
 
       def extract_region(options)
-        options[:region] || raise(ArgumentError, 'Missing '\
-          'required option :region')
+        options[:region] || raise(Errors::MissingRegionError)
       end
 
+      # The Credentials must be CRT native credentials
+      # convert them and return a static provider
       def extract_credentials_provider(options)
         if options[:credentials_provider]
-          options[:credentials_provider]
-        elsif options.key?(:credentials) || options.key?(:access_key_id)
+          credentials = options[:credentials_provider].credentials
+          StaticCredentialsProvider.new(
+            access_key_id: credentials.access_key_id,
+            secret_access_key: credentials.secret_access_key,
+            session_token: credentials.session_token
+          )
+        elsif options.key?(:credentials)
+          credentials = options[:credentials]
+          if credentials.is_a?(Aws::Crt::Auth::Credentials)
+            StaticCredentialsProvider.new(options)
+          else
+            StaticCredentialsProvider.new(
+              access_key_id: credentials.access_key_id,
+              secret_access_key: credentials.secret_access_key,
+              session_token: credentials.session_token
+            )
+          end
+        elsif options.key?(:access_key_id)
           StaticCredentialsProvider.new(options)
         else
-          raise ArgumentError, 'Missing credentials'
+          raise Errors::MissingCredentialsError
         end
       end
 
@@ -416,36 +449,5 @@ module Aws
         end
       end
     end
-
-    # Users that wish to configure static credentials can use the
-    # `:access_key_id` and `:secret_access_key` constructor options.
-    # @api private
-    class StaticCredentialsProvider
-      # @option options [Credentials] :credentials
-      # @option options [String] :access_key_id
-      # @option options [String] :secret_access_key
-      # @option options [String] :session_token (nil)
-      def initialize(options = {})
-        @credentials =
-          options[:credentials] || Aws::Crt::Auth::Credentials.new(
-            options[:access_key_id],
-            options[:secret_access_key],
-            options[:session_token]
-          )
-      end
-
-      # @return [Credentials]
-      attr_reader :credentials
-
-      # @return [Boolean]
-      def set?
-        !!credentials && credentials.set?
-      end
-    end
-
-    Signature = Struct.new(
-      :headers, :canonical_request,
-      :string_to_sign, :content_sha256, :extra, keyword_init: true
-    )
   end
 end

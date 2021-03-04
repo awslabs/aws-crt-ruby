@@ -23,7 +23,7 @@ module Aws
         end
 
         describe '.on_release' do
-          # Note: Cannot use let with GC tests
+          # NOTE: Cannot use let with GC tests
           it 'cleans up with release' do
             signable = Signable.new(
               properties: properties,
