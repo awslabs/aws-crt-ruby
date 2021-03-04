@@ -19,3 +19,7 @@
 [submodule "aws-common-runtime/aws-lc"]
 	path = gems/aws-crt/native/crt/aws-lc
 	url = https://github.com/awslabs/aws-lc.git
+[submodule "aws-common-runtime/aws-c-auth"]
+	path = gems/aws-crt/native/crt/aws-c-auth
+	url = ssh://git.amazon.com/pkg/Aws-c-auth
+	branch = Sigv4a
