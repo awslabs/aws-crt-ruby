@@ -160,9 +160,6 @@ module Aws
 
         sigv4_headers = {}
         sigv4_headers['host'] = headers['host'] || host(url)
-        if creds.session_token
-          sigv4_headers['x-amz-security-token'] = creds.session_token
-        end
 
 
         # Modify the user-agent to add usage of crt-signer

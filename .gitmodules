@@ -2,3 +2,21 @@
 	path = gems/aws-crt/native/crt/aws-c-auth
 	url = ssh://git.amazon.com/pkg/Aws-c-auth
 	branch = Sigv4a
+[submodule "aws-common-runtime/aws-c-cal"]
+	path = gems/aws-crt/native/crt/aws-c-cal
+	url = ssh://git.amazon.com/pkg/Aws-c-cal
+[submodule "aws-common-runtime/aws-c-common"]
+	path = gems/aws-crt/native/crt/aws-c-common
+	url = ssh://git.amazon.com/pkg/Aws-c-common
+[submodule "aws-common-runtime/aws-c-compression"]
+	path = gems/aws-crt/native/crt/aws-c-compression
+	url = ssh://git.amazon.com/pkg/Aws-c-compression
+[submodule "aws-common-runtime/aws-c-http"]
+	path = gems/aws-crt/native/crt/aws-c-http
+	url = ssh://git.amazon.com/pkg/Aws-c-http
+[submodule "aws-common-runtime/aws-c-io"]
+	path = gems/aws-crt/native/crt/aws-c-io
+	url = ssh://git.amazon.com/pkg/Aws-c-io
+[submodule "aws-common-runtime/s2n"]
+	path = gems/aws-crt/native/crt/s2n
+	url = ssh://git.amazon.com/pkg/S2N
