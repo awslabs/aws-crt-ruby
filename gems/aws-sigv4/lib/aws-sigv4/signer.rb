@@ -166,7 +166,6 @@ module Aws
         # This should be temporary during developer preview only
         if headers.include? 'user-agent'
           headers['user-agent'] = "#{headers['user-agent']} crt-signer/#{Aws::Sigv4::VERSION}"
-          puts "Modified user-agent: #{headers['user-agent']}"
           sigv4_headers['user-agent'] = headers['user-agent']
         end
 
