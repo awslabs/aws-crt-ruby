@@ -32,7 +32,8 @@ module Aws
                  ),
                  uri_escape_path: false,
                  normalize_path: context['normalize'],
-                 apply_checksum_header: context['sign_body']
+                 apply_checksum_header: context['sign_body'],
+                 omit_session_token: context.fetch('omit_session_token', false)
                })
             end
 
