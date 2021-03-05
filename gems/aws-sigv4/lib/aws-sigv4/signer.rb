@@ -288,6 +288,7 @@ module Aws
         http_method = extract_http_method(options)
         url = extract_url(options)
         headers = downcase_headers(options[:headers])
+        headers['host'] ||= host(url)
 
         datetime = headers.delete('x-amz-date')
         datetime ||= (options[:time] || Time.now)

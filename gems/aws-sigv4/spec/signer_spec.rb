@@ -339,7 +339,7 @@ module Aws
             },
             body: StringIO.new('http-body')
           )
-          expect(presigned_url.query).to eq "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=akid%2F19700821%2FREGION%2FSERVICE%2Faws4_request&X-Amz-Date=19700821T205501Z&X-Amz-SignedHeaders=bar%3Bbar2%3Bfoo&X-Amz-Expires=900&X-Amz-Signature=6fde8775008a579e5f1d561642aa11c92f4c7eae88a5af97168dac09ab8e317b"
+          expect(presigned_url.query).to eq "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=akid%2F19700821%2FREGION%2FSERVICE%2Faws4_request&X-Amz-Date=19700821T205501Z&X-Amz-SignedHeaders=bar%3Bbar2%3Bfoo%3Bhost&X-Amz-Expires=900&X-Amz-Signature=b73a384888cc4d8a88deea4587de66a8cad6530d9e1626f2e5b4290cba17a24a"
         end
       end
     end
