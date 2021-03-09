@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'spec_helper'
+require 'base64'
 
 module Aws
   module Sigv4 #:nodoc:
@@ -340,6 +341,29 @@ module Aws
             body: StringIO.new('http-body')
           )
           expect(presigned_url.query).to eq "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=akid%2F19700821%2FREGION%2FSERVICE%2Faws4_request&X-Amz-Date=19700821T205501Z&X-Amz-SignedHeaders=bar%3Bbar2%3Bfoo%3Bhost&X-Amz-Expires=900&X-Amz-Signature=b73a384888cc4d8a88deea4587de66a8cad6530d9e1626f2e5b4290cba17a24a"
+        end
+      end
+
+      context '#sign_event' do
+
+        before(:each) do
+          allow(Time).to receive(:now).and_return(now)
+          allow(now).to receive(:utc).and_return(utc)
+          allow(now).to receive(:to_i).and_return(time_i)
+          allow(utc).to receive(:strftime).and_return(datetime)
+        end
+
+        let(:now) { double('now') }
+        let(:utc) { double('utc-time') }
+        let(:time_i) { 1546045446 }
+        let(:datetime) { '20130524T000000Z' }
+
+        it 'support event signning' do
+          headers, signature = Signer.new(options).sign_event(
+            '', 'foo', Aws::EventStream::Encoder.new)
+          expect(headers[":date"].value).to eq(1546045446000)
+          expect(Base64.strict_encode64(headers[":chunk-signature"].value)).to eq("IEu14nE+lTVGgOlSKYbTrAMErq/TM5fznmVAylH/4iY=")
+          expect(signature).to eq("204bb5e2713e95354680e9522986d3ac0304aeafd33397f39e6540ca51ffe226")
         end
       end
     end
