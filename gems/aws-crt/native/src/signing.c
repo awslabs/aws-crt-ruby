@@ -8,9 +8,8 @@
 int aws_crt_sign_request(
     const struct aws_signable *signable,
     const struct aws_crt_signing_config *config,
-    const char *sign_id,
     aws_signing_complete_fn *on_complete) {
 
     return aws_sign_request_aws(
-        aws_crt_allocator(), signable, (struct aws_signing_config_base *)config, on_complete, (void *)sign_id);
+        aws_crt_allocator(), signable, (struct aws_signing_config_base *)config, on_complete, NULL);
 }

@@ -202,9 +202,8 @@ static struct aws_array_list *s_get_or_create_property_list(
         return element->value;
     }
 
-    struct aws_array_list *properties = aws_mem_acquire(signable->allocator, sizeof(struct aws_array_list));
+    struct aws_array_list *properties = aws_mem_calloc(signable->allocator, 1, sizeof(struct aws_array_list));
 
-    AWS_ZERO_STRUCT(*properties);
     struct aws_string *name_copy = aws_string_new_from_string(signable->allocator, list_name);
 
     if (aws_array_list_init_dynamic(
@@ -264,9 +263,6 @@ int aws_crt_signable_append_property_list(
 
     aws_array_list_push_back(&impl->str_buffer, &name);
     aws_array_list_push_back(&impl->str_buffer, &value);
-
-    aws_string_destroy(name);
-    aws_string_destroy(value);
 
     aws_array_list_push_back(properties, &property);
 

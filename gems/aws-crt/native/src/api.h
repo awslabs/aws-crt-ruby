@@ -92,10 +92,9 @@ AWS_CRT_API int aws_crt_signable_set_property_list(
     const char **property_names,
     const char **property_values);
 
-AWS_CRT_API int aws_crt_sign_request(
+AWS_CRT_API int aws_crt_sign_request_synchronous(
     const struct aws_signable *signable,
     const struct aws_crt_signing_config *config,
-    const char *sign_id,
     aws_signing_complete_fn *on_complete);
 
 AWS_CRT_API const char *aws_crt_signing_result_get_property(const struct aws_signing_result *result, const char *name);

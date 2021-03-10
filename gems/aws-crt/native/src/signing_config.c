@@ -30,9 +30,8 @@ struct aws_crt_signing_config *aws_crt_signing_config_new(
     bool omit_session_token,
     uint64_t expiration_in_seconds) {
     struct aws_allocator *allocator = aws_crt_allocator();
-    struct aws_crt_signing_config *config = aws_mem_acquire(allocator, sizeof(struct aws_crt_signing_config));
+    struct aws_crt_signing_config *config = aws_mem_calloc(allocator, 1, sizeof(struct aws_crt_signing_config));
 
-    AWS_ZERO_STRUCT(*config);
     // copy string data
     config->region_str = aws_string_new_from_c_str(allocator, region);
     config->service_str = aws_string_new_from_c_str(allocator, service);
