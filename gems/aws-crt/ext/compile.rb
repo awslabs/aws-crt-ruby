@@ -40,7 +40,7 @@ def compile_bin
 
   config_cmd = [
     CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}",
-    "-DCMAKE_INSTALL_PREFIX=#{install_dir}"
+    "-DCMAKE_INSTALL_PREFIX=#{install_dir} -DCMAKE_BUILD_TYPE=Release"
   ]
 
   build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt']
