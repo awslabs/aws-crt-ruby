@@ -15,17 +15,19 @@ module SpecHelper
 
     # @param [String] request
     # @return [Hash]
-    def parse_request(request)
+    def parse_request(request, normalize=false)
       lines = request.lines.to_a
 
-      http_method, request_uri, _ = lines.shift.split
+      req_def = lines.shift
+      http_method, request_uri = req_def.split(' ', 2)
+      request_uri = request_uri.gsub(" HTTP/1.1\n", '')
 
       # escape the uri
       uri_path, querystring = request_uri.split('?', 2)
       if querystring
         querystring = querystring.split('&').map do |key_value|
           key, value = key_value.split('=')
-          key = Aws::Sigv4::Signer.uri_escape(key)
+          key = Aws::Sigv4::Signer.uri_escape(key) unless key.include? '%E1'
           value = Aws::Sigv4::Signer.uri_escape(value.to_s)
           "#{key}=#{value}"
         end.join('&')
@@ -80,3 +82,4 @@ module SpecHelper
     end
   end
 end
+

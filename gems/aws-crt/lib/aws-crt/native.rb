@@ -127,7 +127,7 @@ module Aws
       attach_function :aws_crt_credentials_get_session_token, [:pointer], ByteCursor.by_value
       attach_function :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
 
-      enum :signing_algorithm, [:sigv4]
+      enum :signing_algorithm, %i[sigv4 sigv4a]
       enum :signature_type, %i[http_request_headers http_request_query_params
                                http_request_chunk http_request_event]
       enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
@@ -145,6 +145,7 @@ module Aws
 
       callback :signing_complete_fn, %i[pointer int pointer], :void
       attach_function :aws_crt_sign_request_synchronous, %i[pointer pointer signing_complete_fn], :int
+      attach_function :aws_crt_verify_sigv4a_signing, %i[pointer pointer string string string string], :int
 
       attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
       attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false

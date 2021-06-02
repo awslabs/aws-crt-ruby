@@ -334,3 +334,4 @@ const char *aws_crt_signable_get_property(const struct aws_signable *signable, c
 void aws_crt_signable_release(struct aws_signable *signable) {
     aws_signable_destroy(signable);
 }
+
