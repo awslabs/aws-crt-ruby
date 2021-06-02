@@ -14,8 +14,8 @@ struct aws_allocator *aws_crt_allocator(void) {
     return aws_default_allocator();
 }
 
-int aws_crt_global_thread_creator_shutdown_wait_for(uint32_t wait_timeout_in_seconds) {
-    return aws_global_thread_creator_shutdown_wait_for(wait_timeout_in_seconds);
+int aws_crt_thread_join_all_managed() {
+    return aws_thread_join_all_managed();
 }
 
 void aws_crt_init(void) {

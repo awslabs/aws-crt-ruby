@@ -113,7 +113,7 @@ module Aws
       attach_function :aws_crt_error_debug_str, [:int], :string, raise: false
       attach_function :aws_crt_reset_error, [], :void, raise: false
 
-      attach_function :aws_crt_global_thread_creator_shutdown_wait_for, [:uint32], :int
+      attach_function :aws_crt_thread_join_all_managed, [], :int
 
       # IO API
       attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer

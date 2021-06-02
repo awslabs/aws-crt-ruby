@@ -31,7 +31,7 @@ AWS_EXTERN_C_BEGIN
 AWS_CRT_API void aws_crt_init(void);
 AWS_CRT_API int aws_crt_test_error(int);
 AWS_CRT_API struct aws_crt_test_struct *aws_crt_test_pointer_error(void);
-AWS_CRT_API int aws_crt_global_thread_creator_shutdown_wait_for(uint32_t wait_timeout_in_seconds);
+AWS_CRT_API int aws_crt_thread_join_all_managed(void);
 
 /* Errors */
 AWS_CRT_API int aws_crt_last_error(void);

@@ -22,5 +22,5 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  Aws::Crt::Native.global_thread_creator_shutdown_wait_for(10)
+  Aws::Crt::Native.thread_join_all_managed
 end
