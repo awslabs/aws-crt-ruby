@@ -88,4 +88,3 @@ bool aws_crt_signing_config_is_signing_synchronous(struct aws_crt_signing_config
     }
     return config->native.credentials_provider == NULL;
 }
-

@@ -17,13 +17,15 @@ int aws_crt_sign_request_synchronous(
 int aws_crt_verify_sigv4a_signing(
     const struct aws_signable *signable,
     const struct aws_crt_signing_config *config,
-    const char* expected_canonical_request,
-    const char* signature,
-    const char* ecc_key_pub_x,
-    const char* ecc_key_pub_y) {
+    const char *expected_canonical_request,
+    const char *signature,
+    const char *ecc_key_pub_x,
+    const char *ecc_key_pub_y) {
 
     return aws_verify_sigv4a_signing(
-        aws_crt_allocator(), signable, (struct aws_signing_config_base *)config,
+        aws_crt_allocator(),
+        signable,
+        (struct aws_signing_config_base *)config,
         aws_byte_cursor_from_c_str(expected_canonical_request),
         aws_byte_cursor_from_c_str(signature),
         aws_byte_cursor_from_c_str(ecc_key_pub_x),
