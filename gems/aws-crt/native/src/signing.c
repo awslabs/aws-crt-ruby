@@ -5,7 +5,7 @@
 #include <aws/auth/signing_config.h>
 #include <aws/common/string.h>
 
-int aws_crt_sign_request(
+int aws_crt_sign_request_synchronous(
     const struct aws_signable *signable,
     const struct aws_crt_signing_config *config,
     aws_signing_complete_fn *on_complete) {

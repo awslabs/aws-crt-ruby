@@ -39,7 +39,7 @@ module Aws
           # Currently this will always be synchronous
           # (because we are resolving credentials) - so do not need to
           # sync threads/callbacks
-          Aws::Crt::Native.sign_request(
+          Aws::Crt::Native.sign_request_synchronous(
             signable.native, signing_config.native, callback
           )
           out

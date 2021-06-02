@@ -144,7 +144,7 @@ module Aws
       attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
 
       callback :signing_complete_fn, %i[pointer int pointer], :void
-      attach_function :aws_crt_sign_request, %i[pointer pointer signing_complete_fn], :int
+      attach_function :aws_crt_sign_request_synchronous, %i[pointer pointer signing_complete_fn], :int
 
       attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
       attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false
