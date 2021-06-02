@@ -2,7 +2,9 @@ AllCops:
   TargetRubyVersion: 2.5
   NewCops: enable
   Exclude:
-    - 'gems/aws-crt/native/aws-common-runtime/**/*.rb'
+    - 'gems/aws-crt/native/**/*.rb'
+    - 'gems/aws-crt-signer/spec/signer_spec.rb'
+    - 'gems/aws-sigv4/**/*.rb'
 
 Style/HashSyntax:
   Exclude:
@@ -26,6 +28,10 @@ Metrics/MethodLength:
   Exclude:
     - 'gems/aws-crt/ext/compile.rb'
 
+Metrics/ModuleLength:
+  Exclude:
+    - 'gems/**/spec/**/*.rb'
+
 Metrics/AbcSize:
   Max: 20
 
@@ -33,6 +39,7 @@ Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'
     - 'gems/aws-crt-auth/lib/aws-crt-auth.rb'
+    - 'gems/aws-sigv4/lib/aws-sigv4.rb'
 
 Style/TrailingCommaInArrayLiteral:
   Enabled: false

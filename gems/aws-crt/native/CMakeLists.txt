@@ -45,7 +45,7 @@ option(BUILD_TESTING OFF)
 add_subdirectory(crt/aws-c-common)
 
 if (UNIX AND NOT APPLE)
-    include(crt/aws-c-cal/cmake/modules/aws-lc.cmake)
+    add_subdirectory(crt/aws-lc)
     add_subdirectory(crt/s2n)
 endif()
 

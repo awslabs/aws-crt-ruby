@@ -13,12 +13,7 @@ FAIL=0
 SOURCE_FILES=`find gems/aws-crt/native/src -type f \( -name '*.h' -o -name '*.c' \)`
 for i in $SOURCE_FILES
 do
-    $CLANG_FORMAT -output-replacements-xml $i | grep -c "<replacement " > /dev/null
-    if [ $? -ne 1 ]
-    then
-        echo "$i failed clang-format check."
-        FAIL=1
-    fi
+    $CLANG_FORMAT -i $i
 done
 
 exit $FAIL

@@ -34,4 +34,5 @@ end
 
 task :release => %i[clean spec] do
   Rake::Task['gem:aws-crt'].invoke if ENV['GEM']
+  puts 'Release complete'
 end

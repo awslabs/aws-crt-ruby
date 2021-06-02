@@ -2,6 +2,13 @@
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'aws-crt'
+require 'rspec'
+
+RSpec.configure do |config|
+  config.after(:all) do
+    check_for_clean_shutdown
+  end
+end
 
 # Return whether ObjectSpace.garbage_collect
 # can be relied on to immediately clean up everything possible
@@ -15,5 +22,5 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  Aws::Crt::Native.global_thread_creator_shutdown_wait_for(10)
+  Aws::Crt::Native.thread_join_all_managed
 end

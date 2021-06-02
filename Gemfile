@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'aws-eventstream'
 gem 'ffi'
 gem 'rake'
 
