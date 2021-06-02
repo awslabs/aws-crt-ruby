@@ -97,6 +97,13 @@ AWS_CRT_API int aws_crt_sign_request_synchronous(
     const struct aws_crt_signing_config *config,
     aws_signing_complete_fn *on_complete);
 
+AWS_CRT_API int aws_crt_verify_sigv4a_signing(
+    const struct aws_signable *signable,
+    const struct aws_crt_signing_config *config,
+    const char *expected_canonical_request,
+    const char *signature,
+    const char *ecc_key_pub_x,
+    const char *ecc_key_pub_y);
 AWS_CRT_API const char *aws_crt_signing_result_get_property(const struct aws_signing_result *result, const char *name);
 AWS_CRT_API struct aws_crt_property_list *aws_crt_signing_result_get_property_list(
     const struct aws_signing_result *result,

@@ -55,6 +55,13 @@ module Aws
       #   headers. This is required for AWS Glacier, and optional for
       #   every other AWS service as of late 2016.
       #
+      # @option options [Boolean] :omit_session_token (false) If `true`,
+      #   then security token is added to the final signing result,
+      #   but is treated as "unsigned" and does not contribute
+      #   to the authorization signature.
+      #
+      # @option options [Boolean] :normalize_path (true) When `true`,
+      #   the uri paths will be normalized when building the canonical request
       def initialize(options = {})
         @service = extract_service(options)
         @region = extract_region(options)
@@ -66,6 +73,9 @@ module Aws
         @unsigned_headers << 'expect'
         @uri_escape_path = options.fetch(:uri_escape_path, true)
         @apply_checksum_header = options.fetch(:apply_checksum_header, true)
+        @signing_algorithm = options.fetch(:signing_algorithm, :sigv4)
+        @normalize_path = options.fetch(:normalize_path, true)
+        @omit_session_token = options.fetch(:omit_session_token, false)
       end
 
       # @return [String]
@@ -162,15 +172,13 @@ module Aws
         # This should be temporary during developer preview only
         if headers.include? 'user-agent'
           headers['user-agent'] = "#{headers['user-agent']} crt-signer/#{Aws::Sigv4::VERSION}"
-          puts "Modified user-agent: #{headers['user-agent']}"
           sigv4_headers['user-agent'] = headers['user-agent']
         end
-
 
         headers = headers.merge(sigv4_headers) # merge so we do not modify given headers hash
 
         config = Aws::Crt::Auth::SigningConfig.new(
-          algorithm: :sigv4,
+          algorithm: @signing_algorithm,
           signature_type: :http_request_headers,
           region: @region,
           service: @service,
@@ -180,7 +188,9 @@ module Aws
             :sbht_content_sha256 : :sbht_none,
           credentials: creds,
           unsigned_headers: @unsigned_headers,
-          use_double_uri_encode: @uri_escape_path
+          use_double_uri_encode: @uri_escape_path,
+          should_normalize_uri_path: @normalize_path,
+          omit_session_token: @omit_session_token
         )
         signable = Aws::Crt::Auth::Signable.new(
           properties: { 'uri' => url.to_s, 'method' => http_method },
@@ -195,7 +205,8 @@ module Aws
           ),
           string_to_sign: 'CRT_INTERNAL',
           canonical_request: 'CRT_INTERNAL',
-          content_sha256: content_sha256
+          content_sha256: content_sha256,
+          extra: {config: config, signable: signable}
         )
       end
 
@@ -273,6 +284,7 @@ module Aws
         http_method = extract_http_method(options)
         url = extract_url(options)
         headers = downcase_headers(options[:headers])
+        headers['host'] ||= host(url)
 
         datetime = headers.delete('x-amz-date')
         datetime ||= (options[:time] || Time.now)
@@ -282,7 +294,7 @@ module Aws
         content_sha256 ||= sha256_hexdigest(options[:body] || '')
 
         config = Aws::Crt::Auth::SigningConfig.new(
-          algorithm: :sigv4,
+          algorithm: @signing_algorithm,
           signature_type: :http_request_query_params,
           region: @region,
           service: @service,
@@ -293,6 +305,8 @@ module Aws
           credentials: creds,
           unsigned_headers: @unsigned_headers,
           use_double_uri_encode: @uri_escape_path,
+          should_normalize_uri_path: @normalize_path,
+          omit_session_token: @omit_session_token,
           expiration_in_seconds: options.fetch(:expires_in, 900)
         )
         signable = Aws::Crt::Auth::Signable.new(
@@ -549,3 +563,4 @@ module Aws
     end
   end
 end
+
