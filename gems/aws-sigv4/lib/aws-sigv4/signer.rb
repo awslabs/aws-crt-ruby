@@ -171,7 +171,7 @@ module Aws
         # Modify the user-agent to add usage of crt-signer
         # This should be temporary during developer preview only
         if headers.include? 'user-agent'
-          headers['user-agent'] = "#{headers['user-agent']} crt-signer/#{Aws::Sigv4::VERSION}"
+          headers['user-agent'] = "#{headers['user-agent']} crt-signer/#{@signing_algorithm}/#{Aws::Sigv4::VERSION}"
           sigv4_headers['user-agent'] = headers['user-agent']
         end
 
