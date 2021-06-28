@@ -7,7 +7,7 @@ module Aws
     module Native
       extend FFI::Library
 
-      ffi_lib [crt_bin_path(local_platform), 'libaws-crt']
+      ffi_lib [crt_bin_path(local_platform), 'libaws-crt-ffi']
 
       # aws_byte_cursor binding
       class ByteCursor < FFI::Struct
@@ -107,53 +107,52 @@ module Aws
 
       # Core API
       attach_function :aws_crt_init, [], :void, raise: false
+      attach_function :aws_crt_clean_up, [], :void
       attach_function :aws_crt_last_error, [], :int, raise: false
       attach_function :aws_crt_error_str, [:int], :string, raise: false
       attach_function :aws_crt_error_name, [:int], :string, raise: false
       attach_function :aws_crt_error_debug_str, [:int], :string, raise: false
       attach_function :aws_crt_reset_error, [], :void, raise: false
 
-      attach_function :aws_crt_thread_join_all_managed, [], :int
 
       # IO API
-      attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
-      attach_function :aws_crt_event_loop_group_release, [:pointer], :void
+      # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
+      # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
 
       # Auth API
-      attach_function :aws_crt_credentials_new, %i[string string string uint64], :pointer
-      attach_function :aws_crt_credentials_release, [:pointer], :void
-      attach_function :aws_crt_credentials_get_access_key_id, [:pointer], ByteCursor.by_value
-      attach_function :aws_crt_credentials_get_secret_access_key, [:pointer], ByteCursor.by_value
-      attach_function :aws_crt_credentials_get_session_token, [:pointer], ByteCursor.by_value
-      attach_function :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
+      # attach_function :aws_crt_credentials_new, %i[string string string uint64], :pointer
+      # attach_function :aws_crt_credentials_release, [:pointer], :void
+      # attach_function :aws_crt_credentials_get_access_key_id, [:pointer], ByteCursor.by_value
+      # attach_function :aws_crt_credentials_get_secret_access_key, [:pointer], ByteCursor.by_value
+      # attach_function :aws_crt_credentials_get_session_token, [:pointer], ByteCursor.by_value
+      # attach_function :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
 
-      enum :signing_algorithm, %i[sigv4 sigv4a]
-      enum :signature_type, %i[http_request_headers http_request_query_params
-                               http_request_chunk http_request_event]
-      enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
-      callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
-      attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool uint64], :pointer
-      attach_function :aws_crt_signing_config_release, [:pointer], :void
-      attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool, raise: false
-
-      attach_function :aws_crt_signable_new, [], :pointer
-      attach_function :aws_crt_signable_release, [:pointer], :void
-      attach_function :aws_crt_signable_set_property, %i[pointer string string], :int
-      attach_function :aws_crt_signable_get_property, %i[pointer string], :string, raise: false
-      attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
-      attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
-
-      callback :signing_complete_fn, %i[pointer int pointer], :void
-      attach_function :aws_crt_sign_request_synchronous, %i[pointer pointer signing_complete_fn], :int
-      attach_function :aws_crt_verify_sigv4a_signing, %i[pointer pointer string string string string], :int
-
-      attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
-      attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false
-      attach_function :aws_crt_property_list_release, %i[pointer], :void
+      # enum :signing_algorithm, %i[sigv4 sigv4a]
+      # enum :signature_type, %i[http_request_headers http_request_query_params
+      #                          http_request_chunk http_request_event]
+      # enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
+      # callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
+      # attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool uint64], :pointer
+      # attach_function :aws_crt_signing_config_release, [:pointer], :void
+      # attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool, raise: false
+      #
+      # attach_function :aws_crt_signable_new, [], :pointer
+      # attach_function :aws_crt_signable_release, [:pointer], :void
+      # attach_function :aws_crt_signable_set_property, %i[pointer string string], :int
+      # attach_function :aws_crt_signable_get_property, %i[pointer string], :string, raise: false
+      # attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
+      # attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
+      #
+      # callback :signing_complete_fn, %i[pointer int pointer], :void
+      # attach_function :aws_crt_sign_request_synchronous, %i[pointer pointer signing_complete_fn], :int
+      # attach_function :aws_crt_verify_sigv4a_signing, %i[pointer pointer string string string string], :int
+      #
+      # attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
+      # attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false
+      # attach_function :aws_crt_property_list_release, %i[pointer], :void
 
       # Internal testing API
       attach_function :aws_crt_test_error, [:int], :int
-      attach_function :aws_crt_test_pointer_error, [], :pointer
     end
   end
 end

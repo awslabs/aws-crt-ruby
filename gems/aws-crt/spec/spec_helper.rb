@@ -22,5 +22,5 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  Aws::Crt::Native.thread_join_all_managed
+  Aws::Crt::Native.clean_up
 end
