@@ -22,3 +22,6 @@
 [submodule "gems/aws-crt/native/crt/aws-c-auth"]
 	path = gems/aws-crt/native/crt/aws-c-auth
 	url = https://github.com/awslabs/aws-c-auth
+[submodule "gems/aws-crt/native/crt/aws-c-ffi"]
+	path = gems/aws-crt/native/crt/aws-c-ffi
+	url = https://github.com/awslabs/aws-crt-ffi

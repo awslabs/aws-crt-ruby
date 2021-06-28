@@ -33,25 +33,28 @@ end
 # Compile bin to expected location
 def compile_bin
   platform = local_platform
-  native_dir = File.expand_path('../native', File.dirname(__FILE__))
+  native_dir = File.expand_path('../native/crt/aws-c-ffi', File.dirname(__FILE__))
   build_dir = File.expand_path('../tmp', File.dirname(__FILE__))
   bin_dir = crt_bin_dir(platform)
   install_dir = File.expand_path(build_dir, 'install')
 
   config_cmd = [
-    CMAKE, native_dir, "-DBIN_DIR=#{bin_dir}",
+    CMAKE, native_dir,
     "-DCMAKE_INSTALL_PREFIX=#{install_dir}"
   ]
 
-  build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt']
+  build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt-ffi']
   build_cmd.append('--parallel') if cmake_has_parallel_flag?
 
   # Need to run cmake from build dir.
   # Later versions of cmake (3.13+) can pass build dir via -B,
   # but min supported cmake (3.1) does not support this.
   FileUtils.mkdir_p(build_dir)
+  FileUtils.mkdir_p(bin_dir)
   FileUtils.chdir(build_dir) do
     run_cmd(config_cmd)
     run_cmd(build_cmd)
+    sh('pwd && ls')
+    FileUtils.mv(crt_bin_name(platform), bin_dir)
   end
 end
