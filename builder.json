@@ -3,7 +3,7 @@
     "packages": [],
     "build_steps": [
         "ruby -v",
-        "gem install bundler",
+        "command -v bundler >/dev/null 2>&1 || gem install bundler",
         "bundle install",
         "bundle exec rake release"
     ],
