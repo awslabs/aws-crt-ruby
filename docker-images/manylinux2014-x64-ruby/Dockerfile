@@ -41,6 +41,8 @@ RUN yum -y install git-core zlib zlib-devel gcc-c++ patch readline readline-deve
 
 SHELL ["/bin/bash", "-l", "-c"]
 
+# Install clang - because for some reason its not?
+RUN yum -y install clang clang
 
 ###############################################################################
 # Install entrypoint
