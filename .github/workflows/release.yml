@@ -25,12 +25,11 @@ jobs:
         arch: [x64]
     runs-on: ubuntu-latest
     steps:
+      - name: Build docker image
+        run: docker build -t local < docker-images/manylinux2014-x86-ruby/Dockerfile
       - name: Generate Gem artifacts
-        runs:
-          using: docker
-          image: 'docker-images/manylinux2014-x64-ruby/Dockerfile'
-          args:
-            - build -p ${{ env.PACKAGE_NAME }} downstream
+        run: |
+          docker run local build -p ${{ env.PACKAGE_NAME }} downstream
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
