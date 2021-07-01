@@ -26,11 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate Gem artifacts
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u awslabs --password-stdin
-          export DOCKER_IMAGE=docker.pkg.github.com/awslabs/aws-crt-builder/aws-crt-manylinux2014-${{ matrix.arch }}:${{ env.BUILDER_VERSION }}
-          docker pull $DOCKER_IMAGE
-          docker run --env GITHUB_REF --entrypoint /bin/bash $DOCKER_IMAGE -c "yum install -y ruby && gem install bundler -v '< 2' && /usr/local/bin/builder build -p ${{ env.PACKAGE_NAME }} downstream"
+        runs:
+          using: docker
+          image: 'docker-images/manylinux2014-x64-ruby/Dockerfile'
+          args:
+            - build -p ${{ env.PACKAGE_NAME }} downstream
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
