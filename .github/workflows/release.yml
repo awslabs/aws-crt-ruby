@@ -25,8 +25,12 @@ jobs:
         arch: [x64]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v1
+
       - name: Build docker image
         run: docker build -t local < docker-images/manylinux2014-x86-ruby/Dockerfile
+
       - name: Generate Gem artifacts
         run: |
           docker run local build -p ${{ env.PACKAGE_NAME }} downstream
