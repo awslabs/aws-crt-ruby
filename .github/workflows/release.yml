@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Build docker image
-        run: docker build -t local < docker-images/manylinux2014-x64-ruby/Dockerfile
+        run: docker build docker-images/manylinux2014-x64-ruby -t local
 
       - name: Generate Gem artifacts
         run: |
