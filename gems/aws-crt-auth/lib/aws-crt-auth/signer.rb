@@ -16,9 +16,10 @@ module Aws
         #      header.
         def self.sign_request(signing_config, signable)
           unless signing_config.signing_synchronous?
-            raise ArgumentError, 'Signing will be asynchronous - this is not ' \
-              'currently supported.  Please provide credentials directly ' \
-              'when creating the SigningConfig.'
+            raise ArgumentError,
+                  'Signing will be asynchronous - this is not ' \
+                  'currently supported.  Please provide credentials directly ' \
+                  'when creating the SigningConfig.'
           end
           out = {}
           callback = proc do |result, status, _userdata|

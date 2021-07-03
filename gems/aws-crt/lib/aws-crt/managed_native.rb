@@ -28,8 +28,8 @@ module Aws
         # check that a destructor has been registered
         unless self.class.instance_variable_get('@destructor')
           raise 'No native destructor registered.  use native_destroy to ' \
-                  'set the method used to cleanup the native object this ' \
-                  'class manages.'
+                'set the method used to cleanup the native object this ' \
+                'class manages.'
         end
         native = block.call
         @native = FFI::AutoPointer.new(native, self.class.method(:on_release))
@@ -69,8 +69,9 @@ module Aws
         #  native_destroy Aws::Crt::Native.method(:test_release)
         def native_destroy(destructor)
           unless destructor.is_a?(Method)
-            raise ArgumentError, 'destructor must be a Method. ' \
-              'Use object.method(:method_name)'
+            raise ArgumentError,
+                  'destructor must be a Method. ' \
+                  'Use object.method(:method_name)'
           end
           @destructor = destructor
         end
