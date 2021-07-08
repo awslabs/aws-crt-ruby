@@ -22,5 +22,6 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
+  puts "Calling native cleanup...."
   Aws::Crt::Native.clean_up
 end

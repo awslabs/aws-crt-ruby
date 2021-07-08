@@ -116,6 +116,15 @@ module Aws
 
 
       # IO API
+      attach_function :aws_crt_event_loop_group_options_new, [], :pointer
+      attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
+      attach_function :aws_crt_event_loop_group_options_set_max_threads, [:pointer, :uint16], :void
+
+      attach_function :aws_crt_event_loop_group_new, [:pointer], :pointer
+      attach_function :aws_crt_event_loop_group_acquire, [:pointer], :pointer
+      attach_function :aws_crt_event_loop_group_release, [:pointer], :void
+
+
       # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
       # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
 
