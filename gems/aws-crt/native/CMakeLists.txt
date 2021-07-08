@@ -45,7 +45,12 @@ option(BUILD_TESTING OFF)
 add_subdirectory(crt/aws-c-common)
 
 if (UNIX AND NOT APPLE)
+    set(BUILD_LIBSSL OFF) # Don't need libssl from aws-lc, only need libcrypto
+    set(DISABLE_PERL ON) # Disable aws-lc codegen
+    set(DISABLE_GO ON) # Disable aws-lc codegen
     add_subdirectory(crt/aws-lc)
+
+    set(SEARCH_LIBCRYPTO OFF) # Let s2n use libcrypto from aws-lc
     add_subdirectory(crt/s2n)
 endif()
 
