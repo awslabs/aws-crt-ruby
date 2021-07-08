@@ -41,6 +41,10 @@ else
     cd ~
 fi
 
+# use llvm-7 with clang
+# see: https://stackoverflow.com/questions/44219158/how-to-install-clang-and-llvm-3-9-on-centos-7/48103599
+scl enable llvm-toolset-7 bash
+
 # Launch the builder with whatever args were passed to this script
 $builder ${args[@]}
 
