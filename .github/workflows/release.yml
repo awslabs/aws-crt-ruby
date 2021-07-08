@@ -33,7 +33,7 @@ jobs:
 
       - name: Generate Gem artifacts
         run: |
-          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
+          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env CMAKE_C_COMPILER_ID=GNU local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
