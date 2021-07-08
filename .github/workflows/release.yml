@@ -34,14 +34,16 @@ jobs:
       - name: Generate Gem artifacts
         run: |
           docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env CMAKE_C_COMPILER_ID=GNU local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
+          docker cp `docker ps -alq`:aws-crt-ruby/gems/aws-crt/bin .
+          docker cp `docker ps -alq`:aws-crt-ruby/gems/aws-crt/pkg .
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
-            aws-crt-ruby/gems/aws-crt/bin/
-            aws-crt-ruby/gems/aws-crt/pkg/
+            bin/
+            pkg/
 
   windows:
     strategy:
