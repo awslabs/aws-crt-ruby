@@ -4,7 +4,6 @@ module Aws
   module Crt
     # High level Ruby abstractions for CRT IO functionality
     module IO
-
       # Options for an EventLoopGroup
       class EventLoopGroupOptions
         include Aws::Crt::ManagedNative
@@ -12,7 +11,7 @@ module Aws
 
         def initialize(max_threads = nil)
           unless max_threads.nil? ||
-            (max_threads.is_a?(Integer) && max_threads.positive?)
+                 (max_threads.is_a?(Integer) && max_threads.positive?)
             raise ArgumentError, 'max_threads must be nil or positive Integer'
           end
 
@@ -23,7 +22,8 @@ module Aws
             Aws::Crt::Native.event_loop_group_options_new
           end
 
-          Aws::Crt::Native.event_loop_group_options_set_max_threads(@native, max_threads)
+          Aws::Crt::Native.event_loop_group_options_set_max_threads(@native,
+                                                                    max_threads)
         end
       end
 
@@ -36,7 +36,6 @@ module Aws
         native_destroy Aws::Crt::Native.method(:event_loop_group_release)
 
         def initialize(max_threads = nil)
-
           @options = EventLoopGroupOptions.new(max_threads)
 
           manage_native do

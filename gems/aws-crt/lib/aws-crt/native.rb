@@ -114,16 +114,14 @@ module Aws
       attach_function :aws_crt_error_debug_str, [:int], :string, raise: false
       attach_function :aws_crt_reset_error, [], :void, raise: false
 
-
       # IO API
       attach_function :aws_crt_event_loop_group_options_new, [], :pointer
       attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
-      attach_function :aws_crt_event_loop_group_options_set_max_threads, [:pointer, :uint16], :void
+      attach_function :aws_crt_event_loop_group_options_set_max_threads, %i[pointer uint16], :void
 
       attach_function :aws_crt_event_loop_group_new, [:pointer], :pointer
       attach_function :aws_crt_event_loop_group_acquire, [:pointer], :pointer
       attach_function :aws_crt_event_loop_group_release, [:pointer], :void
-
 
       # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
       # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
