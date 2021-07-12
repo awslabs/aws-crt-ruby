@@ -43,3 +43,8 @@ Naming/FileName:
 
 Style/TrailingCommaInArrayLiteral:
   Enabled: false
+
+Style/CombinableLoops:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'

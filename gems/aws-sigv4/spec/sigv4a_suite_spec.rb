@@ -43,7 +43,7 @@ module Aws
 
             let(:request) do
               raw_request = File.read(
-                File.join(path, 'request.txt'), encoding: "utf-8"
+                File.join(path, 'request.txt'), encoding: 'utf-8'
               )
               request = SpecHelper.parse_request(raw_request, context['normalize'])
               if request_time
@@ -57,11 +57,13 @@ module Aws
             it 'computes the authorization header' do
               signature = signer.sign_request(request)
               creq = File.read(
-                File.join(path, 'header-canonical-request.txt'), encoding: "utf-8"
+                File.join(path, 'header-canonical-request.txt'), encoding: 'utf-8'
               )
               expected_pk = JSON.parse(File.read(File.join(path, 'public-key.json')))
 
-              expected_req = SpecHelper.parse_request(File.read(File.join(path, 'header-signed-request.txt')))
+              expected_req = SpecHelper.parse_request(File.read(
+                File.join(path, 'header-signed-request.txt'), encoding: 'utf-8')
+              )
               expected_req[:headers].each do |k,v|
                 if k == 'Authorization'
                   expected_parts = v.split(' ')
@@ -108,7 +110,7 @@ module Aws
                 )
                 expected = URI.parse(raw_expected.lines.first.split[1]).query
                 creq = File.read(
-                  File.join(path, 'query-canonical-request.txt'), encoding: "utf-8"
+                  File.join(path, 'query-canonical-request.txt'), encoding: 'utf-8'
                 )
                 expected_pk = JSON.parse(File.read(File.join(path, 'public-key.json')))
 

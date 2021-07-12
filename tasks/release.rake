@@ -53,7 +53,11 @@ task 'verify-release:hll-gems' do
     res = Gem.install(gem_file, Gem::Requirement.default,
                       ignore_dependencies: true)
     $LOAD_PATH.unshift "#{res.first.full_gem_path}/lib"
+  end
 
+  # order may not map to dependencies
+  # install all gems then test require
+  gems.each do |gem|
     puts "Requiring #{gem}"
     require gem
   end

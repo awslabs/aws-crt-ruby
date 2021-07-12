@@ -7,7 +7,7 @@ on:
       - 'master'
 
 env:
-  BUILDER_VERSION: v0.6.9
+  BUILDER_VERSION: v0.8.19
   BUILDER_SOURCE: releases
   BUILDER_HOST: https://d19elf31gohf1l.cloudfront.net
   PACKAGE_NAME: aws-crt-ruby
@@ -25,22 +25,27 @@ jobs:
         arch: [x64]
     runs-on: ubuntu-latest
     steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
+      - name: Checkout Sources
+        uses: actions/checkout@v1
+
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      - run: docker build docker-images/manylinux2014-x64-ruby -t local --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
+      - run: docker tag local docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+
       - name: Generate Gem artifacts
         run: |
-          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
-          chmod a+x builder
-          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env GEM=true local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
+          docker ps -a
+          docker cp `docker ps -alq`:/root/aws-crt-ruby/gems/aws-crt .
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
-            aws-crt-ruby/gems/aws-crt/bin/
-            aws-crt-ruby/gems/aws-crt/pkg/
+            aws-crt/bin/
+            aws-crt/pkg/
 
   windows:
     strategy:
