@@ -21,6 +21,19 @@ module Aws
         end
       end
 
+      # Warning, when used as an output structure
+      # the memory in ptr needs to be manually destructed!
+      class CrtBuf < FFI::Struct
+        layout :ptr, :pointer,
+               :len, :size_t
+
+        def to_blob
+          return unless (self[:len]).positive? && !(self[:ptr]).null?
+
+          self[:ptr].read_array_of_char(self[:len])
+        end
+      end
+
       # Managed PropertyList Struct (for outputs)
       class PropertyList < FFI::ManagedStruct
         layout :len, :size_t,
@@ -114,6 +127,11 @@ module Aws
       attach_function :aws_crt_error_debug_str, [:int], :string, raise: false
       attach_function :aws_crt_reset_error, [], :void, raise: false
 
+      # Core Memory Management
+      attach_function :aws_crt_mem_release, [:pointer], :void, raise: false
+
+      typedef :pointer, :blob
+
       # IO API
       attach_function :aws_crt_event_loop_group_options_new, [], :pointer
       attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
@@ -122,6 +140,17 @@ module Aws
       attach_function :aws_crt_event_loop_group_new, [:pointer], :pointer
       attach_function :aws_crt_event_loop_group_acquire, [:pointer], :pointer
       attach_function :aws_crt_event_loop_group_release, [:pointer], :void
+
+      # HTTP API
+      typedef :pointer, :headers_ptr
+      attach_function :aws_crt_http_headers_new_from_blob, %i[blob size_t], :headers_ptr
+      attach_function :aws_crt_http_headers_to_blob, [:headers_ptr, CrtBuf], :void
+      attach_function :aws_crt_http_headers_release, [:headers_ptr], :void
+
+      typedef :pointer, :http_message_ptr
+      attach_function :aws_crt_http_message_new_from_blob, %i[blob size_t], :http_message_ptr
+      attach_function :aws_crt_http_message_to_blob, [:http_message_ptr, CrtBuf], :void
+      attach_function :aws_crt_http_message_release, [:http_message_ptr], :void
 
       # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
       # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
