@@ -2,12 +2,12 @@
 
 # Maps OS name to crt binary name.
 OS_BINARIES = {
-  'darwin' => 'libaws-crt.dylib',
-  'linux' => 'libaws-crt.so',
-  'mingw32' => 'aws-crt.dll'
+  'darwin' => 'libaws-crt-ffi.dylib',
+  'linux' => 'libaws-crt-ffi.so',
+  'mingw32' => 'aws-crt-ffi.dll'
 }.freeze
 
-DEFAULT_BINARY = 'libaws-crt.so'
+DEFAULT_BINARY = 'libaws-crt-ffi.so'
 
 # @return [String] returns Gem::Platform style name for the current system
 # similar to Gem::Platform.local but will return systems host os/cpu
