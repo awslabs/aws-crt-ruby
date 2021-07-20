@@ -168,22 +168,34 @@ module Aws
       attach_function :aws_crt_credentials_acquire, [:credentials_ptr], :credentials_ptr
       attach_function :aws_crt_credentials_release, [:credentials_ptr], :void
 
+      typedef :pointer, :credentials_provider_ptr
+      attach_function :aws_crt_credentials_provider_acquire, [:credentials_provider_ptr], :credentials_provider_ptr
+      attach_function :aws_crt_credentials_provider_release, [:credentials_provider_ptr], :void
 
-      # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
-      # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
+      typedef :pointer, :static_cred_provider_options_ptr
+      attach_function :aws_crt_credentials_provider_static_options_new, [], :static_cred_provider_options_ptr
+      attach_function :aws_crt_credentials_provider_static_options_release, [:static_cred_provider_options_ptr], :void
+      attach_function :aws_crt_credentials_provider_static_options_set_access_key_id, %i[static_cred_provider_options_ptr string size_t], :void
+      attach_function :aws_crt_credentials_provider_static_options_set_secret_access_key, %i[static_cred_provider_options_ptr string size_t], :void
+      attach_function :aws_crt_credentials_provider_static_options_set_session_token, %i[static_cred_provider_options_ptr string size_t], :void
 
-      # Auth API
-      # attach_function :aws_crt_credentials_new, %i[string string string uint64], :pointer
-      # attach_function :aws_crt_credentials_release, [:pointer], :void
-      # attach_function :aws_crt_credentials_get_access_key_id, [:pointer], ByteCursor.by_value
-      # attach_function :aws_crt_credentials_get_secret_access_key, [:pointer], ByteCursor.by_value
-      # attach_function :aws_crt_credentials_get_session_token, [:pointer], ByteCursor.by_value
-      # attach_function :aws_crt_credentials_get_expiration_timepoint_seconds, [:pointer], :uint64
+      attach_function :aws_crt_credentials_provider_static_new, [:static_cred_provider_options_ptr], :credentials_provider_ptr
 
-      # enum :signing_algorithm, %i[sigv4 sigv4a]
-      # enum :signature_type, %i[http_request_headers http_request_query_params
-      #                          http_request_chunk http_request_event]
-      # enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
+
+
+      enum :signing_algorithm, %i[sigv4 sigv4a]
+      enum :signature_type, %i[
+        http_request_headers http_request_query_params
+        http_request_chunk http_request_event
+        canonical_request_headers canonical_request_query_params
+      ]
+      enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
+
+      typedef :pointer, :signing_config_ptr
+      attach_function :aws_crt_signing_config_aws_new, [], :signing_config_ptr
+      attach_function :aws_crt_signing_config_aws_release, [:signing_config_ptr], :void
+
+
       # callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
       # attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool uint64], :pointer
       # attach_function :aws_crt_signing_config_release, [:pointer], :void
