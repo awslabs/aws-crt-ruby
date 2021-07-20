@@ -10,6 +10,8 @@ require_relative 'aws-crt/io/event_loop_group'
 require_relative 'aws-crt/http/headers'
 require_relative 'aws-crt/http/message'
 
+require_relative 'aws-crt/auth/credentials'
+
 # Top level Amazon Web Services (AWS) namespace
 module Aws
   # Common runtime bindings

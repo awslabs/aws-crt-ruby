@@ -157,8 +157,17 @@ module Aws
       # Auth API
       typedef :pointer, :credentials_options_ptr
       attach_function :aws_crt_credentials_options_new, [], :credentials_options_ptr
-      attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
-      attach_function :aws_crt_event_loop_group_options_set_max_threads, %i[pointer uint16], :void
+      attach_function :aws_crt_credentials_options_release, [:credentials_options_ptr], :void
+      attach_function :aws_crt_credentials_options_set_access_key_id, %i[credentials_options_ptr string size_t], :void
+      attach_function :aws_crt_credentials_options_set_secret_access_key, %i[credentials_options_ptr string size_t], :void
+      attach_function :aws_crt_credentials_options_set_session_token, %i[credentials_options_ptr string size_t], :void
+      attach_function :aws_crt_credentials_options_set_expiration_timepoint_seconds, %i[credentials_options_ptr uint64], :void
+
+      typedef :pointer, :credentials_ptr
+      attach_function :aws_crt_credentials_new, [:credentials_options_ptr], :credentials_ptr
+      attach_function :aws_crt_credentials_acquire, [:credentials_ptr], :credentials_ptr
+      attach_function :aws_crt_credentials_release, [:credentials_ptr], :void
+
 
       # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
       # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
