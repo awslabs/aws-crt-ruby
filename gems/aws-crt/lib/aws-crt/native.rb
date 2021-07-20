@@ -160,7 +160,6 @@ module Aws
       attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
       attach_function :aws_crt_event_loop_group_options_set_max_threads, %i[pointer uint16], :void
 
-
       # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
       # attach_function :aws_crt_event_loop_group_release, [:pointer], :void
 

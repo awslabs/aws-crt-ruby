@@ -33,7 +33,7 @@ end
 # Compile bin to expected location
 def compile_bin
   platform = local_platform
-  native_dir = File.expand_path('../native/crt/aws-c-ffi',
+  native_dir = File.expand_path('../native/crt/aws-crt-ffi',
                                 File.dirname(__FILE__))
   build_dir = File.expand_path('../tmp', File.dirname(__FILE__))
   bin_dir = crt_bin_dir(platform)

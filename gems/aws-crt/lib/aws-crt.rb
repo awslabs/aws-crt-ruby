@@ -12,6 +12,7 @@ require_relative 'aws-crt/http/message'
 
 # Top level Amazon Web Services (AWS) namespace
 module Aws
+  # Common runtime bindings
   module Crt
     GEM_VERSION = File.read(File.expand_path('../VERSION', __dir__)).strip
 

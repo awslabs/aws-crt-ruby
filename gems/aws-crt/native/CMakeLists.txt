@@ -42,7 +42,7 @@ set(IN_SOURCE_BUILD ON)
 # it as an option later and override the existing variable.
 option(BUILD_TESTING OFF)
 
-add_subdirectory(crt/aws-c-ffi)
+add_subdirectory(crt/aws-crt-ffi)
 
 include(AwsCFlags)
 include(AwsSharedLibSetup)
@@ -51,7 +51,7 @@ file(GLOB AWS_CRT_SRC "src/*.h" "src/*.c")
 
 add_library(${PROJECT_NAME} SHARED ${AWS_CRT_SRC})
 # Add direct dependencies, they will add their transitives
-aws_use_package(aws-c-ffi)
+aws_use_package(aws-crt-ffi)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEP_AWS_LIBS})
 aws_set_common_properties(${PROJECT_NAME})

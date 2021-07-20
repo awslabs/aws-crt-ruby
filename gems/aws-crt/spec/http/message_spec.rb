@@ -15,7 +15,7 @@ describe Aws::Crt::Http::Message do
     expected_header_blob = headers.each_pair { |k, v| [k, v] }.flatten
     expect(blob_out[0]).to eq method
     expect(blob_out[1]).to eq path
-    expect(blob_out[2..]).to eq expected_header_blob
+    expect(blob_out[2..blob_out.length]).to eq expected_header_blob
 
     crt_message.release
   end

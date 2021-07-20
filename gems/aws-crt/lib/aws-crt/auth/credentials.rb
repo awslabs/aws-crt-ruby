@@ -3,11 +3,9 @@
 module Aws
   module Crt
     module Auth
-
       class CredentialsOptions
         include Aws::Crt::ManagedNative
         native_destroy Aws::Crt::Native.method(:credentials_release)
-
       end
 
       # Utility class for Credentials.
