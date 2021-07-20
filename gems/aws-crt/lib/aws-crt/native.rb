@@ -133,13 +133,15 @@ module Aws
       typedef :pointer, :blob
 
       # IO API
-      attach_function :aws_crt_event_loop_group_options_new, [], :pointer
-      attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
-      attach_function :aws_crt_event_loop_group_options_set_max_threads, %i[pointer uint16], :void
+      typedef :pointer, :event_loop_group_options_ptr
+      attach_function :aws_crt_event_loop_group_options_new, [], :event_loop_group_options_ptr
+      attach_function :aws_crt_event_loop_group_options_release, [:event_loop_group_options_ptr], :void
+      attach_function :aws_crt_event_loop_group_options_set_max_threads, %i[event_loop_group_options_ptr uint16], :void
 
-      attach_function :aws_crt_event_loop_group_new, [:pointer], :pointer
-      attach_function :aws_crt_event_loop_group_acquire, [:pointer], :pointer
-      attach_function :aws_crt_event_loop_group_release, [:pointer], :void
+      typedef :pointer, :event_loop_group_ptr
+      attach_function :aws_crt_event_loop_group_new, [:event_loop_group_options_ptr], :pointer
+      attach_function :aws_crt_event_loop_group_acquire, [:event_loop_group_ptr], :event_loop_group_ptr
+      attach_function :aws_crt_event_loop_group_release, [:event_loop_group_ptr], :void
 
       # HTTP API
       typedef :pointer, :headers_ptr
@@ -151,6 +153,13 @@ module Aws
       attach_function :aws_crt_http_message_new_from_blob, %i[blob size_t], :http_message_ptr
       attach_function :aws_crt_http_message_to_blob, [:http_message_ptr, CrtBuf], :void
       attach_function :aws_crt_http_message_release, [:http_message_ptr], :void
+
+      # Auth API
+      typedef :pointer, :credentials_options_ptr
+      attach_function :aws_crt_credentials_options_new, [], :credentials_options_ptr
+      attach_function :aws_crt_event_loop_group_options_release, [:pointer], :void
+      attach_function :aws_crt_event_loop_group_options_set_max_threads, %i[pointer uint16], :void
+
 
       # attach_function :aws_crt_event_loop_group_new, [:uint16], :pointer
       # attach_function :aws_crt_event_loop_group_release, [:pointer], :void

@@ -11,10 +11,11 @@ describe Aws::Crt::Http::Message do
     expect(crt_message.native).to_not be_nil
 
     # TODO: message_to_blob does not work - the blob returned has zero length
-    # blob_out = crt_message.to_blob_strings
-    # expected_header_blob = headers.each_pair { |k, v| [k, v] }.flatten
-    # puts "out: #{blob_out}"
-    # expect(blob_out).to eq expected_header_blob
+    blob_out = crt_message.to_blob_strings
+    expected_header_blob = headers.each_pair { |k, v| [k, v] }.flatten
+    expect(blob_out[0]).to eq method
+    expect(blob_out[1]).to eq path
+    expect(blob_out[2..]).to eq expected_header_blob
 
     crt_message.release
   end

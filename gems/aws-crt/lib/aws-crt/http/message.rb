@@ -24,11 +24,11 @@ module Aws
         end
 
         # TODO: The message_to_blob does not seem to work
-        # def to_blob_strings
-        #   buf_out = Aws::Crt::Native::CrtBuf.new
-        #   Aws::Crt::Native.http_message_to_blob(native, buf_out)
-        #   StringBlob.decode(buf_out.to_blob)
-        # end
+        def to_blob_strings
+          buf_out = Aws::Crt::Native::CrtBuf.new
+          Aws::Crt::Native.http_message_to_blob(native, buf_out)
+          StringBlob.decode(buf_out.to_blob)
+        end
       end
     end
   end
