@@ -9,18 +9,6 @@ module Aws
 
       ffi_lib [crt_bin_path(local_platform), 'libaws-crt-ffi']
 
-      # aws_byte_cursor binding
-      class ByteCursor < FFI::Struct
-        layout :len, :size_t,
-               :ptr, :pointer
-
-        def to_s
-          return unless (self[:len]).positive? && !(self[:ptr]).null?
-
-          self[:ptr].read_string(self[:len])
-        end
-      end
-
       # Warning, when used as an output structure
       # the memory in ptr needs to be manually destructed!
       class CrtBuf < FFI::Struct
@@ -218,25 +206,6 @@ module Aws
       callback :signing_complete_fn, %i[signing_result_ptr int user_data_ptr], :void
       attach_function :aws_crt_sign_request_aws, %i[signable_ptr signing_config_ptr signing_complete_fn user_data_ptr], :int
       attach_function :aws_crt_signing_result_apply_to_http_request, %i[signing_result_ptr http_message_ptr], :int
-
-      # attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool uint64], :pointer
-      # attach_function :aws_crt_signing_config_release, [:pointer], :void
-      # attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool, raise: false
-      #
-      # attach_function :aws_crt_signable_new, [], :pointer
-      # attach_function :aws_crt_signable_release, [:pointer], :void
-      # attach_function :aws_crt_signable_set_property, %i[pointer string string], :int
-      # attach_function :aws_crt_signable_get_property, %i[pointer string], :string, raise: false
-      # attach_function :aws_crt_signable_append_property_list, %i[pointer string string string], :int
-      # attach_function :aws_crt_signable_set_property_list, %i[pointer string size_t pointer pointer], :int
-      #
-      # callback :signing_complete_fn, %i[pointer int pointer], :void
-      # attach_function :aws_crt_sign_request_synchronous, %i[pointer pointer signing_complete_fn], :int
-      # attach_function :aws_crt_verify_sigv4a_signing, %i[pointer pointer string string string string], :int
-      #
-      # attach_function :aws_crt_signing_result_get_property, %i[pointer string], :string, raise: false
-      # attach_function :aws_crt_signing_result_get_property_list, %i[pointer string], PropertyList.by_ref, raise: false
-      # attach_function :aws_crt_property_list_release, %i[pointer], :void
 
       # Internal testing API
       attach_function :aws_crt_test_error, [:int], :int
