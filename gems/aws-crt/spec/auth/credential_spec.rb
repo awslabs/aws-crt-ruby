@@ -18,7 +18,6 @@ module Aws
               .to raise_error(ArgumentError)
           end
 
-
           it 'accepts a Time for expiration' do
             exp = Time.now
             Credentials.new('akid', 'secret', 'token', exp)

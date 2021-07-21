@@ -60,27 +60,22 @@ module Aws
           # ensure we retain a reference to the credentials to avoid GC
           @credentials = options[:credentials]
           manage_native do
-            Aws::Crt::Native.signing_config_new(
-              options[:algorithm],
-              options[:signature_type],
-              options[:region],
-              options[:service],
-              options[:signed_body_value],
-              extract_date_ms(options),
-              @credentials&.native,
-              signed_body_header_type,
-              @sign_header_fn,
-              options.fetch(:use_double_uri_encode, false),
-              options.fetch(:should_normalize_uri_path, false),
-              options.fetch(:omit_session_token, false),
-              options.fetch(:expiration_in_seconds, 0)
-            )
+            Aws::Crt::Native.signing_config_aws_new
           end
-        end
 
-        # @return [Boolean] - True when signing will be synchronous
-        def signing_synchronous?
-          Aws::Crt::Native.signing_config_is_signing_synchronous(native)
+          Aws::Crt::Native.signing_config_aws_set_algorithm(native, options[:algorithm])
+          Aws::Crt::Native.signing_config_aws_set_signature_type(native, options[:signature_type])
+          Aws::Crt::Native.signing_config_aws_set_region(native, options[:region], options[:region].length)
+          Aws::Crt::Native.signing_config_aws_set_service(native, options[:service], options[:service].length)
+          Aws::Crt::Native.signing_config_aws_set_date(native, extract_date_ms(options))
+          Aws::Crt::Native.signing_config_aws_set_credentials_provider(native, @credentials&.native)
+          Aws::Crt::Native.signing_config_aws_set_signed_body_header_type(native, signed_body_header_type)
+          Aws::Crt::Native.signing_config_aws_set_should_sign_header_fn(native, @sign_header_fn)
+
+          assign_body_value(options)
+          assign_flags(options)
+
+          validate_config!
         end
 
         private
@@ -95,6 +90,27 @@ module Aws
           unsigned_headers = Set.new(unsigned_headers.map(&:downcase))
           proc do |param, _p|
             !unsigned_headers.include? param.to_s.downcase
+          end
+        end
+
+        def assign_flags(options)
+          Aws::Crt::Native.signing_config_aws_set_use_double_uri_encode(native, options.fetch(:use_double_uri_encode, false))
+          Aws::Crt::Native.signing_config_aws_set_should_normalize_uri_path(native, options.fetch(:should_normalize_uri_path, false))
+          Aws::Crt::Native.signing_config_aws_set_omit_session_token(native, options.fetch(:omit_session_token, false))
+          Aws::Crt::Native.signing_config_aws_set_expiration_in_seconds(native, options.fetch(:expiration_in_seconds, 0))
+        end
+
+        def assign_body_value(options)
+          if options[:signed_body_value]
+            Aws::Crt::Native.signing_config_aws_set_signed_body_value(native, options[:signed_body_value], options[:signed_body_value].length)
+          end
+        end
+
+        def validate_config!
+          unless Aws::Crt::Native.signing_config_aws_validate(native)
+            # validate returns a boolean rather than int to indicate status
+            # but still sets the exception
+            Errors.raise_last_error
           end
         end
       end

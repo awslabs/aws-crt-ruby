@@ -181,8 +181,6 @@ module Aws
 
       attach_function :aws_crt_credentials_provider_static_new, [:static_cred_provider_options_ptr], :credentials_provider_ptr
 
-
-
       enum :signing_algorithm, %i[sigv4 sigv4a]
       enum :signature_type, %i[
         http_request_headers http_request_query_params
@@ -192,11 +190,28 @@ module Aws
       enum :signed_body_header_type, %i[sbht_none sbht_content_sha256]
 
       typedef :pointer, :signing_config_ptr
+      callback :should_sign_header_fn, %i[string size_t pointer], :bool
       attach_function :aws_crt_signing_config_aws_new, [], :signing_config_ptr
       attach_function :aws_crt_signing_config_aws_release, [:signing_config_ptr], :void
+      attach_function :aws_crt_signing_config_aws_validate, [:signing_config_ptr], :bool
+      attach_function :aws_crt_signing_config_aws_set_algorithm, %i[signing_config_ptr signing_algorithm], :void
+      attach_function :aws_crt_signing_config_aws_set_signature_type, %i[signing_config_ptr signature_type], :void
+      attach_function :aws_crt_signing_config_aws_set_credentials_provider, %i[signing_config_ptr credentials_provider_ptr], :void
+      attach_function :aws_crt_signing_config_aws_set_region, %i[signing_config_ptr string size_t], :void
+      attach_function :aws_crt_signing_config_aws_set_service, %i[signing_config_ptr string size_t], :void
+      attach_function :aws_crt_signing_config_aws_set_use_double_uri_encode, %i[signing_config_ptr bool], :void
+      attach_function :aws_crt_signing_config_aws_set_should_normalize_uri_path, %i[signing_config_ptr bool], :void
+      attach_function :aws_crt_signing_config_aws_set_omit_session_token, %i[signing_config_ptr bool], :void
+      attach_function :aws_crt_signing_config_aws_set_signed_body_value, %i[signing_config_ptr string size_t], :void
+      attach_function :aws_crt_signing_config_aws_set_signed_body_header_type, %i[signing_config_ptr signed_body_header_type], :void
+      attach_function :aws_crt_signing_config_aws_set_expiration_in_seconds, %i[signing_config_ptr uint64], :void
+      attach_function :aws_crt_signing_config_aws_set_date, %i[signing_config_ptr uint64], :void
+      attach_function :aws_crt_signing_config_aws_set_should_sign_header_fn, %i[signing_config_ptr should_sign_header_fn], :void
 
+      typedef :pointer, :signable_ptr
+      attach_function :aws_crt_signable_new_from_http_request, [:http_message_ptr], :signable_ptr
+      attach_function :aws_crt_signable_release, [:signable_ptr], :void
 
-      # callback :should_sign_header_fn, [ByteCursor.by_ref, :pointer], :bool
       # attach_function :aws_crt_signing_config_new, %i[signing_algorithm signature_type string string string uint64 pointer signed_body_header_type should_sign_header_fn bool bool bool uint64], :pointer
       # attach_function :aws_crt_signing_config_release, [:pointer], :void
       # attach_function :aws_crt_signing_config_is_signing_synchronous, [:pointer], :bool, raise: false

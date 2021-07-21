@@ -15,6 +15,8 @@ Layout/LineLength:
   Max: 80
   Exclude:
     - 'gems/aws-crt/lib/aws-crt/native.rb'
+    - 'gems/aws-crt/lib/aws-crt/auth/signing_config.rb'
+    - 'gems/aws-crt/lib/aws-crt/auth/static_credentials_provider.rb'
     - '**/*.gemspec'
 
 Metrics/BlockLength:
@@ -31,9 +33,12 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Exclude:
     - 'gems/**/spec/**/*.rb'
+    - 'gems/aws-crt/lib/aws-crt/native.rb'
 
 Metrics/AbcSize:
   Max: 20
+  Exclude:
+    - 'gems/aws-crt/lib/aws-crt/auth/signing_config.rb'
 
 Naming/FileName:
   Exclude:
@@ -42,6 +47,9 @@ Naming/FileName:
     - 'gems/aws-sigv4/lib/aws-sigv4.rb'
 
 Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/GuardClause:
   Enabled: false
 
 Style/CombinableLoops:

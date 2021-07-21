@@ -3,7 +3,6 @@
 module Aws
   module Crt
     module Auth
-
       # CRT CredentialOptions
       class StaticCredentialsProviderOptions
         include Aws::Crt::ManagedNative

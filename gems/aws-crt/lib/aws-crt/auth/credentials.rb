@@ -3,7 +3,6 @@
 module Aws
   module Crt
     module Auth
-
       # CRT CredentialOptions
       class CredentialsOptions
         include Aws::Crt::ManagedNative
@@ -18,13 +17,7 @@ module Aws
         #   seconds since unix epoch
         def initialize(access_key_id, secret_access_key,
                        session_token = nil, expiration = nil)
-          if !access_key_id || access_key_id.empty?
-            raise ArgumentError, 'access_key_id  must be set'
-          end
-
-          if !secret_access_key || secret_access_key.empty?
-            raise ArgumentError, 'secret_access_key  must be set'
-          end
+          validate_access_key!(access_key_id, secret_access_key)
 
           manage_native do
             Aws::Crt::Native.credentials_options_new
@@ -47,6 +40,18 @@ module Aws
           Aws::Crt::Native.credentials_options_set_expiration_timepoint_seconds(
             native, expiration&.to_i || UINT64_MAX
           )
+        end
+
+        private
+
+        def validate_access_key!(access_key_id, secret_access_key)
+          if !access_key_id || access_key_id.empty?
+            raise ArgumentError, 'access_key_id  must be set'
+          end
+
+          if !secret_access_key || secret_access_key.empty?
+            raise ArgumentError, 'secret_access_key  must be set'
+          end
         end
       end
 
