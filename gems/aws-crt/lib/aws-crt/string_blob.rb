@@ -15,7 +15,7 @@ module Aws
       def self.encode(strings)
         buffer = StringIO.new
         strings.each do |s|
-          e = s.unpack('c*')
+          e = s.to_s.unpack('c*')
           buffer << [e.length].pack('N')
           buffer << (e).pack('c*')
         end

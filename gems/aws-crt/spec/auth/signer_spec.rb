@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require_relative 'spec_helper'
+require_relative '../spec_helper'
 
 module Aws
   module Crt
     module Auth #:nodoc:
       describe Signer do
         describe '.sign_request' do
-          let(:credentials) { Credentials.new('akid', 'secret') }
+          let(:credentials) { StaticCredentialsProvider.new('akid', 'secret') }
           let(:region) { 'REGION' }
           let(:service) { 'SERVICE' }
           let(:date) { Time.parse('20120101T112233Z') }
@@ -27,21 +27,22 @@ module Aws
             )
           end
 
-          let(:properties) { { 'uri' => 'test_uri', 'http_method' => 'get' } }
-          let(:headers) { { 'h1' => 'h1_v', 'h2' => 'h2_v' } }
-          let(:property_lists) { { 'headers' => headers } }
+          let(:http_request) do
+            method = 'get'
+            path = 'test_uri'
+            headers = { 'h1' => 'h1_v', 'h2' => 'h2_v' }
+            Aws::Crt::Http::Message.new(method, path, headers)
+          end
+
           let(:signable) do
-            Signable.new(
-              properties: properties,
-              property_lists: property_lists
-            )
+            Signable.new(http_request)
           end
 
           it 'returns the signature' do
             res = Signer.sign_request(signing_config, signable)
             expect(res[:signature]).not_to be_nil
             expect(res[:signature]).to eq(
-              '1647c6a6a79fb9eddaa5f69459c50152e8fa32ef453526ae113b1e1cb48c1c0e'
+              '192cb64eb7907ded2610529ac08db975380c16acb4f226de734c08c4784697f3'
             )
           end
 

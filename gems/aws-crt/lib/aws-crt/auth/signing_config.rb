@@ -67,10 +67,12 @@ module Aws
           Aws::Crt::Native.signing_config_aws_set_signature_type(native, options[:signature_type])
           Aws::Crt::Native.signing_config_aws_set_region(native, options[:region], options[:region].length)
           Aws::Crt::Native.signing_config_aws_set_service(native, options[:service], options[:service].length)
-          Aws::Crt::Native.signing_config_aws_set_date(native, extract_date_ms(options))
+          Aws::Crt::Native.signing_config_aws_set_date(native, extract_date(options))
           Aws::Crt::Native.signing_config_aws_set_credentials_provider(native, @credentials&.native)
           Aws::Crt::Native.signing_config_aws_set_signed_body_header_type(native, signed_body_header_type)
-          Aws::Crt::Native.signing_config_aws_set_should_sign_header_fn(native, @sign_header_fn)
+          if @sign_header_fn
+            Aws::Crt::Native.signing_config_aws_set_should_sign_header_fn(native, @sign_header_fn)
+          end
 
           assign_body_value(options)
           assign_flags(options)
@@ -80,15 +82,16 @@ module Aws
 
         private
 
-        def extract_date_ms(options)
-          ((options[:date] || Time.now).to_f * 1000).to_i
+        def extract_date(options)
+          (options[:date] || Time.now).to_i
         end
 
         def extract_unsigned_header_fn(unsigned_headers)
           return nil unless unsigned_headers&.size&.positive?
 
           unsigned_headers = Set.new(unsigned_headers.map(&:downcase))
-          proc do |param, _p|
+          proc do |param_ptr, len, _p|
+            param = param_ptr.read_string(len)
             !unsigned_headers.include? param.to_s.downcase
           end
         end

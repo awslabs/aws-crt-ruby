@@ -25,10 +25,10 @@ module Aws
                  service: context['service'],
                  region: context['region'],
                  signing_algorithm: :sigv4a,
-                 credentials: Aws::Crt::Auth::Credentials.new(
-                   context['credentials']['access_key_id'],
-                   context['credentials']['secret_access_key'],
-                   context['credentials']['token']
+                 credentials: Credentials.new(
+                   access_key_id: context['credentials']['access_key_id'],
+                   secret_access_key: context['credentials']['secret_access_key'],
+                   session_token: context['credentials']['token']
                  ),
                  uri_escape_path: false,
                  normalize_path: context['normalize'],

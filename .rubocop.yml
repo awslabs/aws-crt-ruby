@@ -43,7 +43,6 @@ Metrics/AbcSize:
 Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'
-    - 'gems/aws-crt-auth/lib/aws-crt-auth.rb'
     - 'gems/aws-sigv4/lib/aws-sigv4.rb'
 
 Style/TrailingCommaInArrayLiteral:
