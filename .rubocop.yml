@@ -39,6 +39,7 @@ Metrics/AbcSize:
   Max: 20
   Exclude:
     - 'gems/aws-crt/lib/aws-crt/auth/signing_config.rb'
+    - 'gems/aws-crt/lib/aws-crt/auth/signer.rb'
 
 Naming/FileName:
   Exclude:

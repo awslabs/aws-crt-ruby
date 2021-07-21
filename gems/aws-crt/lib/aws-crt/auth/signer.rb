@@ -14,13 +14,18 @@ module Aws
         #   * signature[String] - the computed signature
         #   * headers[Hash] - signed headers, including the `Authorization`
         #      header.
-        def self.sign_request(signing_config, signable)
+        def self.sign_request(
+          signing_config, signable, method = 'default', path = 'default'
+        )
           out = {}
           callback = proc do |result, status, _userdata|
             Aws::Crt::Errors.raise_last_error unless status.zero?
-            http_request = Http::Message.new('', '')
-            Aws::Crt::Native.signing_result_apply_to_http_request(result,
-                                                                  http_request.native)
+            http_request = Http::Message.new(method, path)
+            Aws::Crt::Native.signing_result_apply_to_http_request(
+              result,
+              http_request.native
+            )
+            out[:path] = http_request.path
             out[:headers] = http_request.headers
             if (auth = out[:headers]['Authorization']) &&
                (match = /Signature=([a-f0-9]+)/.match(auth))

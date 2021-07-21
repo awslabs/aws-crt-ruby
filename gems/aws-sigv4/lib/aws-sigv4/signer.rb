@@ -314,13 +314,8 @@ module Aws
         )
         signable = Aws::Crt::Auth::Signable.new(http_request)
 
-        signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable)
-        params = signing_result[:params].map {|k,v| "#{k}=#{v}"}.join('&')
-        if url.query
-          url.query += '&' + params
-        else
-          url.query = params
-        end
+        signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable, http_method, url.to_s)
+        url = URI.parse(signing_result[:path])
 
         if options[:extra] && options[:extra].is_a?(Hash)
           options[:extra][:config] = config
