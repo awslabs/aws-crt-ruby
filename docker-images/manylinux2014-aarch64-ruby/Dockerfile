@@ -5,30 +5,25 @@ FROM quay.io/pypa/manylinux2014_aarch64
 ###############################################################################
 # Basics
 ###############################################################################
-RUN yum -y install sudo cmake3 \
+RUN yum -y install sudo \
     && yum clean all \
-    && ln -s `which cmake3` /usr/bin/cmake \
-    && ln -s `which ctest3` /usr/bin/ctest \
     && cmake --version \
     && ctest --version
 
 ###############################################################################
 # Python/AWS CLI
 ###############################################################################
-RUN /opt/python/cp37-cp37m/bin/python -m pip install --upgrade pip setuptools virtualenv \
-    && /opt/python/cp37-cp37m/bin/python -m pip install --upgrade awscli \
+RUN /opt/python/cp39-cp39/bin/python -m pip install --upgrade pip setuptools virtualenv \
+    && /opt/python/cp39-cp39/bin/python -m pip install --upgrade awscli \
     && ln -s `find /opt -name aws` /usr/local/bin/aws \
     && which aws \
     && aws --version
 
 ###############################################################################
-# Install pre-built CMake
+# nodejs/npm
 ###############################################################################
-WORKDIR /tmp
-RUN curl -sSL https://d19elf31gohf1l.cloudfront.net/_binaries/cmake/cmake-3.13-manylinux1-x64.tar.gz -o cmake.tar.gz \
-    && tar xvzf cmake.tar.gz -C /usr/local \
-    && cmake --version \
-    && rm -f /tmp/cmake.tar.gz
+RUN curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+RUN sudo yum -y install nodejs && node --version
 
 ###############################################################################
 # Install RVM and Ruby
