@@ -55,7 +55,6 @@ def compile_bin
   FileUtils.chdir(build_dir) do
     run_cmd(config_cmd)
     run_cmd(build_cmd)
-    sh('pwd && ls')
     FileUtils.mv(crt_bin_name(platform), bin_dir)
   end
 end

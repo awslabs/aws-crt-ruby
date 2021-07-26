@@ -31,6 +31,13 @@ module Aws
 
         def headers
           blob_strings = to_blob_strings
+          # blob_strings must have at least 2 element and must have
+          # pairs of header/values
+          if blob_strings.length < 2 ||
+             blob_strings.length.odd?
+            raise Aws::Crt::Errors::Error,
+                  'Invalid blob_string for HTTP Message'
+          end
           blob_strings[2..blob_strings.length].each_slice(2).to_h
         end
 
