@@ -33,22 +33,29 @@ jobs:
           chmod a+x builder
           ./builder build -p ${{ env.PACKAGE_NAME }} downstream
 
-  linux-arm:
+  manylinux:
     strategy:
       fail-fast: false
       matrix:
-        arch: [armv6, armv7, arm64]
+        os: [ linux ]
+        ruby: [ 2.7 ]
+        arch:
+          - x64
+          - x86
+          - aarch64
     runs-on: ubuntu-latest
     steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-      - name: Build ${{ env.PACKAGE_NAME }} + consumers
-        run: |
-          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
-          chmod a+x builder
-          ./builder build -p ${{ env.PACKAGE_NAME }} --target=linux-${{ matrix.arch }} downstream
+      - name: Checkout Sources
+        uses: actions/checkout@v1
 
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      - run: docker build docker-images/manylinux2014-${{ arch }}-ruby -t local --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
+      - run: docker tag local docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+
+      - name: Build and test
+        run: |
+          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env GEM=true local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
 
   windows:
     strategy:
