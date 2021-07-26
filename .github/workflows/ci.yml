@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arm: [armv6, armv7, arm64]
+        arch: [armv6, armv7, arm64]
     runs-on: ubuntu-latest
     steps:
       - uses: ruby/setup-ruby@v1
