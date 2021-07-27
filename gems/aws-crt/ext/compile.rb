@@ -55,6 +55,11 @@ def compile_bin
   FileUtils.chdir(build_dir) do
     run_cmd(config_cmd)
     run_cmd(build_cmd)
-    FileUtils.mv(crt_bin_name(platform), bin_dir)
+    # Temporary fix for windows bin locations
+    if platform.os.include? 'mingw32'
+      FileUtils.mv("Debug/#{crt_bin_name(platform)}", bin_dir)
+    else
+      FileUtils.mv(crt_bin_name(platform), bin_dir)
+    end
   end
 end
