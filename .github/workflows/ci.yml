@@ -54,12 +54,12 @@ jobs:
 
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
-      - run: docker build docker-images/manylinux2014-${{ matrix.arch }}-ruby -t local --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
-      - run: docker tag local docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      - run: docker build docker-images/manylinux2014-${{ matrix.arch }}-ruby -t local-${{ matrix.arch }} --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
+      - run: docker tag local-${{ matrix.arch }} docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
 
       - name: Build and test
         run: |
-          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env GEM=true local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
+          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 local-${{ matrix.arch }} --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
 
   windows:
     strategy:
