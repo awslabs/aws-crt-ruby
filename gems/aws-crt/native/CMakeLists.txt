@@ -42,6 +42,16 @@ set(IN_SOURCE_BUILD ON)
 # it as an option later and override the existing variable.
 option(BUILD_TESTING OFF)
 
+# Build shared lib directly to BIN_DIR.
+# for non-msvc, LIBRARY_OUTPUT_DIRECTORY controls the shared lib output
+# for msvc, RUNTIME_OUTPUT_DIRECTORY controls where dlls are output
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${BIN_DIR})
+
 add_subdirectory(crt/aws-crt-ffi)
 
 include(AwsCFlags)
@@ -56,12 +66,3 @@ aws_use_package(aws-crt-ffi)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEP_AWS_LIBS})
 aws_set_common_properties(${PROJECT_NAME})
 
-# Build shared lib directly to BIN_DIR.
-# for non-msvc, LIBRARY_OUTPUT_DIRECTORY controls the shared lib output
-# for msvc, RUNTIME_OUTPUT_DIRECTORY controls where dlls are output
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
-    RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR}
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${BIN_DIR}
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${BIN_DIR}
-    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${BIN_DIR})

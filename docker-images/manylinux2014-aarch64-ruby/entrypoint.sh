@@ -45,7 +45,7 @@ clang -v
 
 # use llvm-7 with clang
 # see: https://stackoverflow.com/questions/44219158/how-to-install-clang-and-llvm-3-9-on-centos-7/48103599
-source /opt/rh/llvm-toolset-7/enable
+source /opt/rh/llvm-toolset-7.0/enable
 
 clang -v
 
