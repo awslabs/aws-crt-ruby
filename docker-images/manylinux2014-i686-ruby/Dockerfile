@@ -37,6 +37,10 @@ RUN yum -y install git-core zlib zlib-devel gcc-c++ patch readline readline-deve
 
 SHELL ["/bin/bash", "-l", "-c"]
 
+# Install clang/gcc
+RUN yum -y install devtoolset-9 clang \
+    && scl enable devtoolset-9 bash
+
 ###############################################################################
 # Install entrypoint
 ###############################################################################
