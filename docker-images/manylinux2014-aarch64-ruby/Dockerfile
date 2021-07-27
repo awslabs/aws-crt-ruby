@@ -36,6 +36,10 @@ RUN yum -y install git-core zlib zlib-devel gcc-c++ patch readline readline-deve
 
 SHELL ["/bin/bash", "-l", "-c"]
 
+# Install clang/gcc
+RUN yum -y install devtoolset-7 llvm-toolset-7.0.aarch64 centos-release-scl clang \
+    && scl enable llvm-toolset-7 bash
+
 ###############################################################################
 # Install entrypoint
 ###############################################################################
