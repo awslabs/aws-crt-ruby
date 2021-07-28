@@ -44,7 +44,7 @@ def compile_bin
     "-DCMAKE_INSTALL_PREFIX=#{install_dir}"
   ]
 
-  build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt-ffi']
+  build_cmd = [CMAKE, '--build', build_dir, '--target', 'install']
   build_cmd.append('--parallel') if cmake_has_parallel_flag?
 
   # Need to run cmake from build dir.
@@ -56,10 +56,11 @@ def compile_bin
     run_cmd(config_cmd)
     run_cmd(build_cmd)
     # Temporary fix for windows bin locations
-    if platform.os.include? 'mingw32'
-      FileUtils.mv("Debug/#{crt_bin_name(platform)}", bin_dir)
-    else
-      FileUtils.mv(crt_bin_name(platform), bin_dir)
-    end
+    # if platform.os.include? 'mingw32'
+    #   FileUtils.mv("Debug/#{crt_bin_name(platform)}", bin_dir)
+    # else
+    #   FileUtils.mv(crt_bin_name(platform), bin_dir)
+    # end
+    FileUtils.mv(crt_bin_name(platform), bin_dir)
   end
 end
