@@ -9,7 +9,7 @@ describe Aws::Crt::Http::Headers do
     expect(crt_headers.native).to_not be_nil
 
     blob_out = crt_headers.to_blob_strings
-    expected_header_blob = headers.each_pair { |k, v| [k, v] }.flatten
+    expected_header_blob = headers.flatten
     expect(blob_out).to eq expected_header_blob
 
     crt_headers.release

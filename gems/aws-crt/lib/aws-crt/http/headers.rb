@@ -12,7 +12,7 @@ module Aws
         )
 
         def initialize(headers = {})
-          blob = StringBlob.encode(headers.each_pair { |k, v| [k, v] }.flatten)
+          blob = StringBlob.encode(headers.flatten)
           blob_ptr = FFI::MemoryPointer.new(:char, blob.length)
           blob_ptr.write_array_of_char(blob)
 
