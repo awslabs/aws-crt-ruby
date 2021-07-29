@@ -24,7 +24,6 @@ jobs:
         ruby: [2.7]
         arch:
           - x64
-          - i686
           - aarch64
     runs-on: ubuntu-latest
     steps:
@@ -125,11 +124,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: out_linux_x64
-
-      - name: Download Linux i686
-        uses: actions/download-artifact@v2
-        with:
-          name: out_linux_i686
 
       - name: Download Linux ARM 64
         uses: actions/download-artifact@v2

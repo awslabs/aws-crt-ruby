@@ -41,7 +41,6 @@ jobs:
         ruby: [ 2.7 ]
         arch:
           - x64
-          - i686
           - aarch64
     runs-on: ubuntu-latest
     steps:
