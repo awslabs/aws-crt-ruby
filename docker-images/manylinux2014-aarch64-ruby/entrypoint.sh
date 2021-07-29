@@ -52,6 +52,7 @@ clang -v
 ## print version of perl
 which perl
 perl -v
+echo $?
 
 # Launch the builder with whatever args were passed to this script
 $builder ${args[@]}
