@@ -50,9 +50,6 @@ source /opt/rh/llvm-toolset-7.0/enable
 clang -v
 
 ## print version of perl
-export LC_CTYPE=C.UTF-8
-export LC_ALL=C.UTF-8
-
 which perl
 perl -v
 echo $?
