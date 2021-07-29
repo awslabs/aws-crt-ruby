@@ -52,9 +52,12 @@ clang -v
 ## print version of perl
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
 which perl
 perl -v
 echo $?
+
+echo $PATH
 
 # Launch the builder with whatever args were passed to this script
 $builder ${args[@]}
