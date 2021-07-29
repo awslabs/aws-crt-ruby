@@ -49,6 +49,10 @@ source /opt/rh/llvm-toolset-7.0/enable
 
 clang -v
 
+## print version of perl
+which perl
+perl -v
+
 # Launch the builder with whatever args were passed to this script
 $builder ${args[@]}
 
