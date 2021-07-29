@@ -44,7 +44,7 @@ def compile_bin
     "-DCMAKE_INSTALL_PREFIX=#{install_dir}"
   ]
 
-  build_cmd = [CMAKE, '--build', build_dir, '--target', 'install']
+  build_cmd = [CMAKE, '--build', build_dir, '--target', 'aws-crt-ffi']
   build_cmd.append('--parallel') if cmake_has_parallel_flag?
 
   # Need to run cmake from build dir.
