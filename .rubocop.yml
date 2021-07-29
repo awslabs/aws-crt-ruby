@@ -41,6 +41,12 @@ Metrics/AbcSize:
     - 'gems/aws-crt/lib/aws-crt/auth/signing_config.rb'
     - 'gems/aws-crt/lib/aws-crt/auth/signer.rb'
 
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
 Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'

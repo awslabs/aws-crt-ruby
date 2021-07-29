@@ -56,11 +56,10 @@ def compile_bin
     run_cmd(config_cmd)
     run_cmd(build_cmd)
     # Temporary fix for windows bin locations
-    # if platform.os.include? 'mingw32'
-    #   FileUtils.mv("Debug/#{crt_bin_name(platform)}", bin_dir)
-    # else
-    #   FileUtils.mv(crt_bin_name(platform), bin_dir)
-    # end
-    FileUtils.mv(crt_bin_name(platform), bin_dir)
+    if platform.os.include? 'mingw32'
+      FileUtils.mv("Debug/#{crt_bin_name(platform)}", bin_dir)
+    else
+      FileUtils.mv(crt_bin_name(platform), bin_dir)
+    end
   end
 end
