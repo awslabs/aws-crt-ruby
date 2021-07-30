@@ -51,14 +51,22 @@ def compile_bin
   # so we'll "install" under tmp, and manually copy to bin/ after that.
   tmp_install_dir = File.expand_path('../tmp/install', File.dirname(__FILE__))
 
+  build_type = "RelWithDebInfo"
+
   config_cmd = [
     CMAKE,
     "-H#{native_dir}",
     "-B#{tmp_build_dir}",
-    "-DCMAKE_INSTALL_PREFIX=#{tmp_install_dir}"
+    "-DCMAKE_INSTALL_PREFIX=#{tmp_install_dir}",
+    "-DCMAKE_BUILD_TYPE=#{build_type}",
   ]
 
-  build_cmd = [CMAKE, '--build', tmp_build_dir, '--target', 'install']
+  build_cmd = [
+    CMAKE,
+    '--build', tmp_build_dir,
+    '--target', 'install',
+    '--config', build_type,
+  ]
 
   # Build using all processors
   if cmake_has_parallel_flag?
