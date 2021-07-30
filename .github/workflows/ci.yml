@@ -66,11 +66,17 @@ jobs:
       matrix:
         os: [windows]
         ruby: [2.5, 2.6, 2.7, jruby]
-    runs-on: windows-2016
+    runs-on: windows-latest
     steps:
+      - name: Dump Env PRE
+        run: "Get-ChildItem Env:"
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+      - name: Remove Make from Env
+        run: "Remove-Item Env:\\MAKE"
+      - name: Dump Env POST
+        run: "Get-ChildItem Env:"
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
