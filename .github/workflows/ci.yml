@@ -71,12 +71,12 @@ jobs:
 #      - uses: ruby/setup-ruby@v1
 #        with:
 #          ruby-version: ${{ matrix.ruby }}
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          toolset: 16.0
-          arch: x64
-          uwp: false
-          spectre: true
+#      - uses: ilammy/msvc-dev-cmd@v1
+#        with:
+#          toolset: 16.0
+#          arch: x64
+#          uwp: false
+#          spectre: true
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
