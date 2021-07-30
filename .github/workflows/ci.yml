@@ -73,6 +73,8 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+      - name: Remove Make from Env
+        run: "Remove-Item Env:\MAKE"
       - name: Dump Env POST
         run: "Get-ChildItem Env:"
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
