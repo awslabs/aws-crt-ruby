@@ -66,8 +66,12 @@ jobs:
       matrix:
         os: [windows]
         ruby: [2.5, 2.6, 2.7, jruby]
-    runs-on: windows-latest:20210719.0
+    runs-on: windows-latest
     steps:
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          uwp: false
+          spectre: true
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
