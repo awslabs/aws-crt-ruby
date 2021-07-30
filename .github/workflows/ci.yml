@@ -73,7 +73,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: 16.0
+          toolset: 19.0
           arch: x64
           uwp: false
           spectre: true
