@@ -42,7 +42,7 @@ task 'gem:aws-crt:pure-ruby' => :clean do
     orig_spec = Gem::Specification.load('aws-crt.gemspec')
     spec = orig_spec.dup
     spec.platform = platform
-    spec.files += Dir['native/**/*']
+    spec.files += Dir['aws-crt-ffi/**/*']
 
     # leave out large files we don't need for compiling
     reject_patterns = [
