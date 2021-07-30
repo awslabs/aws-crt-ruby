@@ -53,13 +53,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows]
-        ruby: [2.7]
         arch: [x64]
     runs-on: windows-latest
     steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
       - name: Generate Gem artifacts
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
