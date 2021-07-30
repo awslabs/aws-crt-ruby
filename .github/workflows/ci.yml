@@ -78,6 +78,8 @@ jobs:
       - name: Dump Env POST
         run: "Get-ChildItem Env:"
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
+        env:
+          MAKE:
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
           python builder.pyz build -p ${{ env.PACKAGE_NAME }}
