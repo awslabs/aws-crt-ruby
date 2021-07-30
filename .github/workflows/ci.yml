@@ -70,6 +70,7 @@ jobs:
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
+          toolset: 16.0
           uwp: false
           spectre: true
       - uses: ruby/setup-ruby@v1
