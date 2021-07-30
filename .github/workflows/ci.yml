@@ -66,7 +66,7 @@ jobs:
       matrix:
         os: [windows]
         ruby: [2.5, 2.6, 2.7, jruby]
-    runs-on: windows-latest
+    runs-on: windows-16
     steps:
       - name: Dump Env PRE
         run: "Get-ChildItem Env:"
