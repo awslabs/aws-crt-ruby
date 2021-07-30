@@ -2,7 +2,7 @@ AllCops:
   TargetRubyVersion: 2.5
   NewCops: enable
   Exclude:
-    - 'gems/aws-crt/native/**/*.rb'
+    - 'gems/aws-crt/aws-crt-ffi/**/*.rb'
     - 'gems/aws-crt-signer/spec/signer_spec.rb'
     - 'gems/aws-sigv4/**/*.rb'
 

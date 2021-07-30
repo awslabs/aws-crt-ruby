@@ -51,7 +51,7 @@ def compile_bin
   # so we'll "install" under tmp, and manually copy to bin/ after that.
   tmp_install_dir = File.expand_path('../tmp/install', File.dirname(__FILE__))
 
-  build_type = "RelWithDebInfo"
+  build_type = 'RelWithDebInfo'
 
   config_cmd = [
     CMAKE,
