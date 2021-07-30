@@ -74,7 +74,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Dump Env POST
-          run: SET
+        run: SET
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
