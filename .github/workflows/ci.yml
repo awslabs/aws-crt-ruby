@@ -69,12 +69,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Dump Env PRE
-        run: ls env:
+        run: "Get-ChildItem Env:"
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
       - name: Dump Env POST
-        run: ls env:
+        run: "Get-ChildItem Env:"
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
