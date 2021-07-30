@@ -2,8 +2,6 @@
 
 desc 'Compile CRT library and move to bin'
 task :bin do
-  ENV['MAKE'] = ''
-  puts ENV.to_h
   require_relative '../ext/compile'
   compile_bin
 end

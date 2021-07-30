@@ -63,3 +63,12 @@ def compile_bin
     end
   end
 end
+
+def find_file(name, search_dirs, base_dir)
+  search_dirs.each do |search_dir|
+    dir = File.expand_path(search_dir, base_dir)
+    file_path = File.expand_path(name, dir)
+    return file_path if File.exist(file_path)?
+  end
+  abort "Cannot find #{name}"
+end
