@@ -74,7 +74,7 @@ jobs:
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
         run: |
           ruby -v
-          command -v bundler >/dev/null 2>&1 || gem install bundler
+          gem install bundler
           bundle install
           bundle exec rake release
 
