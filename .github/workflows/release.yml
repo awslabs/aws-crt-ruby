@@ -210,6 +210,8 @@ jobs:
 
       - name: Install Gems and Require
         run: |
+          ruby -v
+          gem install bundler
           bundle install
           bundle exec rake verify-release:native
 
