@@ -88,7 +88,10 @@ module Aws
         it 'accepts :credentials' do
           signer = Signer.new(
             options.merge(
-              credentials: Aws::Crt::Auth::Credentials.new('akid', 'secret', 'token')
+              credentials: Credentials.new(
+                access_key_id: 'akid', secret_access_key: 'secret',
+                session_token: 'token'
+              )
             )
           )
           creds = signer.credentials_provider.credentials

@@ -17,9 +17,9 @@ module Aws
               Signer.new({
                 service: 'service',
                 region: 'us-east-1',
-                credentials: Aws::Crt::Auth::Credentials.new(
-                  'AKIDEXAMPLE',
-                  'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY',
+                credentials: Credentials.new(
+                  access_key_id: 'AKIDEXAMPLE',
+                  secret_access_key: 'wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY',
                 ),
                 # necessary to pass the test suite
                 uri_escape_path: false,

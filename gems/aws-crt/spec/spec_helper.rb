@@ -22,5 +22,6 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  Aws::Crt::Native.thread_join_all_managed
+  # TODO: call new FFI version of below
+  # Aws::Crt::Native.thread_join_all_managed
 end

@@ -1,34 +1,29 @@
 # See: https://github.com/pypa/manylinux
 # and: https://github.com/pypa/python-manylinux-demo
-FROM quay.io/pypa/manylinux2014_x86_64
+FROM quay.io/pypa/manylinux2014_aarch64
 
 ###############################################################################
 # Basics
 ###############################################################################
-RUN yum -y install sudo cmake3 \
+RUN yum -y install sudo \
     && yum clean all \
-    && ln -s `which cmake3` /usr/bin/cmake \
-    && ln -s `which ctest3` /usr/bin/ctest \
     && cmake --version \
     && ctest --version
 
 ###############################################################################
 # Python/AWS CLI
 ###############################################################################
-RUN /opt/python/cp37-cp37m/bin/python -m pip install --upgrade pip setuptools virtualenv \
-    && /opt/python/cp37-cp37m/bin/python -m pip install --upgrade awscli \
+RUN /opt/python/cp39-cp39/bin/python -m pip install --upgrade pip setuptools virtualenv \
+    && /opt/python/cp39-cp39/bin/python -m pip install --upgrade awscli \
     && ln -s `find /opt -name aws` /usr/local/bin/aws \
     && which aws \
     && aws --version
 
 ###############################################################################
-# Install pre-built CMake
+# nodejs/npm
 ###############################################################################
-WORKDIR /tmp
-RUN curl -sSL https://d19elf31gohf1l.cloudfront.net/_binaries/cmake/cmake-3.13-manylinux1-x64.tar.gz -o cmake.tar.gz \
-    && tar xvzf cmake.tar.gz -C /usr/local \
-    && cmake --version \
-    && rm -f /tmp/cmake.tar.gz
+RUN curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+RUN sudo yum -y install nodejs && node --version
 
 ###############################################################################
 # Install RVM and Ruby
@@ -42,8 +37,8 @@ RUN yum -y install git-core zlib zlib-devel gcc-c++ patch readline readline-deve
 SHELL ["/bin/bash", "-l", "-c"]
 
 # Install clang/gcc
-RUN yum -y install devtoolset-7 llvm-toolset-7 centos-release-scl clang \
-    && scl enable llvm-toolset-7 bash
+RUN yum -y install devtoolset-7 llvm-toolset-7.0.aarch64 centos-release-scl clang perl-devel \
+    && scl enable llvm-toolset-7.0 bash
 
 ###############################################################################
 # Install entrypoint

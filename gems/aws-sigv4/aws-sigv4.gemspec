@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.files += Dir['lib/**/*.rb']
   spec.platform = Gem::Platform::RUBY
   spec.required_ruby_version = '>= 2.5'
-  spec.add_dependency 'aws-crt-auth'
+  spec.add_dependency 'aws-crt'
   spec.add_dependency('aws-eventstream', '~> 1', '>= 1.0.2') # For signing event stream events
   spec.add_development_dependency 'rspec'
 end

@@ -19,12 +19,6 @@ describe Aws::Crt::Native do
       end.to raise_error(Aws::Crt::Error)
     end
 
-    it 'raises an error when called on a function that returns a pointer' do
-      expect do
-        Aws::Crt::Native.test_pointer_error
-      end.to raise_error(NoMemoryError)
-    end
-
     it 'the ! function does not raise an error' do
       expect do
         Aws::Crt::Native.test_error!(3)

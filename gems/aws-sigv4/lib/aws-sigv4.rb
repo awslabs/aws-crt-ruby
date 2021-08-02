@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'aws-crt-auth'
+require 'aws-crt'
 require_relative 'aws-sigv4/credentials'
 require_relative 'aws-sigv4/errors'
 require_relative 'aws-sigv4/signature'

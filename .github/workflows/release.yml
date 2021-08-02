@@ -22,7 +22,9 @@ jobs:
       matrix:
         os: [linux]
         ruby: [2.7]
-        arch: [x64]
+        arch:
+          - x64
+          # - aarch64
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Sources
@@ -30,13 +32,12 @@ jobs:
 
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
-      - run: docker build docker-images/manylinux2014-x64-ruby -t local --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
-      - run: docker tag local docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      - run: docker build docker-images/manylinux2014-${{ matrix.arch }}-ruby -t local-${{ matrix.arch }} --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
+      - run: docker tag local-${{ matrix.arch }} docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
 
       - name: Generate Gem artifacts
         run: |
-          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env GEM=true local --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
-          docker ps -a
+          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env GEM=true local-${{ matrix.arch }} --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
           docker cp `docker ps -alq`:/root/aws-crt-ruby/gems/aws-crt .
 
       - name: Upload artifacts
@@ -52,13 +53,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows]
-        ruby: [2.7]
         arch: [x64]
     runs-on: windows-latest
     steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
       - name: Generate Gem artifacts
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
@@ -107,7 +104,7 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Download Windows
         uses: actions/download-artifact@v2
@@ -119,10 +116,15 @@ jobs:
         with:
           name: out_macos_x64
 
-      - name: Download Linux
+      - name: Download Linux x64
         uses: actions/download-artifact@v2
         with:
           name: out_linux_x64
+
+#      - name: Download Linux ARM 64
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: out_linux_aarch64
 
       - name: Package
         run: |
@@ -199,10 +201,6 @@ jobs:
     needs: [package]
     runs-on: windows-latest
     steps:
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-
       - uses: actions/checkout@v2
 
       - name: Download Release Artifacts
@@ -212,6 +210,8 @@ jobs:
 
       - name: Install Gems and Require
         run: |
+          ruby -v
+          gem install bundler
           bundle install
           bundle exec rake verify-release:native
 

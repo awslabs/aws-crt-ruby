@@ -192,10 +192,10 @@ module Aws
           should_normalize_uri_path: @normalize_path,
           omit_session_token: @omit_session_token
         )
-        signable = Aws::Crt::Auth::Signable.new(
-          properties: { 'uri' => url.to_s, 'method' => http_method },
-          property_lists: { 'headers' => headers }
+        http_request = Aws::Crt::Http::Message.new(
+          http_method, url.to_s, headers
         )
+        signable = Aws::Crt::Auth::Signable.new(http_request)
 
         signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable)
 
@@ -309,18 +309,13 @@ module Aws
           omit_session_token: @omit_session_token,
           expiration_in_seconds: options.fetch(:expires_in, 900)
         )
-        signable = Aws::Crt::Auth::Signable.new(
-          properties: { 'uri' => url.to_s, 'method' => http_method },
-          property_lists: { 'headers' => headers }
+        http_request = Aws::Crt::Http::Message.new(
+          http_method, url.to_s, headers
         )
+        signable = Aws::Crt::Auth::Signable.new(http_request)
 
-        signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable)
-        params = signing_result[:params].map {|k,v| "#{k}=#{v}"}.join('&')
-        if url.query
-          url.query += '&' + params
-        else
-          url.query = params
-        end
+        signing_result = Aws::Crt::Auth::Signer.sign_request(config, signable, http_method, url.to_s)
+        url = URI.parse(signing_result[:path])
 
         if options[:extra] && options[:extra].is_a?(Hash)
           options[:extra][:config] = config
@@ -368,7 +363,7 @@ module Aws
       def sign_event(prior_signature, payload, encoder)
         # CRT does not currently provide event stream signing
         # use the Ruby implementation
-        creds = fetch_credentials
+        creds = @credentials_provider.credentials
         time = Time.now
         headers = {}
 
@@ -400,42 +395,25 @@ module Aws
         options[:region] || raise(Errors::MissingRegionError)
       end
 
-      # The Credentials must be CRT native credentials
-      # convert them and return a static provider
       def extract_credentials_provider(options)
         if options[:credentials_provider]
-          credentials = options[:credentials_provider].credentials
-          StaticCredentialsProvider.new(
-            access_key_id: credentials.access_key_id,
-            secret_access_key: credentials.secret_access_key,
-            session_token: credentials.session_token
-          )
-        elsif options.key?(:credentials)
-          credentials = options[:credentials]
-          if credentials.is_a?(Aws::Crt::Auth::Credentials)
-            StaticCredentialsProvider.new(options)
-          else
-            StaticCredentialsProvider.new(
-              access_key_id: credentials.access_key_id,
-              secret_access_key: credentials.secret_access_key,
-              session_token: credentials.session_token
-            )
-          end
-        elsif options.key?(:access_key_id)
+          options[:credentials_provider]
+        elsif options.key?(:credentials) || options.key?(:access_key_id)
           StaticCredentialsProvider.new(options)
         else
           raise Errors::MissingCredentialsError
         end
       end
 
+      # the credentials used by CRT must be a
+      # CRT StaticCredentialsProvider object
       def fetch_credentials
         credentials = @credentials_provider.credentials
-        if credentials&.native_set?
-          credentials
-        else
-          raise Errors::MissingCredentialsError,
-                'unable to sign request without credentials set'
-        end
+        Aws::Crt::Auth::StaticCredentialsProvider.new(
+          credentials.access_key_id,
+          credentials.secret_access_key,
+          credentials.session_token
+        )
       end
 
       def extract_http_method(request)
