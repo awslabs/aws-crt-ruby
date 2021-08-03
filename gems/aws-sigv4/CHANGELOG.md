@@ -2,10 +2,10 @@ Unreleased Changes
 ------------------
 
 
-1.10.0.pre (2021-08-04)
+1.3.0.crt (2021-08-04)
 ------------------
 
-* Feature - Preview release of `aws-sigv4` version 1.10.0 gem - uses the Common Runtime (CRT) for signing and support for sigv4a.
+* Feature - Preview release of `aws-sigv4` version 1.3.0.crt gem - uses the Common Runtime (CRT) for signing and support for sigv4a.
 
 1.2.4 (2021-07-08)
 ------------------
