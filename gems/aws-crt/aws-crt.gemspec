@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/awslabs/aws-crt-ruby'
   spec.license = 'Apache-2.0'
   spec.require_paths = ['lib']
-  spec.files = ['VERSION']
+  spec.files = %w[LICENSE.txt CHANGELOG.md VERSION]
   spec.files += Dir['lib/**/*.rb']
   spec.platform = Gem::Platform::RUBY
   spec.required_ruby_version = '>= 2.5'
