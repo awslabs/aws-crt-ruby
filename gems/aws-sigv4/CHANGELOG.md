@@ -2,10 +2,20 @@ Unreleased Changes
 ------------------
 
 
-2.0.0.pre (2020-10-14)
+1.10.0.pre (2021-08-04)
 ------------------
 
-* Feature - Initial preview release of `aws-sigv4` version 2 gem - uses the Common Runtime (CRT) for signing.
+* Feature - Preview release of `aws-sigv4` version 1.10.0 gem - uses the Common Runtime (CRT) for signing and support for sigv4a.
+
+1.2.4 (2021-07-08)
+------------------
+
+* Issue - Fix usage of `:uri_escape_path` and `:apply_checksum_header` in `Signer`.
+
+1.2.3 (2021-03-04)
+------------------
+
+* Issue - Include LICENSE, CHANGELOG, and VERSION files with this gem.
 
 1.2.2 (2020-08-13)
 ------------------
