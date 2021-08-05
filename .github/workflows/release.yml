@@ -24,11 +24,15 @@ jobs:
         ruby: [2.7]
         arch:
           - x64
-          # - aarch64
+          - aarch64
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
+
+      # Only aarch64 needs this, but it doesn't hurt anything
+      - name: Install qemu/docker
+        run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
       - run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
@@ -37,7 +41,7 @@ jobs:
 
       - name: Generate Gem artifacts
         run: |
-          docker run --env GITHUB_REF --env LC_ALL=C.UTF-8 --env GEM=true local-${{ matrix.arch }} --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
+          docker run --env GITHUB_REF --env GEM=true local-${{ matrix.arch }} --version=${{env.BUILDER_VERSION}} build -p ${{ env.PACKAGE_NAME }} downstream
           docker cp `docker ps -alq`:/root/aws-crt-ruby/gems/aws-crt .
 
       - name: Upload artifacts
@@ -121,10 +125,10 @@ jobs:
         with:
           name: out_linux_x64
 
-#      - name: Download Linux ARM 64
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: out_linux_aarch64
+      - name: Download Linux ARM 64
+        uses: actions/download-artifact@v2
+        with:
+          name: out_linux_aarch64
 
       - name: Package
         run: |

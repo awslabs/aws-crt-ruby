@@ -114,9 +114,13 @@ module Aws
       attach_function :aws_crt_error_name, [:int], :string, raise: false
       attach_function :aws_crt_error_debug_str, [:int], :string, raise: false
       attach_function :aws_crt_reset_error, [], :void, raise: false
+      attach_function :aws_crt_thread_join_all, [:uint64], :int
 
       # Core Memory Management
       attach_function :aws_crt_mem_release, [:pointer], :void, raise: false
+      attach_function :aws_crt_mem_bytes, [], :uint64, raise: false
+      attach_function :aws_crt_mem_count, [], :uint64, raise: false
+      attach_function :aws_crt_mem_dump, [], :void, raise: false
 
       typedef :pointer, :blob
 

@@ -41,7 +41,7 @@ jobs:
         ruby: [ 2.7 ]
         arch:
           - x64
-          # - aarch64
+          - aarch64
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Sources
