@@ -22,6 +22,12 @@ end
 def check_for_clean_shutdown
   ObjectSpace.garbage_collect
 
-  # TODO: call new FFI version of below
-  # Aws::Crt::Native.thread_join_all_managed
+  if Aws::Crt::Native.mem_bytes.positive? ||
+     Aws::Crt::Native.mem_count.positive?
+    raise 'Possible memory leak, mem_bytes: '\
+      " #{Aws::Crt::Native.mem_bytes} and "\
+      " mem_count: #{Aws::Crt::Native.mem_count}"
+  end
+  # TODO: This currently fails
+  # Aws::Crt::Native.thread_join_all(1000000000)
 end
