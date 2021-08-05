@@ -15,6 +15,7 @@ require_relative 'aws-crt/auth/static_credentials_provider'
 require_relative 'aws-crt/auth/signing_config'
 require_relative 'aws-crt/auth/signable'
 require_relative 'aws-crt/auth/signer'
+require_relative 'aws-crt/checksums/crc'
 
 # Top level Amazon Web Services (AWS) namespace
 module Aws

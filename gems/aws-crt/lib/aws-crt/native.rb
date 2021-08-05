@@ -211,6 +211,10 @@ module Aws
       attach_function :aws_crt_sign_request_aws, %i[signable_ptr signing_config_ptr signing_complete_fn user_data_ptr], :int
       attach_function :aws_crt_signing_result_apply_to_http_request, %i[signing_result_ptr http_message_ptr], :int
 
+      # Checksums
+      attach_function :aws_crt_crc32, %i[pointer size_t uint32], :uint32, raise: false
+      attach_function :aws_crt_crc32c, %i[pointer size_t uint32], :uint32, raise: false
+
       # Internal testing API
       attach_function :aws_crt_test_error, [:int], :int
     end
