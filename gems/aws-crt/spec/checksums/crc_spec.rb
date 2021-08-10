@@ -59,7 +59,7 @@ describe Aws::Crt::Checksums do
     it 'works with a huge buffer' do
       output = Aws::Crt::Checksums.crc32(ZERO_CHAR * (INT_MAX + 5))
       expect(output).to eq(0xc622f71d)
-    rescue NoMemoryError
+    rescue NoMemoryError, RangeError
       skip 'Unable to allocate memory for crc32 huge buffer test'
     end
   end
@@ -112,7 +112,7 @@ describe Aws::Crt::Checksums do
     it 'works with a huge buffer' do
       output = Aws::Crt::Checksums.crc32c(ZERO_CHAR * (INT_MAX + 5))
       expect(output).to eq(0x572a7c8a)
-    rescue NoMemoryError
+    rescue NoMemoryError, RangeError
       skip 'Unable to allocate memory for crc32c huge buffer test'
     end
   end
