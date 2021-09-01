@@ -5,7 +5,7 @@ require 'weakref'
 
 module Aws
   module Crt
-    module Auth #:nodoc:
+    module Auth # :nodoc:
       describe Signable do
         let(:http_request) do
           method = 'GET'

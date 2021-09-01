@@ -5,7 +5,7 @@ require 'weakref'
 
 module Aws
   module Crt
-    module Auth #:nodoc:
+    module Auth # :nodoc:
       InvalidConfigError = Aws::Crt::Errors.error_class(
         'AWS_AUTH_SIGNING_INVALID_CONFIGURATION'
       )

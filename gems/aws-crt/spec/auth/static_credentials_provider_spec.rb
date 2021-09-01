@@ -5,7 +5,7 @@ require 'weakref'
 
 module Aws
   module Crt
-    module Auth #:nodoc:
+    module Auth # :nodoc:
       describe StaticCredentialsProvider do
         describe '#initilize' do
           it 'raises an ArgumentError when missing access_key_id' do
