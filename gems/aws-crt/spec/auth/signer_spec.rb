@@ -4,7 +4,7 @@ require_relative '../spec_helper'
 
 module Aws
   module Crt
-    module Auth #:nodoc:
+    module Auth # :nodoc:
       describe Signer do
         describe '.sign_request' do
           let(:credentials) { StaticCredentialsProvider.new('akid', 'secret') }
