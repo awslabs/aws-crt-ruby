@@ -6,6 +6,10 @@ AllCops:
     - 'gems/aws-crt-signer/spec/signer_spec.rb'
     - 'gems/aws-sigv4/**/*.rb'
 
+Gemspec/RequireMFA:
+  Exclude:
+    - '**/*.gemspec'
+
 Style/HashSyntax:
   Exclude:
     - 'Rakefile'

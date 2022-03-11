@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 require 'base64'
 
 module Aws
-  module Sigv4 #:nodoc:
+  module Sigv4 # :nodoc:
     describe Signer do
       let(:credentials) do
         {

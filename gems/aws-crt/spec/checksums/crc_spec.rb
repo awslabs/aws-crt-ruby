@@ -8,7 +8,7 @@ def int32_to_base64(num)
 end
 
 ZERO_CHAR = [0].pack('C*')
-INT_MAX = 2**32 - 1
+INT_MAX = (2**32) - 1
 
 describe Aws::Crt::Checksums do
   describe 'crc32' do
@@ -52,7 +52,7 @@ describe Aws::Crt::Checksums do
     end
 
     it 'works with a large buffer' do
-      output = Aws::Crt::Checksums.crc32(ZERO_CHAR * 25 * 2**20)
+      output = Aws::Crt::Checksums.crc32(ZERO_CHAR * 25 * (2**20))
       expect(output).to eq(0x72103906)
     end
 
@@ -105,7 +105,7 @@ describe Aws::Crt::Checksums do
     end
 
     it 'works with a large buffer' do
-      output = Aws::Crt::Checksums.crc32c(ZERO_CHAR * 25 * 2**20)
+      output = Aws::Crt::Checksums.crc32c(ZERO_CHAR * 25 * (2**20))
       expect(output).to eq(0xfb5b991d)
     end
 

@@ -3,7 +3,7 @@
 require_relative 'spec_helper'
 
 module Aws
-  module Sigv4 #:nodoc:
+  module Sigv4 # :nodoc:
     describe Signer do
       let(:credentials) {{
         access_key_id: 'AKIDEXAMPLE',
