@@ -16,4 +16,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'aws-crt'
   spec.add_dependency('aws-eventstream', '~> 1', '>= 1.0.2') # For signing event stream events
   spec.add_development_dependency 'rspec'
+
+  spec.metadata = {
+    'source_code_uri' => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-sigv4',
+    'changelog_uri'   => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-sigv4/CHANGELOG.md'
+  }
 end

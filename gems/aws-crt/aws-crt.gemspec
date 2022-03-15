@@ -14,4 +14,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.5'
   spec.add_dependency 'ffi'
   spec.add_development_dependency 'rspec'
+
+  spec.metadata = {
+    'source_code_uri' => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-crt',
+    'changelog_uri'   => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-crt/CHANGELOG.md'
+  }
 end
