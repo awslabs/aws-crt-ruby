@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
 
   spec.metadata = {
     'source_code_uri' => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-sigv4',
-    'changelog_uri'   => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-sigv4/CHANGELOG.md'
+    'changelog_uri' => 'https://github.com/awslabs/aws-crt-ruby/tree/main/gems/aws-sigv4/CHANGELOG.md'
   }
 end
