@@ -3,8 +3,8 @@ name: Release
 on:
   push:
     branches:
-      - '*'  # TODO: Remove after testing...
-      - 'master'
+      - 'm1'  # TODO: Remove after testing...
+      - 'main'
 
 env:
   BUILDER_VERSION: v0.8.19
@@ -78,17 +78,23 @@ jobs:
       matrix:
         os: [macos]
         ruby: [2.7]
-        arch: [x64]
+        arch: [x86_64, arm64]
     runs-on: macos-latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
       - name: Generate Gem artifacts
         run: |
-          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
-          chmod a+x builder
-          ./builder build -p ${{ env.PACKAGE_NAME }} downstream
+          ruby -v
+          gem install bundler
+          bundle install
+          bundle exec rake "gem:aws-crt:platform[${{ matrix.arch }}]"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -115,10 +121,15 @@ jobs:
         with:
           name: out_windows_x64
 
-      - name: Download OSX
+      - name: Download OSX x64
         uses: actions/download-artifact@v2
         with:
-          name: out_macos_x64
+          name: out_macos_x86_64
+
+      - name: Download OSX arm64
+        uses: actions/download-artifact@v2
+        with:
+          name: out_macos_arm64
 
       - name: Download Linux x64
         uses: actions/download-artifact@v2
