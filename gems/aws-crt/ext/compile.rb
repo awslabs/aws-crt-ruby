@@ -41,8 +41,7 @@ def find_file(name, search_dirs, base_dir)
 end
 
 # Compile bin to expected location
-def compile_bin(cpu)
-  cpu ||= host_cpu
+def compile_bin(cpu = host_cpu)
   platform = target_platform(cpu)
   native_dir = File.expand_path('../aws-crt-ffi', File.dirname(__FILE__))
   tmp_dir = File.expand_path("../tmp/#{platform.cpu}", File.dirname(__FILE__))
