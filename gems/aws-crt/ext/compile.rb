@@ -10,6 +10,19 @@ CMAKE_PATH = find_executable('cmake3') || find_executable('cmake')
 abort 'Missing cmake' unless CMAKE_PATH
 CMAKE = File.basename(CMAKE_PATH)
 
+def cmake_version
+  version_str = `#{CMAKE} --version`
+  match = /(\d+)\.(\d+)\.(\d+)/.match(version_str)
+  [match[1].to_i, match[2].to_i, match[3].to_i]
+end
+
+CMAKE_VERSION = cmake_version
+
+# whether installed cmake supports --parallel build flag
+def cmake_has_parallel_flag?
+  (CMAKE_VERSION <=> [3, 12]) >= 0
+end
+
 def run_cmd(args)
   # use shellwords.join() for printing, don't pass that string to system().
   # system() does better cross-platform when the args array is passed in.
@@ -47,11 +60,13 @@ def compile_bin(cpu)
     "-B#{tmp_build_dir}",
     "-DCMAKE_INSTALL_PREFIX=#{tmp_install_dir}",
     "-DCMAKE_BUILD_TYPE=#{build_type}",
-    "-DBUILD_TESTING=OFF",
+    '-DBUILD_TESTING=OFF',
   ]
 
   # macOS can cross-compile for arm64 or x86_64 regardless of host's CPU type.
-  config_cmd.append("-DCMAKE_OSX_ARCHITECTURES=#{platform.cpu}") if platform.os == 'darwin'
+  if platform.os == 'darwin'
+    config_cmd.append("-DCMAKE_OSX_ARCHITECTURES=#{platform.cpu}")
+  end
 
   build_cmd = [
     CMAKE,
@@ -60,8 +75,11 @@ def compile_bin(cpu)
     '--config', build_type,
   ]
 
-  # Build using all processors (cmake 3.12+ checks this ENV variable)
-  ENV['CMAKE_BUILD_PARALLEL_LEVEL'] ||= Etc.nprocessors.to_s
+  # Build using all processors
+  if cmake_has_parallel_flag?
+    build_cmd.append('--parallel')
+    build_cmd.append(Etc.nprocessors.to_s)
+  end
 
   run_cmd(config_cmd)
   run_cmd(build_cmd)

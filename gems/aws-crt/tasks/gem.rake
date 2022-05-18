@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 desc 'Build aws-crt platform gem'
-task 'gem:aws-crt:platform', [:cpu] => [:bin] do |t, args|
+task 'gem:aws-crt:platform', [:cpu] => [:bin] do |_, args|
   require 'rubygems/package'
   require 'fileutils'
   require_relative '../lib/aws-crt/platforms'
