@@ -42,6 +42,7 @@ end
 
 # Compile bin to expected location
 def compile_bin(cpu)
+  cpu ||= host_cpu
   platform = target_platform(cpu)
   native_dir = File.expand_path('../aws-crt-ffi', File.dirname(__FILE__))
   tmp_dir = File.expand_path("../tmp/#{platform.cpu}", File.dirname(__FILE__))
@@ -63,7 +64,8 @@ def compile_bin(cpu)
     '-DBUILD_TESTING=OFF',
   ]
 
-  # macOS can cross-compile for arm64 or x86_64 regardless of host's CPU type.
+  # macOS can cross-compile for arm64 or x86_64.
+  # This lets us prepare both types of gems from either type of machine.
   if platform.os == 'darwin'
     config_cmd.append("-DCMAKE_OSX_ARCHITECTURES=#{platform.cpu}")
   end
