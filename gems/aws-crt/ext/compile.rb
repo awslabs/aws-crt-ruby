@@ -94,5 +94,5 @@ def compile_bin(cpu)
     'lib', # some unix variants
   ]
   tmp_path = find_file(bin_name, search_dirs, tmp_install_dir)
-  FileUtils.cp(tmp_path, bin_dir)
+  FileUtils.cp(tmp_path, bin_dir, verbose: true)
 end

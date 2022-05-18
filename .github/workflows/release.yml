@@ -101,8 +101,8 @@ jobs:
         with:
           name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
-            aws-crt-ruby/gems/aws-crt/bin/
-            aws-crt-ruby/gems/aws-crt/pkg/
+            gems/aws-crt/bin/
+            gems/aws-crt/pkg/
 
   package:
     needs: [windows, osx, linux]
