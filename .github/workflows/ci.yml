@@ -93,7 +93,6 @@ jobs:
   # It would be better to run tests natively on one of these machines, but we
   # don't currently have access to one in the cloud.
   osx-arm64-cross-compile:
-    strategy:
     runs-on: macos-latest
     steps:
       - uses: ruby/setup-ruby@v1
