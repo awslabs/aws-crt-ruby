@@ -41,15 +41,16 @@ def find_file(name, search_dirs, base_dir)
 end
 
 # Compile bin to expected location
-def compile_bin
-  platform = local_platform
+def compile_bin(cpu = host_cpu)
+  platform = target_platform(cpu)
   native_dir = File.expand_path('../aws-crt-ffi', File.dirname(__FILE__))
-  tmp_build_dir = File.expand_path('../tmp/build', File.dirname(__FILE__))
+  tmp_dir = File.expand_path("../tmp/#{platform.cpu}", File.dirname(__FILE__))
+  tmp_build_dir = File.expand_path('build', tmp_dir)
 
   # We need cmake to "install" aws-crt-ffi so that the binaries end up in a
   # predictable location. But cmake still adds subdirectories we don't want,
   # so we'll "install" under tmp, and manually copy to bin/ after that.
-  tmp_install_dir = File.expand_path('../tmp/install', File.dirname(__FILE__))
+  tmp_install_dir = File.expand_path('install', tmp_dir)
 
   build_type = 'RelWithDebInfo'
 
@@ -59,7 +60,14 @@ def compile_bin
     "-B#{tmp_build_dir}",
     "-DCMAKE_INSTALL_PREFIX=#{tmp_install_dir}",
     "-DCMAKE_BUILD_TYPE=#{build_type}",
+    '-DBUILD_TESTING=OFF',
   ]
+
+  # macOS can cross-compile for arm64 or x86_64.
+  # This lets us prepare both types of gems from either type of machine.
+  if platform.os == 'darwin'
+    config_cmd.append("-DCMAKE_OSX_ARCHITECTURES=#{platform.cpu}")
+  end
 
   build_cmd = [
     CMAKE,
@@ -87,5 +95,5 @@ def compile_bin
     'lib', # some unix variants
   ]
   tmp_path = find_file(bin_name, search_dirs, tmp_install_dir)
-  FileUtils.cp(tmp_path, bin_dir)
+  FileUtils.cp(tmp_path, bin_dir, verbose: true)
 end

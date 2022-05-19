@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-desc 'Build the aws-crt gem for the local platform'
-task 'gem:aws-crt:local' => [:bin] do
+desc 'Build aws-crt platform gem'
+task 'gem:aws-crt:platform', [:cpu] => [:bin] do |_, args|
   require 'rubygems/package'
   require 'fileutils'
   require_relative '../lib/aws-crt/platforms'
 
+  args.with_defaults(:cpu => host_cpu)
+
   FileUtils.chdir('gems/aws-crt') do
-    platform = local_platform
+    platform = target_platform(args[:cpu])
     binary_name = crt_bin_name(platform)
 
     FileUtils.mkdir_p('pkg/', verbose: true)
@@ -27,7 +29,7 @@ task 'gem:aws-crt:local' => [:bin] do
 end
 
 desc 'Build the aws-crt gem for the local platform'
-task 'gem:aws-crt' => 'gem:aws-crt:local'
+task 'gem:aws-crt' => 'gem:aws-crt:platform'
 
 desc 'Build the aws-crt gem for pure-ruby'
 task 'gem:aws-crt:pure-ruby' => :clean do
