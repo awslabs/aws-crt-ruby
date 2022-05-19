@@ -105,3 +105,4 @@ jobs:
         run: |
           bundle install
           bundle exec rake "gem:aws-crt:platform[arm64]"
+          test `lipo gems/aws-crt/bin/arm64/libaws-crt-ffi.dylib -archs` = "arm64"
