@@ -3,7 +3,6 @@ name: Release
 on:
   push:
     branches:
-      - 'm1'  # TODO: Remove after testing...
       - 'main'
 
 env:
