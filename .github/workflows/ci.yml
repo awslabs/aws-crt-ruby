@@ -98,6 +98,9 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - name: Build ${{ env.PACKAGE_NAME }} + consumers
         run: |
           bundle install
