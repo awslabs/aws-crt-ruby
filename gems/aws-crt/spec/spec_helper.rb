@@ -24,8 +24,8 @@ def check_for_clean_shutdown
 
   if Aws::Crt::Native.mem_bytes.positive? ||
      Aws::Crt::Native.mem_count.positive?
-    raise 'Possible memory leak, mem_bytes: '\
-          " #{Aws::Crt::Native.mem_bytes} and "\
+    raise 'Possible memory leak, mem_bytes: ' \
+          " #{Aws::Crt::Native.mem_bytes} and " \
           " mem_count: #{Aws::Crt::Native.mem_count}"
   end
   # TODO: This currently fails
