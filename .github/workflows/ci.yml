@@ -62,6 +62,9 @@ jobs:
   windows:
     runs-on: windows-latest
     steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
       - uses: actions/checkout@v2
         with:
           submodules: recursive

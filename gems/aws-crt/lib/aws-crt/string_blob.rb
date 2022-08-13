@@ -17,7 +17,7 @@ module Aws
         strings.each do |s|
           e = s.to_s.unpack('c*')
           buffer << [e.length].pack('N')
-          buffer << (e).pack('c*')
+          buffer << e.pack('c*')
         end
         buffer.string.unpack('c*')
       end
@@ -31,8 +31,8 @@ module Aws
         i = 0
         while i < buffer.size
           len = buffer[i, 4].pack('c*').unpack1('N')
-          strings << (buffer[i + 4, len].pack('c*'))
-                     .force_encoding(Encoding::UTF_8)
+          strings << buffer[i + 4, len].pack('c*')
+                                       .force_encoding(Encoding::UTF_8)
           i += len + 4
         end
         strings
