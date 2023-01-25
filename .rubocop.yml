@@ -6,6 +6,9 @@ AllCops:
     - 'gems/aws-crt-signer/spec/signer_spec.rb'
     - 'gems/aws-sigv4/**/*.rb'
 
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
 Gemspec/RequireMFA:
   Exclude:
     - '**/*.gemspec'
