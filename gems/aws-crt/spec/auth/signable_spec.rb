@@ -9,7 +9,7 @@ module Aws
       describe Signable do
         let(:http_request) do
           method = 'GET'
-          path = 'http://example.com'
+          path = 'http://example.com/'
           headers = { 'header1' => 'value1', 'header2' => 'value2' }
           Aws::Crt::Http::Message.new(method, path, headers)
         end
