@@ -29,7 +29,7 @@ module Aws
 
           let(:http_request) do
             method = 'get'
-            path = 'test_uri'
+            path = 'test_uri/'
             headers = { 'h1' => 'h1_v', 'h2' => 'h2_v' }
             Aws::Crt::Http::Message.new(method, path, headers)
           end
