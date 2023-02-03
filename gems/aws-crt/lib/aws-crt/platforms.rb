@@ -27,7 +27,9 @@ end
 
 # @return [String] return the directory of the CRT library for the platform
 def crt_bin_dir(platform)
-  File.expand_path("../../bin/#{platform.cpu}", File.dirname(__FILE__))
+  ENV['AWS_CRT_RUBY_BIN_DIR'] ||
+    File.expand_path("../../bin/#{platform.cpu}",
+                     File.dirname(__FILE__))
 end
 
 # @return [String] return the path to the CRT library for the platform

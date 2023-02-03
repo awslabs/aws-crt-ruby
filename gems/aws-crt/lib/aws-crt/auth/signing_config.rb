@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'time'
+require 'set'
 
 module Aws
   module Crt

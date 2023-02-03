@@ -5,7 +5,7 @@ Unreleased Changes
 ------------------
 
 * Issue - Update to the latest aws-crt-ffi.
-
+* Issue - Add support for overriding crt_bin_dir with `AWS_CRT_RUBY_BIN_DIR`.
 
 0.1.6 (2022-08-12)
 ------------------
