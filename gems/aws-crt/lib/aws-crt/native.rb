@@ -84,9 +84,10 @@ module Aws
         end
 
         bang_name = "#{ruby_name}!"
+        no_raise_name = "#{ruby_name}_no_raise"
 
-        super(ruby_name, c_name, params, returns, options)
-        alias_method(bang_name, ruby_name)
+        super(no_raise_name, c_name, params, returns, options)
+        alias_method(bang_name, no_raise_name)
 
         define_method(ruby_name) do |*args, &block|
           res = public_send(bang_name, *args, &block)
