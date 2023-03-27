@@ -3,8 +3,6 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'gems/aws-crt/aws-crt-ffi/**/*.rb'
-    - 'gems/aws-crt-signer/spec/signer_spec.rb'
-    - 'gems/aws-sigv4/**/*.rb'
 
 Gemspec/DevelopmentDependencies:
   Enabled: false
@@ -57,7 +55,6 @@ Metrics/PerceivedComplexity:
 Naming/FileName:
   Exclude:
     - 'gems/aws-crt/lib/aws-crt.rb'
-    - 'gems/aws-sigv4/lib/aws-sigv4.rb'
 
 Style/TrailingCommaInArrayLiteral:
   Enabled: false
