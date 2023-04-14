@@ -63,15 +63,14 @@ body:
   - type: input
     id: aws-crt-ruby-version
     attributes:
-      label: {} aws-crt-ruby version used
+      label: aws-crt-ruby version used
     validations:
       required: true
 
   - type: input
     id: compiler-version
     attributes:
-      label: Compiler and Version used
-      description: gcc --version / Visual Studio / clang --version
+      label: Ruby version used
     validations:
       required: true
 
