@@ -1,6 +1,11 @@
 Unreleased Changes
 ------------------
 
+0.1.9 (2023-10-16)
+------------------
+
+* Issue - Update to the latest aws-crt-ffi -- fix Sigv4A on MacOS 14+.
+
 0.1.8 (2023-03-28)
 ------------------
 
