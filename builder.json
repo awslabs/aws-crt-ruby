@@ -6,9 +6,5 @@
         "command -v bundler >/dev/null 2>&1 || gem install bundler",
         "bundle install",
         "bundle exec rake release"
-    ],
-    "build_env": {
-        "CC": "clang",
-        "CXX": "clang++"
-    }
+    ]
 }
