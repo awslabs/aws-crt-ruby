@@ -174,7 +174,7 @@ module Aws
 
       attach_function :aws_crt_credentials_provider_static_new, [:static_cred_provider_options_ptr], :credentials_provider_ptr
 
-      enum :signing_algorithm, %i[sigv4 sigv4a]
+      enum :signing_algorithm, %i[sigv4 sigv4a sigv4-s3express]
       enum :signature_type, %i[
         http_request_headers http_request_query_params
         http_request_chunk http_request_event
