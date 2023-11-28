@@ -1,6 +1,11 @@
 Unreleased Changes
 ------------------
 
+0.2.0 (2023-11-28)
+------------------
+
+* Feature - support sigv4-s3express signing.
+
 0.1.9 (2023-10-16)
 ------------------
 
