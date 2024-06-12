@@ -24,7 +24,7 @@ jobs:
         arch:
           - x64
           - aarch64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # latest
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
@@ -57,7 +57,7 @@ jobs:
       matrix:
         os: [windows]
         arch: [x64]
-    runs-on: windows-latest
+    runs-on: windows-2022 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -81,7 +81,7 @@ jobs:
         os: [macos]
         ruby: [2.7]
         arch: [x86_64, arm64]
-    runs-on: macos-latest
+    runs-on: macos-14 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -106,7 +106,7 @@ jobs:
 
   package:
     needs: [windows, osx, linux]
-    runs-on: macos-latest
+    runs-on: macos-14 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -154,7 +154,7 @@ jobs:
 
   verify-mac-native:
     needs: [package]
-    runs-on: macos-latest
+    runs-on: macos-14 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -174,7 +174,7 @@ jobs:
 
   verify-mac-jruby:
     needs: [package]
-    runs-on: macos-latest
+    runs-on: macos-14 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -194,7 +194,7 @@ jobs:
 
   verify-mac-pure-ruby:
     needs: [package]
-    runs-on: macos-latest
+    runs-on: macos-14 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -214,7 +214,7 @@ jobs:
 
   verify-windows-native:
     needs: [package]
-    runs-on: windows-latest
+    runs-on: windows-2022 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -229,13 +229,12 @@ jobs:
       - name: Install Gems and Require
         run: |
           ruby -v
-          gem install bundler
           bundle install
           bundle exec rake verify-release:native
 
   verify-linux-native:
     needs: [package]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
