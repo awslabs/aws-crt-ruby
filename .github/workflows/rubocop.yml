@@ -16,7 +16,6 @@ jobs:
 
       - name: Bundle install
         run: |
-          gem install bundler
           bundle install
 
       - name: Rubocop
