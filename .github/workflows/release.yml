@@ -24,7 +24,7 @@ jobs:
         arch:
           - x64
           - aarch64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # latest
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
@@ -235,7 +235,7 @@ jobs:
 
   verify-linux-native:
     needs: [package]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
