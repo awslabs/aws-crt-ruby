@@ -1,6 +1,8 @@
 Unreleased Changes
 ------------------
 
+* Issue - update to the latest aws-crt-ffi.
+
 0.2.0 (2023-11-28)
 ------------------
 
