@@ -1,6 +1,6 @@
 # See: https://github.com/pypa/manylinux
 # and: https://github.com/pypa/python-manylinux-demo
-FROM quay.io/pypa/manylinux2014_i686
+FROM quay.io/pypa/manylinux2014_i686:2024-09-01-3e7a3c3
 
 ###############################################################################
 # Basics
