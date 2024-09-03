@@ -44,7 +44,7 @@ jobs:
           docker cp `docker ps -alq`:/root/aws-crt-ruby/gems/aws-crt .
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
@@ -68,7 +68,7 @@ jobs:
           python builder.pyz build -p ${{ env.PACKAGE_NAME }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
@@ -97,7 +97,7 @@ jobs:
           bundle exec rake "gem:aws-crt:platform[${{ matrix.arch }}]"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: out_${{ matrix.os }}_${{ matrix.arch }}
           path: |
@@ -147,7 +147,7 @@ jobs:
           bundle exec rake package-all
 
       - name: Upload release
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: release_gems
           path: pkg/
