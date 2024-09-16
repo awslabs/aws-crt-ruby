@@ -1,6 +1,9 @@
 Unreleased Changes
 ------------------
 
+0.3.0 (2024-09-16)
+------------------
+
 * Feature - Support CRC64NVME checksums. 
 
 0.2.1 (2024-06-13)
