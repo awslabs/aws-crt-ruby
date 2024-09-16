@@ -215,6 +215,7 @@ module Aws
       # Checksums
       attach_function :aws_crt_crc32, %i[pointer size_t uint32], :uint32, raise: false
       attach_function :aws_crt_crc32c, %i[pointer size_t uint32], :uint32, raise: false
+      attach_function :aws_crt_crc64nvme, %i[pointer size_t uint64], :uint64, raise: false
 
       # Internal testing API
       attach_function :aws_crt_test_error, [:int], :int

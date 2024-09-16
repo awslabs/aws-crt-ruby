@@ -19,6 +19,14 @@ module Aws
           previous
         )
       end
+
+      def self.crc64nvme(str, previous = 0)
+        Aws::Crt::Native.crc64nvme(
+          FFI::MemoryPointer.from_string(str),
+          str.size,
+          previous
+        )
+      end
     end
   end
 end

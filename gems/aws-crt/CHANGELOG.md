@@ -1,12 +1,17 @@
 Unreleased Changes
 ------------------
 
-* Issue - update to the latest aws-crt-ffi.
+* Feature - Support CRC64NVME checksums. 
+
+0.2.1 (2024-06-13)
+------------------
+
+* Issue - Update to the latest aws-crt-ffi.
 
 0.2.0 (2023-11-28)
 ------------------
 
-* Feature - support sigv4-s3express signing.
+* Feature - Support sigv4-s3express signing.
 
 0.1.9 (2023-10-16)
 ------------------
@@ -16,12 +21,13 @@ Unreleased Changes
 0.1.8 (2023-03-28)
 ------------------
 
-* Issue - fix `warning: method redefined` warnings.
+* Issue - Fix `warning: method redefined` warnings.
 
 0.1.7 (2023-02-03)
 ------------------
 
 * Issue - Update to the latest aws-crt-ffi.
+* 
 * Issue - Add support for overriding crt_bin_dir with `AWS_CRT_RUBY_BIN_DIR`.
 
 0.1.6 (2022-08-12)

@@ -43,7 +43,7 @@ describe Aws::Crt::Checksums do
       expect(output).to eq(0x91267E8A)
     end
 
-    it 'works with values in one shot' do
+    it 'works with values iterated' do
       output = 0
       32.times do |i|
         output = Aws::Crt::Checksums.crc32([i].pack('C*'), output)
@@ -96,7 +96,7 @@ describe Aws::Crt::Checksums do
       expect(output).to eq(0x46DD794E)
     end
 
-    it 'works with values in one shot' do
+    it 'works with values iterated' do
       output = 0
       32.times do |i|
         output = Aws::Crt::Checksums.crc32c([i].pack('C*'), output)
@@ -112,6 +112,51 @@ describe Aws::Crt::Checksums do
     it 'works with a huge buffer' do
       output = Aws::Crt::Checksums.crc32c(ZERO_CHAR * (INT_MAX + 5))
       expect(output).to eq(0x572a7c8a)
+    rescue NoMemoryError, RangeError
+      skip 'Unable to allocate memory for crc32c huge buffer test'
+    end
+  end
+
+  describe 'crc64nvme' do
+    test_cases = [
+      { str: '', expected: "AAAAAA==\n" },
+      { str: 'abc', expected: "P8H66w==\n" },
+      { str: 'Hello world', expected: "PzEq2w==\n" }
+    ]
+    test_cases.each do |test_case|
+      it "produces the correct checksum for '#{test_case[:str]}'" do
+        checksum = int32_to_base64(Aws::Crt::Checksums.crc64nvme(test_case[:str]))
+        expect(checksum).to eq(test_case[:expected])
+      end
+    end
+
+    it 'works with zeros in one shot' do
+      output = Aws::Crt::Checksums.crc64nvme(ZERO_CHAR * 32)
+      expect(output).to eq(0xCF3473434D4ECF3B)
+    end
+
+    it 'works with zeros iterated' do
+      output = 0
+      32.times do
+        output = Aws::Crt::Checksums.crc64nvme(ZERO_CHAR, output)
+      end
+      expect(output).to eq(0xCF3473434D4ECF3B)
+    end
+
+    it 'works with values in one shot' do
+      buf = (0...32).to_a.pack('C*')
+      output = Aws::Crt::Checksums.crc64nvme(buf)
+      expect(output).to eq(0xB9D9D4A8492CBD7F)
+    end
+
+    it 'works with a large buffer' do
+      output = Aws::Crt::Checksums.crc64nvme(ZERO_CHAR * 25 * (2**20))
+      expect(output).to eq(0x5B6F5045463CA45E)
+    end
+
+    it 'works with a huge buffer' do
+      output = Aws::Crt::Checksums.crc64nvme(ZERO_CHAR * (INT_MAX + 5))
+      expect(output).to eq(0x2645C28052B1FBB0)
     rescue NoMemoryError, RangeError
       skip 'Unable to allocate memory for crc32c huge buffer test'
     end
