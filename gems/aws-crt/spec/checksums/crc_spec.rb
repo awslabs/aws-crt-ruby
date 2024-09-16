@@ -125,7 +125,9 @@ describe Aws::Crt::Checksums do
     ]
     test_cases.each do |test_case|
       it "produces the correct checksum for '#{test_case[:str]}'" do
-        checksum = int32_to_base64(Aws::Crt::Checksums.crc64nvme(test_case[:str]))
+        checksum = int32_to_base64(
+          Aws::Crt::Checksums.crc64nvme(test_case[:str])
+        )
         expect(checksum).to eq(test_case[:expected])
       end
     end
