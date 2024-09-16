@@ -3,16 +3,16 @@ on: [push]
 
 jobs:
   rubocop:
-    runs-on: ubuntu-22.04 # latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v2
 
-      - name: Set up Ruby 2.6
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: ruby
 
       - name: Bundle install
         run: |

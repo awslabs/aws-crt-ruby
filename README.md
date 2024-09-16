@@ -8,21 +8,14 @@
 * [AWS Common Run Time](https://docs.aws.amazon.com/sdkref/latest/guide/common-runtime.html)
 
 ## Installation 
-AWS CRT bindings are in developer preview and are available from RubyGems as the `aws-crt` gem.  You can install them by adding the `aws-crt`
-gem to your Gemfile.
-
-[Sigv4a](https://docs.aws.amazon.com/general/latest/gr/signing_aws_api_requests.html)
-is an extension to Sigv4 that allows signatures that are valid in more than one region.
-Sigv4a is required to use some services/operations such as
-[S3 Multi-Region Access Points](https://docs.aws.amazon.com/AmazonS3/latest/userguide/MultiRegionAccessPoints.html).
-Currently sigv4a requires the [aws-crt](https://rubygems.org/gems/aws-crt/) gem and a version of the 
-[aws-sigv4](https://rubygems.org/gems/aws-sigv4/) gem built on top of aws-crt (at least version 1.5.0):
+AWS CRT bindings are available from RubyGems as the `aws-crt` gem.
 
 ```ruby
 gem 'aws-sdk-s3', '~> 1'
-gem 'aws-sigv4', '~> 1' # must be at least 1.5.0
-gem 'aws-crt'
+gem 'aws-crt', '~> 0'
 ```
+
+`aws-crt` currently provides fast checksum implementations for CRC32c and CRC64.
 
 ## Versioning
 

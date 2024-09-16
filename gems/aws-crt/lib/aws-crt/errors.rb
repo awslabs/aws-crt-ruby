@@ -52,7 +52,7 @@ module Aws
       # This requires filtering non-safe characters from the constant
       # name and ensuring it begins with an uppercase letter.
       def self.error_class_constant(error_name)
-        error_name.to_s.gsub(/AWS_ERROR_/, '').split('_').map(&:capitalize).join
+        error_name.to_s.gsub('AWS_ERROR_', '').split('_').map(&:capitalize).join
       end
 
       def self.add_error_constant(constant)

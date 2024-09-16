@@ -76,7 +76,7 @@ module Aws
       #   = false)
       # 3. Creates a bang method that does not do automatic error checking.
       def self.attach_function(c_name, params, returns, options = {})
-        ruby_name = c_name.to_s.sub(/aws_crt_/, '').to_sym
+        ruby_name = c_name.to_s.sub('aws_crt_', '').to_sym
         raise_errors = options.fetch(:raise, true)
         options.delete(:raise)
         unless raise_errors
@@ -215,6 +215,7 @@ module Aws
       # Checksums
       attach_function :aws_crt_crc32, %i[pointer size_t uint32], :uint32, raise: false
       attach_function :aws_crt_crc32c, %i[pointer size_t uint32], :uint32, raise: false
+      attach_function :aws_crt_crc64nvme, %i[pointer size_t uint64], :uint64, raise: false
 
       # Internal testing API
       attach_function :aws_crt_test_error, [:int], :int
