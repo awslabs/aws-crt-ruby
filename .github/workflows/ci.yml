@@ -85,6 +85,8 @@ jobs:
             ruby: 2.5
           - arch: arm64
             ruby: 2.6
+          - arch: arm64
+            ruby: jruby-9.2
     # Some macos runners are x64, some are arm64, see: https://github.com/actions/runner-images#available-images
     runs-on: ${{ matrix.arch == 'x64' && 'macos-14-large' || 'macos-14' }}
     steps:

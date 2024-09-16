@@ -76,7 +76,7 @@ module Aws
       #   = false)
       # 3. Creates a bang method that does not do automatic error checking.
       def self.attach_function(c_name, params, returns, options = {})
-        ruby_name = c_name.to_s.sub(/aws_crt_/, '').to_sym
+        ruby_name = c_name.to_s.sub('aws_crt_', '').to_sym
         raise_errors = options.fetch(:raise, true)
         options.delete(:raise)
         unless raise_errors
