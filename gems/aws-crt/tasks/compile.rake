@@ -8,3 +8,8 @@ task :bin, [:cpu] do |_, args|
   require_relative '../ext/compile'
   compile_bin(args[:cpu])
 end
+
+desc 'Copies all binaries from the top level bin directory'
+task 'bin:all' do
+  FileUtils.cp_r('bin/', 'gems/aws-crt', verbose: true)
+end

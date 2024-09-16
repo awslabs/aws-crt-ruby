@@ -20,11 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [linux]
-        ruby: [2.7]
+        ruby: [ruby]
         arch:
           - x64
           - aarch64
-    runs-on: ubuntu-22.04 # latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
@@ -61,7 +61,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ruby
       - name: Generate Gem artifacts
         run: |
           python -c "from urllib.request import urlretrieve; import ssl; ssl._create_default_https_context = ssl._create_unverified_context; urlretrieve('${{ env.BUILDER_HOST }}/releases/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
@@ -79,7 +79,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos]
-        ruby: [2.7]
+        ruby: [ruby]
         arch: [x86_64, arm64]
     runs-on: macos-14 # latest
     steps:
@@ -110,7 +110,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ruby
 
       - uses: actions/checkout@v2
         with:
@@ -158,7 +158,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ruby
 
       - uses: actions/checkout@v2
 
@@ -198,7 +198,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ruby
 
       - uses: actions/checkout@v2
 
@@ -218,7 +218,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ruby
       - uses: actions/checkout@v2
 
       - name: Download Release Artifacts
@@ -234,11 +234,11 @@ jobs:
 
   verify-linux-native:
     needs: [package]
-    runs-on: ubuntu-22.04 # latest
+    runs-on: ubuntu-latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ruby
 
       - uses: actions/checkout@v2
 

@@ -82,7 +82,7 @@ task 'gem:aws-crt:pure-ruby' => :clean do
 end
 
 desc 'Build the aws-crt gem for jruby, bundling all currently built platforms'
-task 'gem:aws-crt:jruby' do
+task 'gem:aws-crt:jruby' => 'bin:all' do
   require 'rubygems/package'
   require 'fileutils'
 
