@@ -51,7 +51,6 @@ module Aws
         # @param [String] session_token (nil)
         def initialize(access_key_id, secret_access_key,
                        session_token = nil)
-
           credential_options = StaticCredentialsProviderOptions.new(
             access_key_id, secret_access_key,
             session_token

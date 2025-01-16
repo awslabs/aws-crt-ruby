@@ -61,7 +61,6 @@ module Aws
         #   seconds since unix epoch
         def initialize(access_key_id, secret_access_key,
                        session_token = nil, expiration = nil)
-
           credential_options = CredentialsOptions.new(
             access_key_id, secret_access_key,
             session_token, expiration
