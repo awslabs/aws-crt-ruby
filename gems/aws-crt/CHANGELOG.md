@@ -1,6 +1,10 @@
 Unreleased Changes
 ------------------
 
+0.4.1 (2025-1-28)
+------------------
+* Issue - Fix segfaults: CRC64NVME on machines with disabled AVX and uri parsing corner case
+
 0.4.0 (2024-10-23)
 ------------------
 * Issue - Update CMake to 3.9 
