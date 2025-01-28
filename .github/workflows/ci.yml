@@ -41,7 +41,7 @@ jobs:
         arch:
           - x64
           - aarch64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # temporarily downgrade to old ubuntu until https://github.com/actions/runner-images/issues/11471 resolves
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
