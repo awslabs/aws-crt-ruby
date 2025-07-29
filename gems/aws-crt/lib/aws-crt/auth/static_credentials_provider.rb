@@ -6,6 +6,7 @@ module Aws
       # CRT CredentialOptions
       class StaticCredentialsProviderOptions
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:credentials_provider_static_options_release)
 
         # @param [String] access_key_id
@@ -44,6 +45,7 @@ module Aws
       # Utility class for Credentials.
       class StaticCredentialsProvider
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:credentials_provider_release)
 
         # @param [String] access_key_id

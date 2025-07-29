@@ -7,6 +7,7 @@ module Aws
       # HTTP Headers
       class Headers
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(
           :http_headers_release
         )

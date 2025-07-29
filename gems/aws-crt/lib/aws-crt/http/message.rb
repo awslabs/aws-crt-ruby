@@ -7,6 +7,7 @@ module Aws
       # HTTP Message (request)
       class Message
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(
           :http_message_release
         )
