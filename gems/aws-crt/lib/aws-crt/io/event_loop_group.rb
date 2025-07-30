@@ -7,6 +7,7 @@ module Aws
       # Options for an EventLoopGroup
       class EventLoopGroupOptions
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(
           :event_loop_group_options_release
         )
@@ -35,6 +36,7 @@ module Aws
       # for an event-loop to use.
       class EventLoopGroup
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:event_loop_group_release)
 
         def initialize(max_threads = nil)
