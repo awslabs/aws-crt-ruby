@@ -19,7 +19,8 @@ task 'package-all' do
   FileUtils.cp_r('gems/aws-crt/pkg/', './')
 
   # build all other gems
-  gems = Dir.glob('gems/*').select { |f| File.directory? f }
+  gems = Dir.glob('gems/*')
+            .select { |f| File.directory? f }
             .map { |f| File.basename f }
             .reject { |f| f == 'aws-crt' }
 
@@ -31,7 +32,8 @@ end
 desc 'Verify install/require for the higher level gems'
 task 'verify-release:hll-gems' do
   puts 'Verifying Higher level gems'
-  gems = Dir.glob('gems/*').select { |f| File.directory? f }
+  gems = Dir.glob('gems/*')
+            .select { |f| File.directory? f }
             .map { |f| File.basename f }
             .reject { |f| f == 'aws-crt' }
 

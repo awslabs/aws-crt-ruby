@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.files = %w[LICENSE.txt CHANGELOG.md VERSION]
   spec.files += Dir['lib/**/*.rb']
   spec.platform = Gem::Platform::RUBY
-  spec.required_ruby_version = '>= 2.5'
+  spec.required_ruby_version = '>= 2.7'
   spec.add_dependency 'ffi'
   spec.add_development_dependency 'rspec'
 
