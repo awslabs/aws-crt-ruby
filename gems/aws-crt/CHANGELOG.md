@@ -1,7 +1,7 @@
 Unreleased Changes
 ------------------
 
-0.4.1 (2025-1-28)
+0.4.1 (2026-7-30)
 ------------------
 * Issue - Fix segfaults: CRC64NVME on machines with disabled AVX and uri parsing corner case
 
