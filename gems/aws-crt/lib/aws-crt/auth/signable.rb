@@ -6,6 +6,7 @@ module Aws
       # Signing Config
       class Signable
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:signable_release)
 
         # @param [Http::Message] http_request

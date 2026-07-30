@@ -9,6 +9,7 @@ module Aws
       # Signing Config
       class SigningConfig
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:signing_config_aws_release)
 
         # @param [Hash] options

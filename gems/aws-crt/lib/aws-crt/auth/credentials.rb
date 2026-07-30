@@ -6,6 +6,7 @@ module Aws
       # CRT CredentialOptions
       class CredentialsOptions
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:credentials_options_release)
 
         UINT64_MAX = 18_446_744_073_709_551_615
@@ -52,6 +53,7 @@ module Aws
       # Utility class for Credentials.
       class Credentials
         include Aws::Crt::ManagedNative
+
         native_destroy Aws::Crt::Native.method(:credentials_release)
 
         # @param [String] access_key_id
