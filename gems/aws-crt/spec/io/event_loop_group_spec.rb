@@ -23,14 +23,17 @@ describe Aws::Crt::IO::EventLoopGroup do
       elg = nil # rubocop:disable Lint/UselessAssignment
 
       # Use polling with time limit for GC collection to avoid flaky timing-related faillures.
-      Timeout.timeout(2) do
-        while weakref.weakref_alive?
-          GC.start(full_mark: true, immediate_sweep: true)
-          Thread.pass
+      begin
+        Timeout.timeout(2) do
+          while weakref.weakref_alive?
+            GC.start(full_mark: true, immediate_sweep: true)
+            Thread.pass
+          end
         end
+      rescue Timeout::Error
+        raise 'Expected GC to collect the EventLoopGroup within 2 seconds'
       end
 
-      expect(weakref.weakref_alive?).to be_falsey
       check_for_clean_shutdown
     end
   end
