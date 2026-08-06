@@ -1,5 +1,6 @@
 Unreleased Changes
 ------------------
+* Issue - Fix flaky garbage collection test
 
 0.4.0 (2024-10-23)
 ------------------

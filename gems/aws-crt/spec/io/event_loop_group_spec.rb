@@ -2,6 +2,7 @@
 
 require_relative '../spec_helper'
 require 'weakref'
+require 'timeout'
 
 describe Aws::Crt::IO::EventLoopGroup do
   it 'cleans up with release' do
@@ -20,7 +21,15 @@ describe Aws::Crt::IO::EventLoopGroup do
 
       # force cleanup via GC
       elg = nil # rubocop:disable Lint/UselessAssignment
-      ObjectSpace.garbage_collect
+
+      # Use polling with time limit for GC collection to avoid flaky timing-related faillures.
+      Timeout.timeout(2) do
+        while weakref.weakref_alive?
+          GC.start(full_mark: true, immediate_sweep: true)
+          Thread.pass
+        end
+      end
+
       expect(weakref.weakref_alive?).to be_falsey
       check_for_clean_shutdown
     end
