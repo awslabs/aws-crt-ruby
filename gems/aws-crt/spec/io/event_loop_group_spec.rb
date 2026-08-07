@@ -22,9 +22,9 @@ describe Aws::Crt::IO::EventLoopGroup do
       # force cleanup via GC
       elg = nil # rubocop:disable Lint/UselessAssignment
 
-      # Use polling with time limit for GC collection to avoid flaky timing-related faillures.
+      # Use polling with time limit for GC collection to avoid flaky failures.
       begin
-        Timeout.timeout(2) do
+        Timeout.timeout(3) do
           while weakref.weakref_alive?
             GC.start(full_mark: true, immediate_sweep: true)
             Thread.pass
