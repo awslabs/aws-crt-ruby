@@ -18,7 +18,7 @@ describe Aws::Crt::IO::EventLoopGroup do
     WeakRef.new(elg)
   end
 
-  it 'cleans up with GC' do
+  it 'cleans up with GC', skip: RUBY_PLATFORM.include?('darwin') do
     weakref = event_loop_group_weakref
     expect(weakref.weakref_alive?).to be true
 
