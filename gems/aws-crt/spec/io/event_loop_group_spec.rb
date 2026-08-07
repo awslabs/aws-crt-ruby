@@ -2,6 +2,7 @@
 
 require_relative '../spec_helper'
 require 'weakref'
+require 'timeout'
 
 describe Aws::Crt::IO::EventLoopGroup do
   it 'cleans up with release' do
@@ -12,17 +13,28 @@ describe Aws::Crt::IO::EventLoopGroup do
     check_for_clean_shutdown
   end
 
-  if garbage_collect_is_immediate?
-    it 'cleans up with GC' do
-      elg = Aws::Crt::IO::EventLoopGroup.new
-      weakref = WeakRef.new(elg)
-      expect(weakref.weakref_alive?).to be true
+  def event_loop_group_weakref
+    elg = Aws::Crt::IO::EventLoopGroup.new
+    WeakRef.new(elg)
+  end
 
-      # force cleanup via GC
-      elg = nil # rubocop:disable Lint/UselessAssignment
-      ObjectSpace.garbage_collect
-      expect(weakref.weakref_alive?).to be_falsey
-      check_for_clean_shutdown
+  # Test disabled in osx bc of more conservative GC timing.
+  # Related forum post: https://bugs.ruby-lang.org/issues/19041?utm
+  it 'cleans up with GC', skip: RUBY_PLATFORM.include?('darwin') do
+    weakref = event_loop_group_weakref
+    expect(weakref.weakref_alive?).to be true
+
+    begin
+      Timeout.timeout(3) do
+        while weakref.weakref_alive?
+          GC.start(full_mark: true, immediate_sweep: true)
+          Thread.pass
+        end
+      end
+    rescue Timeout::Error
+      raise 'Expected GC to collect the EventLoopGroup within 3 seconds'
     end
+
+    check_for_clean_shutdown
   end
 end

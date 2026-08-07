@@ -1,5 +1,6 @@
 Unreleased Changes
 ------------------
+* Issue - Fix intermittent test failure in garbage collection spec.
 
 0.4.0 (2024-10-23)
 ------------------
