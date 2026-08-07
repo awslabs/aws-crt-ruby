@@ -18,6 +18,8 @@ describe Aws::Crt::IO::EventLoopGroup do
     WeakRef.new(elg)
   end
 
+  # Test disabled in osx bc of more conservative GC timing.
+  # Related forum post: https://bugs.ruby-lang.org/issues/19041?utm
   it 'cleans up with GC', skip: RUBY_PLATFORM.include?('darwin') do
     weakref = event_loop_group_weakref
     expect(weakref.weakref_alive?).to be true
