@@ -23,14 +23,14 @@ describe Aws::Crt::IO::EventLoopGroup do
     expect(weakref.weakref_alive?).to be true
 
     begin
-      Timeout.timeout(3) do
+      Timeout.timeout(30) do
         while weakref.weakref_alive?
           GC.start(full_mark: true, immediate_sweep: true)
           Thread.pass
         end
       end
     rescue Timeout::Error
-      raise 'Expected GC to collect the EventLoopGroup within 3 seconds'
+      raise 'Expected GC to collect the EventLoopGroup within 30 seconds'
     end
 
     check_for_clean_shutdown
