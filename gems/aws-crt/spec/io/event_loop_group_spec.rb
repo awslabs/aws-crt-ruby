@@ -13,28 +13,26 @@ describe Aws::Crt::IO::EventLoopGroup do
     check_for_clean_shutdown
   end
 
-  if garbage_collect_is_immediate?
-    it 'cleans up with GC' do
-      elg = Aws::Crt::IO::EventLoopGroup.new
-      weakref = WeakRef.new(elg)
-      expect(weakref.weakref_alive?).to be true
+  def event_loop_group_weakref
+    elg = Aws::Crt::IO::EventLoopGroup.new
+    WeakRef.new(elg)
+  end
 
-      # force cleanup via GC
-      elg = nil # rubocop:disable Lint/UselessAssignment
+  it 'cleans up with GC' do
+    weakref = event_loop_group_weakref
+    expect(weakref.weakref_alive?).to be true
 
-      # Use polling with time limit for GC collection to avoid flaky failures.
-      begin
-        Timeout.timeout(3) do
-          while weakref.weakref_alive?
-            GC.start(full_mark: true, immediate_sweep: true)
-            Thread.pass
-          end
+    begin
+      Timeout.timeout(3) do
+        while weakref.weakref_alive?
+          GC.start(full_mark: true, immediate_sweep: true)
+          Thread.pass
         end
-      rescue Timeout::Error
-        raise 'Expected GC to collect the EventLoopGroup within 2 seconds'
       end
-
-      check_for_clean_shutdown
+    rescue Timeout::Error
+      raise 'Expected GC to collect the EventLoopGroup within 3 seconds'
     end
+
+    check_for_clean_shutdown
   end
 end
