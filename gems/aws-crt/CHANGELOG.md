@@ -2,6 +2,10 @@ Unreleased Changes
 ------------------
 * Issue - Fix intermittent test failure in garbage collection spec.
 
+0.4.1 (2026-7-30)
+------------------
+* Issue - Fix segfaults: CRC64NVME on machines with disabled AVX and uri parsing corner case
+
 0.4.0 (2024-10-23)
 ------------------
 * Issue - Update CMake to 3.9 
