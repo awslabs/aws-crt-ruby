@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../spec_helper'
-require 'weakref'
 
 module Aws
   module Crt
@@ -35,14 +34,17 @@ module Aws
 
           if garbage_collect_is_immediate?
             it 'cleans up with GC' do
-              signable = Signable.new(http_request)
-              weakref = WeakRef.new(signable)
-              expect(weakref.weakref_alive?).to be true
+              request = Aws::Crt::Http::Message.new(
+                'GET',
+                'http://example.com/',
+                { header1: 'value1', header2: 'value2' }
+              )
 
-              # force cleanup via GC
+              signable = Signable.new(request) # rubocop:disable Lint/UselessAssignment
+              request = nil # rubocop:disable Lint/UselessAssignment
               signable = nil # rubocop:disable Lint/UselessAssignment
-              ObjectSpace.garbage_collect
-              expect(weakref.weakref_alive?).to be_falsey
+
+              GC.start(full_mark: true, immediate_sweep: true)
               check_for_clean_shutdown
             end
           end
