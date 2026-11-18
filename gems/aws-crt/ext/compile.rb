@@ -23,12 +23,12 @@ def cmake_has_parallel_flag?
   (CMAKE_VERSION <=> [3, 12]) >= 0
 end
 
-def run_cmd(args)
+def run_cmd(args, env = {})
   # use shellwords.join() for printing, don't pass that string to system().
   # system() does better cross-platform when the args array is passed in.
   cmd_str = Shellwords.join(args)
   puts cmd_str
-  system(*args) || raise("Error running: #{cmd_str}")
+  system(env, *args) || raise("Error running: #{cmd_str}")
 end
 
 def find_file(name, search_dirs, base_dir)
@@ -63,6 +63,12 @@ def compile_bin(cpu = host_cpu)
     '-DBUILD_TESTING=OFF',
   ]
 
+  config_env = {}
+  if (CMAKE_VERSION <=> [4, 0]) >= 0
+    config_env['CMAKE_POLICY_VERSION_MINIMUM'] =
+      ENV.fetch('CMAKE_POLICY_VERSION_MINIMUM', '3.5')
+  end
+
   # macOS can cross-compile for arm64 or x86_64.
   # This lets us prepare both types of gems from either type of machine.
   if platform.os == 'darwin'
@@ -82,7 +88,7 @@ def compile_bin(cpu = host_cpu)
     build_cmd.append(Etc.nprocessors.to_s)
   end
 
-  run_cmd(config_cmd)
+  run_cmd(config_cmd, config_env)
   run_cmd(build_cmd)
 
   # Move file to bin/, instead of where cmake installed it under tmp/
