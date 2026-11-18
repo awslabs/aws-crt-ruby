@@ -1,7 +1,6 @@
 Unreleased Changes
 ------------------
 * Issue - Improve customer-facing installation guidance and gem metadata.
-* Issue - Support source builds with CMake 4.
 
 0.4.1 (2026-08-10)
 ------------------
