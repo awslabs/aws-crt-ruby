@@ -81,7 +81,7 @@ jobs:
         os: [macos]
         ruby: [ruby]
         arch: [x86_64, arm64]
-    runs-on: macos-14 # latest
+    runs-on: macos-15 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -106,7 +106,7 @@ jobs:
 
   package:
     needs: [windows, osx, linux]
-    runs-on: macos-14 # latest
+    runs-on: macos-15 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -154,7 +154,7 @@ jobs:
 
   verify-mac-native:
     needs: [package]
-    runs-on: macos-14 # latest
+    runs-on: macos-15 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -174,7 +174,7 @@ jobs:
 
   verify-mac-jruby:
     needs: [package]
-    runs-on: macos-14 # latest
+    runs-on: macos-15 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
@@ -194,7 +194,7 @@ jobs:
 
   verify-mac-pure-ruby:
     needs: [package]
-    runs-on: macos-14 # latest
+    runs-on: macos-15 # latest
     steps:
       - uses: ruby/setup-ruby@v1
         with:
