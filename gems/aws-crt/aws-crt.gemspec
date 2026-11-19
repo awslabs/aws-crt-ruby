@@ -3,7 +3,8 @@
 Gem::Specification.new do |spec|
   spec.name = 'aws-crt'
   spec.version = File.read(File.expand_path('VERSION', __dir__)).strip
-  spec.summary = 'AWS SDK for Ruby - Common Run Time'
+  spec.summary = 'AWS Common Runtime bindings for Ruby'
+  spec.description = 'Native AWS request signing and checksum implementations for Ruby'
   spec.author = 'Amazon Web Services'
   spec.homepage = 'https://github.com/awslabs/aws-crt-ruby'
   spec.license = 'Apache-2.0'
