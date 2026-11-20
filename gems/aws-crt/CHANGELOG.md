@@ -1,5 +1,8 @@
 Unreleased Changes
 ------------------
+
+0.4.2 (2026-11-20)
+------------------
 * Issue - Improve customer-facing installation guidance and gem metadata.
 
 0.4.1 (2026-08-10)
